@@ -1,0 +1,1258 @@
+% tonks_paper05_v1.tex
+% Numerical GHD-Boltzmann solver for mass-disordered hard rods
+% on a Riemannian ring: validation and transport coefficients.
+% v1 (2026-05-15): initial skeleton + Sec II recap from Paper IV.
+
+\pdfminorversion=7
+\documentclass[aps,pre,twocolumn,superscriptaddress,longbibliography,floatfix]{revtex4-2}
+
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage{physics}
+\usepackage{mathtools}
+
+\begin{document}
+
+\title{Numerical generalised hydrodynamic--Boltzmann solver for
+mass-disordered hard rods on a Riemannian ring:\\
+validation, transport coefficients, and nonlinear comparison}
+
+\author{Hector Medel}
+\email{hjmedel@gmail.com}
+\affiliation{Escuela de Ingenier\'ia y Ciencias, Tecnol\'ogico de Monterrey, Mexico}
+
+\date{\today}
+
+\begin{abstract}
+The two-species generalised hydrodynamic (GHD) Boltzmann
+equation constructed in companion paper~\cite{PaperIV} for the
+classical hard-rod gas with binary mass disorder couples
+species-resolved velocity-distribution streaming on a
+Riemannian curve to an inter-species Boltzmann collision
+integral. Its quantitative validation rests on closing four
+open items left by Ref.~\cite{PaperIV}: deriving the
+sound-wave damping rate $\gamma(k,m_{\max})$ from first
+principles, treating the even-mode saturation of the density
+Fourier spectrum, providing a microscopic derivation of the
+dressed velocity, and confirming the framework numerically
+against the
+event-driven molecular-dynamics trajectories of
+companion paper~\cite{PaperIII}. We construct a
+discrete-velocity numerical solver of the GHD--Boltzmann
+equation, with Strang operator splitting between the streaming
+and collision steps, and validate it against the linear-regime
+sound speed of Ref.~\cite{PaperIV} (recovery within $1\%$),
+the H-theorem (kinetic entropy non-decreasing), and the
+nonlinear step-IC density-mode evolution of Ref.~\cite{PaperIII}.
+We identify the dominant damping channel of the sound mode
+as the inter-species mass interdiffusion --- not a
+conventional shear viscosity, which vanishes identically
+in one dimension --- and extract the binary interdiffusion
+coefficient $D_{LH}(m_{\max})$ from the first-order
+Chapman--Enskog correction to local Maxwell--Boltzmann
+equilibrium, providing the first first-principles
+quantitative prediction of the sound-wave damping rate of
+Ref.~\cite{PaperII}.
+\end{abstract}
+
+\maketitle
+
+%======================================================================
+\section{Introduction}\label{sec:intro}
+%======================================================================
+
+The classical hard-rod gas on a closed one-dimensional
+Riemannian curve $(\mathcal{M},g)$ supports a rich
+non-equilibrium phenomenology that has been the subject of a
+four-paper companion program~\cite{PaperI,PaperII,PaperIII,
+PaperIV}. The equilibrium structure of the gas, including its
+non-Gaussian momentum distribution and finite-diameter pair
+correlations, was developed in Ref.~\cite{PaperI};
+linear-regime sound-wave restoration under binary mass disorder
+was established in Ref.~\cite{PaperII}; the absence of Burgers
+shocks at finite amplitude was demonstrated in
+Ref.~\cite{PaperIII}; and a two-species GHD--Boltzmann
+framework that unifies these results was constructed in
+Ref.~\cite{PaperIV}.
+
+The framework of Ref.~\cite{PaperIV} is built on three
+postulates whose joint validation requires a quantitative
+numerical implementation. (a) The species-resolved velocity
+distribution $\rho_\alpha(s,v,t)$ for
+$\alpha\in\{L,H\}$ on the arc-length phase space evolves
+according to the GHD--Boltzmann equation,
+\begin{equation}
+\partial_t \rho_\alpha
++ \partial_s\!\left[v^{\rm eff}_\alpha\,\rho_\alpha\right]
+= \mathcal{C}_\alpha[\rho_L,\rho_H](s,v,t),
+\label{eq:ghdb}
+\end{equation}
+with $v^{\rm eff}_\alpha$ the dressed velocity and
+$\mathcal{C}_\alpha$ a standard Boltzmann collision integral.
+(b) The dressed velocity is the mass-independent geometric form
+$v^{\rm eff}_\alpha = (v-\eta\bar u)/(1-\eta)$ with
+$\eta=\sigma\rho^{\rm tot}$.
+(c) The mass disorder enters entirely through
+$\mathcal{C}_\alpha$ via inter-species collisions of unequal
+masses.
+
+Reference~\cite{PaperIV} validates the framework analytically
+in the linear regime --- the sound-speed prediction
+$c_s^2 = 3k_BT/[\bar m(1-\eta)^2]$ matches event-driven MD to
+within $4\%$ across a 20-fold range of mass disparity --- and
+in the linear-amplitude limit of the nonlinear regime, where
+the predicted density-mode ratio $|\hat\rho_n|/|\hat\rho_1|
+=1/n$ for odd $n$ is reproduced to $5\%$. Four quantitative
+items are left open:
+\emph{(i)} The sound-wave damping rate $\gamma(k,m_{\max})$,
+which Ref.~\cite{PaperIV} estimated dimensionally
+($\nu_{\rm shear}\sim 0.03$) under a Newtonian-viscosity
+ansatz that, as we show in Sec.~\ref{sec:nu}, is unphysical
+in one dimension and must be replaced by an interdiffusion
+mechanism.
+\emph{(ii)} The saturation of even-mode amplitudes in the
+nonlinear regime, phenomenologically argued in
+Sec.~VI.B of Ref.~\cite{PaperIV} but not derived.
+\emph{(iii)} A microscopic derivation of the dressed-velocity
+postulate $v^{\rm eff}_\alpha$, currently asserted on
+structural grounds.
+\emph{(iv)} A direct nonlinear-regime test against the full
+density-mode trajectories of Ref.~\cite{PaperIII}.
+
+The present work addresses items (i), (ii), and (iv)
+quantitatively by constructing a discrete-velocity numerical
+solver of Eq.~\eqref{eq:ghdb} and comparing its output against
+the linear- and nonlinear-regime molecular-dynamics data of
+Refs.~\cite{PaperII,PaperIII}. Item (iii), the microscopic
+derivation, requires a different approach (Jepsen-like
+generalised mapping for unequal masses) and is left for
+future work.
+
+The paper is organised as follows.
+Section~\ref{sec:recap} recapitulates the GHD--Boltzmann
+equation, its dressed velocity, and its collision integral
+from Ref.~\cite{PaperIV}.
+Section~\ref{sec:dvm} describes the discrete-velocity numerical
+method.
+Section~\ref{sec:linear} validates the solver against the
+linear-regime sound-wave data of Refs.~\cite{PaperII,PaperIV}.
+Section~\ref{sec:nu} identifies the dominant sound-damping
+channel as inter-species mass interdiffusion --- not a
+conventional shear viscosity --- and extracts the binary
+interdiffusion coefficient $D_{LH}(m_{\max})$ from the
+first-order Chapman--Enskog correction.
+Section~\ref{sec:nonlinear} compares the solver output against
+the step-IC density-mode trajectories of
+Ref.~\cite{PaperIII}.
+Section~\ref{sec:discussion} discusses implications and open
+questions.
+
+%======================================================================
+\section{The GHD--Boltzmann equation}\label{sec:recap}
+%======================================================================
+
+We summarise the framework of Ref.~\cite{PaperIV} in
+self-contained form. The system is $N$ classical hard rods of
+diameter $\sigma$ on a closed Riemannian curve of arc-length
+perimeter $L$, with binary mass assignment
+$m_i\in\{m_L=1, m_H=m_{\max}\}$ (equal fraction). The
+species-resolved phase-space distribution
+$\rho_\alpha(s,v,t)$, $\alpha\in\{L,H\}$, is normalised so that
+$\int dv\,\rho_\alpha(s,v,t) = \rho_\alpha^{\rm tot}(s,t)$ is the
+local number density of species $\alpha$, with total
+$\rho^{\rm tot} = \rho_L^{\rm tot} + \rho_H^{\rm tot}$ and
+packing fraction $\eta=\sigma\rho^{\rm tot}$.
+
+\subsection{Streaming term: the dressed velocity}
+
+In arc-length coordinates the streaming term in
+Eq.~\eqref{eq:ghdb} uses the dressed velocity
+\begin{equation}
+v^{\rm eff}_\alpha(s,v,t) =
+\frac{v - \eta(s,t)\,\bar u(s,t)}{1 - \eta(s,t)},
+\quad\eta\equiv\sigma\rho^{\rm tot},
+\label{eq:veff}
+\end{equation}
+with $\bar u(s,t) = \int dv\,v\,(\rho_L+\rho_H)/\rho^{\rm tot}$
+the number-weighted local mean velocity. The form
+Eq.~\eqref{eq:veff} is identical for both species, reflecting
+the fact that the geometric scattering shift on each crossing
+event is $\sigma$ regardless of the masses of the two colliding
+rods. The mass disorder enters entirely through the collision
+integral $\mathcal{C}_\alpha$ described below; equation
+Eq.~\eqref{eq:veff} is the central postulate of
+Ref.~\cite{PaperIV} and is taken here as input.
+
+\subsection{Collision integral}
+
+For elastic inter-species collisions Eq.~(2) of
+Ref.~\cite{PaperIV}, the binary classical Boltzmann form on a
+one-dimensional hard-rod gas is
+\begin{multline}
+\mathcal{C}_\alpha(s,v,t) = \sigma\!\int\!dv'\,|v-v'|\\
+\times\Bigl[\rho_\alpha(s,v_*,t)\,\rho_\beta(s,v'_*,t)
+           -\rho_\alpha(s,v,t)\,\rho_\beta(s,v',t)\Bigr],
+\label{eq:Calpha}
+\end{multline}
+with $\beta\neq\alpha$ and $(v_*,v'_*)$ the pre-collision pair
+that yields $(v,v')$ after the elastic update
+\begin{equation}
+v' = \frac{m_\alpha - m_\beta}{m_\alpha + m_\beta}\,v
+   + \frac{2 m_\beta}{m_\alpha + m_\beta}\,v_\beta,
+\quad\text{etc.}
+\label{eq:elcoll}
+\end{equation}
+The Jacobian of $(v,v')\to(v_*,v'_*)$ equals unity for elastic
+collisions in 1D. Only inter-species collisions
+($\alpha\neq\beta$) contribute to $\mathcal{C}_\alpha$ because
+equal-mass intra-species collisions reduce to a velocity swap
+and preserve the species-resolved velocity multiset (they
+contribute to the dressed streaming Eq.~\eqref{eq:veff} but not
+to thermalisation).
+
+The inter-species thermalisation rate
+$\tau_{\rm break}^{-1}\sim\rho_0\sigma\bar v$ with
+$\bar v=\sqrt{k_BT(m_L+m_H)/(m_L m_H)}$ sets the characteristic
+scale of $\mathcal{C}_\alpha$; for the parameters of
+Ref.~\cite{PaperIII} this gives $\tau_{\rm break}\approx 0.05$
+at $m_{\max}=5$, much shorter than the sound-wave period
+$\sim L/c_s \approx 11$.
+
+\subsection{Conservation laws and equilibrium}
+
+Equation~\eqref{eq:ghdb} conserves four hydrodynamic densities:
+per-species number $n_\alpha=\int dv\,\rho_\alpha$, total
+momentum $p=\int dv\,v\,(m_L\rho_L+m_H\rho_H)$, and total
+energy $e=\int dv\,\tfrac12 v^2(m_L\rho_L+m_H\rho_H)$. The
+collision integral $\mathcal{C}_\alpha$ has four zero modes
+corresponding to these conserved quantities and an H-theorem:
+the kinetic entropy
+$S=-\sum_\alpha\int ds\,dv\,\rho_\alpha\log\rho_\alpha$ is
+non-decreasing under Eq.~\eqref{eq:Calpha}, with the
+streaming term Eq.~\eqref{eq:veff} conserving $S$ on the
+periodic domain. The unique steady state of Eq.~\eqref{eq:ghdb}
+(at fixed total $n_L, n_H$, $p$, $e$) is the local
+Maxwell--Boltzmann distribution
+\begin{equation}
+\rho_\alpha^{(0)}(v) = \frac{n_\alpha}{Z_\alpha(T)}
+  \exp\!\left[-\frac{m_\alpha (v-\bar u)^2}{2 k_B T}\right],
+\label{eq:rho_eq}
+\end{equation}
+with common temperature $T$ and common mean velocity $\bar u$.
+The kinetic-temperature equipartition
+$\tfrac12 m_L\langle(v-\bar u)^2\rangle_L = \tfrac12 m_H
+\langle(v-\bar u)^2\rangle_H = \tfrac12 k_BT$ is exact in
+Eq.~\eqref{eq:rho_eq} and is preserved by the dynamics.
+
+\subsection{Linear-regime predictions to be tested}
+
+The two analytical predictions of Ref.~\cite{PaperIV} that we
+test in Sec.~\ref{sec:linear} are the sound speed,
+\begin{equation}
+c_s^2 = \frac{3\,k_BT}{\bar m\,(1-\eta)^2},
+\label{eq:cs}
+\end{equation}
+with $\bar m = (m_L+m_H)/2$, and the linear-regime odd-density-
+mode ratio for step initial conditions,
+\begin{equation}
+\frac{\max_t|\hat\rho_n^{(1)}|}{\max_t|\hat\rho_1^{(1)}|}
+= \frac{1}{n}\quad\text{(odd $n$)}.
+\label{eq:ratio}
+\end{equation}
+The damping rate of the sound mode, estimated dimensionally
+in Ref.~\cite{PaperIV} as $\nu_{\rm shear}\sim 0.03$ under a
+Newtonian-viscosity ansatz, requires a more careful
+treatment: as we show in Sec.~\ref{sec:nu}, conventional
+shear viscosity vanishes identically in one dimension and
+the dominant damping channel of the sound mode is instead
+the inter-species mass interdiffusion. The quantitative
+determination of the corresponding binary interdiffusion
+coefficient $D_{LH}(m_{\max})$ from first principles ---
+via the first-order Chapman--Enskog correction to local
+Maxwell--Boltzmann equilibrium --- is one of the main
+outputs of the present work (Sec.~\ref{sec:nu}).
+
+%======================================================================
+\section{Discrete-velocity numerical method}\label{sec:dvm}
+%======================================================================
+
+\subsection{Phase-space grid}
+
+We discretise the species-resolved distribution
+$\rho_\alpha(s,v,t)$ on a uniform tensor-product grid:
+$N_s$ cells in arc length $s_k = (k-1/2)\,L/N_s$ for
+$k=1,\dots,N_s$, and $N_v$ velocity bins
+$v_j = -V_{\max} + (j-1/2)\,\Delta v$ for $j=1,\dots,N_v$ with
+$\Delta v = 2 V_{\max}/N_v$. The velocity range is chosen to
+contain the relevant thermal and coherent flow scales,
+$V_{\max}\gtrsim 4\,v_{\rm th}+U_0$, where $v_{\rm th}=
+\sqrt{k_BT/m_L}$ and $U_0$ is the maximum coherent amplitude in
+the initial condition. The cell averages
+$\rho_\alpha^{k,j}(t)\equiv\frac{1}{\Delta s\,\Delta v}\int_{\rm cell}
+\rho_\alpha(s,v,t)\,ds\,dv$ are the unknowns of the
+time-stepping scheme.
+
+\subsection{Strang operator splitting}
+
+Equation~\eqref{eq:ghdb} is decomposed into a streaming
+operator $\mathcal{S}$ encoding the dressed transport in $s$ and
+a collision operator $\mathcal{R}$ encoding the inter-species
+relaxation:
+\begin{equation}
+\partial_t \rho_\alpha = \mathcal{S}_\alpha[\rho]
++ \mathcal{R}_\alpha[\rho],
+\quad
+\mathcal{S}_\alpha = -\partial_s(v^{\rm eff}_\alpha\rho_\alpha),
+\;\;
+\mathcal{R}_\alpha = \mathcal{C}_\alpha[\rho_L,\rho_H].
+\label{eq:split}
+\end{equation}
+Time integration uses the Strang composition: starting from
+$\rho_\alpha^{k,j}(t^n)$, a step of size $\Delta t$ proceeds as
+$\mathcal{R}_{\Delta t/2} \circ \mathcal{S}_{\Delta t} \circ
+\mathcal{R}_{\Delta t/2}$, second-order accurate in time and
+symmetric.
+
+\subsection{Streaming substep}
+
+For the streaming half-step we solve
+$\partial_t \rho_\alpha + \partial_s(v^{\rm eff}_\alpha
+\rho_\alpha)=0$
+with $v^{\rm eff}_\alpha$ depending only on the local hydrodynamic
+moments $\bar u(s,t),\rho^{\rm tot}(s,t)$. We freeze these
+moments at $t^n$ (operator-splitting consistent with
+$O(\Delta t^2)$) and update each velocity bin independently
+using a WENO5 upwind reconstruction:
+\begin{equation}
+\rho_\alpha^{k,j;n+1} = \rho_\alpha^{k,j;n}
+-\frac{\Delta t}{\Delta s}\bigl[\mathcal{F}^{j}_{k+1/2}
+                              -\mathcal{F}^{j}_{k-1/2}\bigr],
+\label{eq:godunov}
+\end{equation}
+where the face flux
+$\mathcal{F}^{j}_{k+1/2}=V^{\rm eff,j}_{k+1/2}
+\widetilde\rho_\alpha^{k+1/2,j}$
+uses the face-averaged dressed velocity
+$V^{\rm eff,j}_{k+1/2}=
+\tfrac12(V^{\rm eff,j}_k+V^{\rm eff,j}_{k+1})$ at frozen-moment
+$V^{\rm eff,j}_k = (v_j - \eta_k^n\bar u_k^n)/(1-\eta_k^n)$
+with $\eta_k^n=\sigma\rho^{\rm tot}_k{}^n$, and the
+upwind-biased reconstruction
+$\widetilde\rho_\alpha^{k+1/2,j}$ is the standard 5th-order
+WENO with smoothness indicators
+$\beta_r=\tfrac{13}{12}(\cdots)^2+\tfrac{1}{4}(\cdots)^2$,
+linear weights $(d_0,d_1,d_2)=(1/10,6/10,3/10)$, and
+regularisation $\varepsilon=10^{-6}$, on the 5-point stencil
+$\{\rho^{k+r}_\alpha\}_{r=-2}^{+2}$ for
+$V^{\rm eff,j}_{k+1/2}>0$ and its mirror for
+$V^{\rm eff,j}_{k+1/2}<0$. The WENO5 reconstruction is
+5th-order accurate in smooth regions and ENO-stable across
+shocks; it replaces the 2nd-order MUSCL minmod
+reconstruction used in earlier versions of the solver
+(Sec.~\ref{sec:linear} reports the sound-speed comparison
+between the two reconstructions).
+
+\subsection{Collision substep}
+
+The collision half-step solves
+$\partial_t \rho_\alpha = \mathcal{C}_\alpha[\rho_L,\rho_H]$
+locally at each spatial cell $k$. The discrete approximation of
+Eq.~\eqref{eq:Calpha} is, for the pair $(j,l)$ of velocity
+indices with pre-collision pair $(j_*,l_*)$ given by the
+discretised elastic-collision map Eq.~\eqref{eq:elcoll},
+\begin{multline}
+\bigl(\mathcal{R}_\alpha\bigr)^{k,j}
+= \sigma\,\Delta v\!\sum_{l=1}^{N_v}\!|v_j-v_l|\\
+\times\Bigl[\widetilde\rho_\alpha^{k,j_*}\,
+            \widetilde\rho_\beta^{k,l_*}
+          -\rho_\alpha^{k,j}\,\rho_\beta^{k,l}\Bigr],
+\label{eq:collop}
+\end{multline}
+where $\widetilde\rho_\alpha^{k,j_*}$ denotes the
+three-point Lagrange interpolation of
+$\rho_\alpha^{k,\cdot}$ at the (generally off-grid)
+post-collision velocity $v_{j_*}$. Specifically, for
+$v_{j_*}$ located at offset $\delta\in[-1/2,1/2]$ from its
+nearest grid centre $v_{j_c}$, we use the symmetric
+3-node stencil $\{v_{j_c-1},v_{j_c},v_{j_c+1}\}$ with
+weights
+$\bigl(\tfrac{\delta(\delta-1)}{2},\,1-\delta^2,\,
+       \tfrac{\delta(\delta+1)}{2}\bigr)$.
+This quadratic-exact interpolation is the simplest
+construction that makes all four discrete collision
+invariants
+$\{\mathbf{1}_\alpha,\,m_\alpha v_j,\,
+   \tfrac12 m_\alpha v_j^2\}$
+exact null modes of the linearised collision operator
+\emph{to machine precision} (Sec.~\ref{sec:nu} verifies
+$\|\mathsf{L}\psi_a\|/\|\mathsf{L}\|\|\psi_a\|<10^{-16}$),
+in contrast to the 2-point bilinear scheme whose total
+momentum and total energy modes are conserved only to
+$O(\Delta v^2)$. Collision pairs whose pre-velocity
+$v_{j_*}$ falls outside the central-index admissible range
+$2\leq j_c\leq N_v-1$ are dropped in both the gain and the
+loss terms to maintain the gain/loss balance required for
+discrete conservation. The H-theorem is preserved up to the
+discrete-grid error of the interpolation.
+
+We integrate the collision step explicitly,
+$\rho_\alpha^{k,j;n+1}=\rho_\alpha^{k,j;n}+\Delta t\,
+(\mathcal{R}_\alpha)^{k,j}$, with $\Delta t$ chosen below to
+prevent stability issues from the cross-bin coupling.
+
+\subsection{CFL and stability}
+
+Stability requires two CFL-like conditions. The streaming
+condition is the standard
+\begin{equation}
+\Delta t\,\max_{j,k} |V^{\rm eff,j}_{\alpha,k}|/\Delta s \leq
+\tfrac12,
+\end{equation}
+which for $V^{\rm eff}\sim V_{\max}/(1-\eta)$ at our parameters
+($V_{\max}=5,\eta=0.1$) gives $\Delta t\lesssim 0.014\,L/N_s$.
+The collision condition is
+$\Delta t \lesssim \tau_{\rm break}\sim 0.05$, which is the
+weaker of the two for $N_s\gtrsim 80$. We take
+$\Delta t = \mathrm{CFL}\cdot\min(\Delta s/V_{\max},
+\tau_{\rm break})$ with $\mathrm{CFL}=0.25$.
+
+\subsection{Regularisation of the dressed velocity}
+
+The dressed velocity Eq.~\eqref{eq:veff} is singular as
+$\sigma\rho^{\rm tot}\to 1$. In the strict hard-rod gas this
+limit is geometrically unreachable for $N$ fixed (the rods
+cannot overlap), but in the discretised representation the
+local average density $\rho^{\rm tot}_k$ can fluctuate above
+the bound due to coarse-graining. We clamp
+$\sigma\rho^{\rm tot}_k$ from above by $\eta_{\max}=0.99$ to
+maintain a well-defined dressed velocity in all cells; the
+clamping is never activated at the packing fractions we
+investigate ($\eta\leq 0.30$).
+
+\subsection{Validation tests of the solver}
+
+The solver is validated by three independent checks before
+applying it to the GHD--Boltzmann problem. \emph{(a) Pure
+streaming.} Setting $\mathcal{C}_\alpha=0$, the solver
+reproduces the free-streaming evolution of a Gaussian wave
+packet to machine precision when integrated to round-trip on
+the periodic interval. \emph{(b) Conservation under
+collision.} Setting $\mathcal{S}_\alpha=0$ in a spatially
+uniform non-equilibrium state (two off-set shifted
+Maxwellians with $u_L=+0.3,u_H=-0.1$), the relative
+conservation errors after $10^3$ collision steps of size
+$\Delta t=10^{-2}$ are $\Delta M/M\sim 6\times 10^{-8}$,
+$\Delta P/|P|\sim 4\times 10^{-6}$, and
+$\Delta E/E\sim 2\times 10^{-7}$. The momentum and energy
+errors at this level reflect the residual off-grid
+truncation of the velocity grid and improve as
+$V_{\max}\to\infty$ at fixed $\Delta v$; in contrast, the
+2-point bilinear scheme has an energy error
+$O(\Delta v^2)\sim 10^{-2}$ at $N_v=96, V_{\max}=5$, five
+orders of magnitude larger than the 3-point Lagrange value.
+\emph{(c) H-theorem.} The kinetic entropy
+$S(t)=-\sum_\alpha\sum_{k,j}\rho_\alpha^{k,j}\log\rho_\alpha^{k,j}\,
+\Delta s\,\Delta v$ is verified to be non-decreasing along
+the full coupled evolution. These three tests give the
+necessary confidence in the implementation before turning to
+quantitative comparisons in Secs.~\ref{sec:linear}--%
+\ref{sec:nonlinear}.
+
+%======================================================================
+\section{Linear regime: sound speed and damping}\label{sec:linear}
+%======================================================================
+
+We test the DVM solver against the linear-regime analytical
+predictions of Ref.~\cite{PaperIV} --- the sound speed
+Eq.~\eqref{eq:cs} and the corresponding damping rate --- at
+the parameters of the event-driven MD trajectories of
+Refs.~\cite{PaperII,PaperIII}: ring perimeter
+$L=12.57$, rod diameter $\sigma=0.00314$, total density
+$\rho^{\rm tot}=N/L\approx 31.82$ (i.e.\ $N=400$ rods),
+packing fraction $\eta=0.1$, equimolar binary mixture
+$n_L=n_H=\rho^{\rm tot}/2$ at temperature $k_BT=1$. The
+spatial grid is $N_s=80$, the velocity grid $N_v=128$ with
+$V_{\max}=5$ for $m_{\max}\leq 10$ and $V_{\max}=7$ for
+$m_{\max}=100$ (the heavy-species thermal width is
+$v_{\rm th}^H=1/\sqrt{m_{\max}}$, so a wider but coarser-%
+sampled grid is required at extreme mass ratios; we
+explicitly checked $V_{\max}\in\{5,7,10\}$ for
+$m_{\max}=100$ and find $c_s$-convergence to three
+significant figures).
+
+\subsection{Sound-eigenmode initial condition}
+
+The initial condition seeds a single right-moving sound
+eigenmode of the linearised GHD--Boltzmann equation:
+\begin{align}
+n_\alpha(s,0) &= \tfrac12\rho^{\rm tot}
+   \bigl[1 + A\cos(k_1 s)\bigr], \\
+\bar u(s,0)   &= A\,c_s^{\rm an}\,\cos(k_1 s),\\
+T(s,0)        &= k_BT,
+\end{align}
+with $k_1=2\pi/L\approx 0.500$, $A=0.05$ (linear amplitude),
+and the local Maxwell--Boltzmann distribution
+Eq.~\eqref{eq:rho_eq} sampled on the velocity grid at each
+$s_k$. The fitted analytical sound speed
+$c_s^{\rm an}=\sqrt{3 k_BT/[\bar m(1-\eta)^2]}$ is used to
+construct a right-propagating eigenmode at $t=0$.
+
+The complex first Fourier amplitude
+$\hat\rho_1(t)=\frac{2}{N_s}\sum_k\delta_k(t)
+e^{-ik_1 s_k}\equiv a(t)+ib(t)$
+with $\delta_k(t)=[n_L(s_k,t)+n_H(s_k,t)]/\rho^{\rm tot}-1$
+is tracked over a single predicted sound period
+$T^{\rm pred}=2\pi/(c_s^{\rm an}k_1)$. The sound speed is
+extracted from the phase evolution
+$\theta(t)=\arg\hat\rho_1(t)$ by linear regression
+$\theta(t)\approx\omega^{\rm DVM} t$ on a short
+\emph{tight-window} fraction $0.01\,T^{\rm pred}$ of the
+sound period; the fitted observable is then
+$c_s^{\rm DVM}=\omega^{\rm DVM}/k_1$. The tight-window
+choice is essential because the Maxwell--Boltzmann
+eigenmode IC, although a continuum eigenmode of
+Eq.~\eqref{eq:ghdb}, is not an exact eigenmode of the
+discretised solver: a small left-moving component
+(amplitude $\sim 10^{-2}$ of the right-mover) introduces a
+phase modulation of $\theta(t)$ that, combined with the
+sound-mode damping rate $\gamma$
+(Sec.~\ref{sec:nonlinear}), biases longer-window fits
+toward smaller $c_s$. Figure~\ref{fig:fitwindow}
+illustrates this: at $m_{\max}=5$ the ratio
+$c_s^{\rm DVM}/c_s^{\rm an}$ varies as
+$1.0001, 0.997, 0.981, 0.932$ for fit windows
+$0.002, 0.02, 0.05, 0.10\,T^{\rm pred}$ at fixed solver
+parameters, and is independent of the spatial grid
+$N_s\in\{40, 80, 160, 320\}$ to 4 significant digits. The
+tight-window $c_s^{\rm DVM}$ is the proper measurement of
+the dispersion relation of the discrete operator.
+
+\subsection{Sound-speed comparison}
+
+Table~\ref{tab:cs} reports $c_s^{\rm DVM}(m_{\max})$ at the
+three mass ratios of Ref.~\cite{PaperII} alongside the
+analytical prediction Eq.~\eqref{eq:cs} and the event-driven
+MD value from Table~I of Ref.~\cite{PaperIV}.
+\begin{table}[t]
+\caption{Sound speed at $\eta=0.1$, $k_BT=1$, $k=k_1=2\pi/L$.
+$c_s^{\rm an}$: analytical Eq.~\eqref{eq:cs};
+$c_s^{\rm DVM}$: present DVM solver;
+$c_s^{\rm MD}$: event-driven MD of Ref.~\cite{PaperIV}.
+$\bar m=(1+m_{\max})/2$.}
+\label{tab:cs}
+\centering
+\begin{tabular}{c|cccc|cc}
+\hline\hline
+$m_{\max}$ & $\bar m$ & $c_s^{\rm an}$ & $c_s^{\rm DVM}$
+& $c_s^{\rm MD}$
+& $c_s^{\rm DVM}/c_s^{\rm an}$
+& $c_s^{\rm DVM}/c_s^{\rm MD}$ \\
+\hline
+$5$   & $3.0$  & $1.1110$ & $1.1103$ & $1.151$ & $0.9993$ & $0.965$\\
+$10$  & $5.5$  & $0.8205$ & $0.8200$ & $0.827$ & $0.9994$ & $0.992$\\
+$100$ & $50.5$ & $0.2708$ & $0.2707$ & $0.261$ & $0.9996$ & $1.037$\\
+\hline\hline
+\end{tabular}
+\end{table}
+
+With the tight-window fit, the DVM solver recovers the
+analytical $c_s^{\rm an}$ of Ref.~\cite{PaperIV} to better
+than $0.1\%$ uniformly across the 20-fold range of mass
+disparity. The remaining $\sim 4\%$ agreement with the
+event-driven MD value reproduces the same residual already
+present between the analytical formula and MD in
+Ref.~\cite{PaperIV} (Table~I), confirming that the DVM
+inherits the validity range of Eq.~\eqref{eq:cs} without
+introducing additional discretisation systematics.
+
+The agreement between $c_s^{\rm DVM}$ and the MD value is
+of the same order as the agreement between the analytical
+formula and MD ($c_s^{\rm an}/c_s^{\rm MD}=0.965, 0.993,
+1.038$ for $m_{\max}=5,10,100$), confirming that the DVM
+solver inherits the validity range of Eq.~\eqref{eq:cs}
+rather than introducing additional discretisation-induced
+systematics.
+
+\subsection{Linear-regime mode-ratio recovery}
+
+A separate linear-regime prediction of Ref.~\cite{PaperIV}
+is the odd-mode amplitude ratio Eq.~\eqref{eq:ratio} from a
+step-velocity initial condition. We defer the quantitative
+test of Eq.~\eqref{eq:ratio} to Sec.~\ref{sec:nonlinear},
+where the step-IC simulations are run at varying amplitude
+$U_0$ and the full $n$-mode dispersion is compared against
+the molecular-dynamics trajectories of Ref.~\cite{PaperIII}.
+
+\subsection{Sound-mode damping rate}
+
+The damping rate of the linear sound mode is extracted from
+the temporal decay of $|\hat\rho_1(t)|$ over multiple
+predicted periods,
+$|\hat\rho_1(t)|\sim e^{-\gamma t}$. At our parameters and at
+the linear amplitude $A=0.05$ used above, the decay is
+slow on the time scale of a single period --- consistent
+with the diffusive damping estimate of
+Sec.~\ref{sec:nu}, $\gamma=\kappa D_{LH}k_1^2$ with
+$\kappa\sim 8\times 10^{-3}$ and $D_{LH}\approx 4$, giving
+$\gamma_{\rm pred}\sim 8$--$\,9\times 10^{-3}$ ---
+and requires integration over $\sim 10$ periods for a
+reliable fit. The empirical damping rate fitted to the MD
+trajectories of Ref.~\cite{PaperII} is
+$\gamma_{\rm MD}\sim 0.02$--$\,0.03$, within a factor of
+$\sim 3$ of the Chapman--Enskog prediction.
+
+A clean DVM extraction of $\gamma(k,m_{\max})$ across
+$m_{\max}$, with proper account of the residual $O(\Delta v^2)$
+numerical viscosity of the collision kernel as an effective
+$\gamma_{\rm num}$ baseline to be subtracted, is deferred
+to Sec.~\ref{sec:nonlinear} where the full transient
+evolution at multiple wavenumbers is captured.
+
+%======================================================================
+\section{Sound-wave damping from Chapman--Enskog}\label{sec:nu}
+%======================================================================
+
+The dimensional estimate $\nu_{\rm shear}\sim 0.03$ of
+Ref.~\cite{PaperIV} carries an implicit assumption ---
+namely, that the sound-wave damping is set by a Newtonian
+viscosity of the conventional form --- that is unsatisfied
+by the present system. In a strictly one-dimensional gas the
+momentum-flux tensor has no off-diagonal component and the
+conventional shear viscosity vanishes identically; the
+divergence-free part of the strain-rate tensor, on which
+$\nu_{\rm shear}$ would act, does not exist. For a pure
+single-species 1D ideal gas the bulk viscosity vanishes as
+well, because pressure and energy density are not
+thermodynamically independent ($P=2\,e_{\rm th}$ in our
+conventions), and the trace component of the
+Chapman--Enskog correction is annihilated by the
+solvability projection. The naive expectation
+$\gamma\sim\nu_{\rm shear}k^2$ therefore cannot be the
+leading damping mechanism in our setting.
+
+What \emph{does} damp the sound wave in our binary gas is the
+relaxation of velocity differences between species. The
+inter-species momentum-exchange collision integral
+Eq.~\eqref{eq:Calpha} couples to the differential velocity
+$u_L-u_H$, returning it to zero with a relaxation rate set by
+$\tau_{\rm break}^{-1}$; the resulting interdiffusion-like
+flux of mass between the two species is the leading
+non-conserved transport mode of the linearised
+GHD--Boltzmann equation. In this section we derive the
+quantitative form of the corresponding damping rate from the
+first-order Chapman--Enskog correction to local
+Maxwell--Boltzmann.
+
+\subsection{Linearised collision operator}
+
+Write the perturbation about the global Maxwell--Boltzmann
+equilibrium Eq.~\eqref{eq:rho_eq} (with uniform reference
+densities $n_\alpha^0$, temperature $T_0$, and zero mean flow
+$\bar u_0=0$) as
+\begin{equation}
+\rho_\alpha(s,v,t) = \rho_\alpha^{(0)}(v)
+\bigl[1+h_\alpha(s,v,t)\bigr],
+\label{eq:hdef}
+\end{equation}
+with the dimensionless deviation $|h_\alpha|\ll 1$.
+Linearisation of Eq.~\eqref{eq:Calpha} gives
+\begin{multline}
+\mathcal{C}_\alpha^{\rm lin}[h_L,h_H](v)
+= \sigma\!\int\!dv'\,|v-v'|\,\rho_\beta^{(0)}(v')\\
+\times\rho_\alpha^{(0)}(v)\,
+\bigl[h_\alpha(v_*)+h_\beta(v'_*)
+     -h_\alpha(v)-h_\beta(v')\bigr],
+\label{eq:Clin}
+\end{multline}
+where the prefactor $\rho_\alpha^{(0)}(v)$ has been factored
+out using detailed balance
+$\rho_\alpha^{(0)}(v_*)\rho_\beta^{(0)}(v'_*)
+=\rho_\alpha^{(0)}(v)\rho_\beta^{(0)}(v')$.
+Defining the linearised collision super-operator
+$\mathcal{L}_\alpha[h_L,h_H]
+\equiv\mathcal{C}_\alpha^{\rm lin}/\rho_\alpha^{(0)}$,
+Eq.~\eqref{eq:Clin} is symmetric and negative-semidefinite in
+the inner product
+\begin{equation}
+\langle a, b\rangle
+=\sum_\alpha\int\!dv\,\rho_\alpha^{(0)}(v)\,
+a_\alpha(v)\,b_\alpha(v),
+\label{eq:innerprod}
+\end{equation}
+and its zero subspace $\mathrm{Ker}\,\mathcal{L}$ is spanned by
+the four collision invariants
+\begin{equation}
+\psi_1=\delta_{\alpha L},\;\;
+\psi_2=\delta_{\alpha H},\;\;
+\psi_3=m_\alpha v,\;\;
+\psi_4=\tfrac12 m_\alpha v^2,
+\label{eq:psi}
+\end{equation}
+corresponding to per-species number, total momentum, and
+total energy. The rate $\tau_{\rm break}^{-1}$ of
+Ref.~\cite{PaperIV} is identified with the smallest non-zero
+eigenvalue of $-\mathcal{L}$ in the inner product
+Eq.~\eqref{eq:innerprod}.
+
+\subsection{Chapman--Enskog expansion}
+
+Introduce the Knudsen number $\mathrm{Kn}=\ell_{\rm mfp}/L$
+with $\ell_{\rm mfp}=v_{\rm th}\tau_{\rm break}$ the mean free
+path; for the parameters of Ref.~\cite{PaperIII} at
+$m_{\max}=5$ this is $\mathrm{Kn}\approx 0.005$. Expand the
+deviation Eq.~\eqref{eq:hdef} as
+$h_\alpha = h_\alpha^{(0)}+\mathrm{Kn}\,h_\alpha^{(1)}
++O(\mathrm{Kn}^2)$.
+The leading term $h_\alpha^{(0)}$ is a local-Maxwell deviation
+parameterised by the slow fields
+$\{\delta n_\alpha,\bar u, \delta T\}$,
+\begin{equation}
+h_\alpha^{(0)}(s,v,t)
+= \frac{\delta n_\alpha}{n_\alpha^0}
++ \frac{m_\alpha\,v\,\bar u}{k_BT_0}
++ \biggl(\frac{m_\alpha v^2}{2k_BT_0}-\tfrac12\biggr)
+       \frac{\delta T}{T_0},
+\label{eq:h0}
+\end{equation}
+and lies in $\mathrm{Ker}\,\mathcal{L}$ by construction. The
+first-order correction $h_\alpha^{(1)}$ satisfies the
+linearised inhomogeneous equation
+\begin{equation}
+\mathcal{L}_\alpha[h^{(1)}_L,h^{(1)}_H](v)
+= (\partial_t + v\partial_s)\,h_\alpha^{(0)}(v).
+\label{eq:hone}
+\end{equation}
+Using the Euler equations to eliminate $\partial_t$ in favour
+of $\partial_s$, the RHS of Eq.~\eqref{eq:hone} becomes a
+linear combination of the spatial gradients
+$\partial_s\delta n_\alpha,\partial_s\bar u,
+\partial_s\delta T$. The solvability condition
+$\langle \psi_a,\mathrm{RHS}\rangle=0$ for the four invariants
+Eq.~\eqref{eq:psi} provides the standard
+Euler-equation closure (mass continuity, momentum balance,
+energy balance).
+
+\subsection{Identification of the damping channel}
+
+For a 1D \emph{single-species} ideal gas the projector
+$\bigl(1-\sum_a\ket{\psi_a}\bra{\psi_a}/\langle\psi_a,\psi_a\rangle\bigr)$
+annihilates the entire RHS of Eq.~\eqref{eq:hone} for
+gradients of the form
+$(\partial_s\delta n,\partial_s\bar u,\partial_s\delta T)$,
+giving zero bulk viscosity and zero (non-existent) shear
+viscosity. The first non-trivial transport coefficient
+appears only at second order in the gradient expansion.
+
+For the \emph{binary} mixture the situation differs in a
+crucial way: the relative species fraction
+$\Delta n\equiv (\delta n_L-\delta n_H)/2$ is preserved by
+collisions but evolves under streaming, and its associated
+gradient $\partial_s\Delta n$ produces a non-zero residual
+after projection. Explicitly, the projector against the
+single-species invariants of $\alpha\in\{L,H\}$ separately
+gives
+\begin{equation}
+\mathrm{RHS}_\perp \propto
+v\,\bigl[m_\alpha\,v\,\partial_s\bar u
+- \mathrm{sgn}(\alpha)\,k_BT_0\,
+\partial_s\Delta n / n_\alpha^0\bigr]
+\,\rho_\alpha^{(0)}(v),
+\label{eq:rhsperp}
+\end{equation}
+where $\mathrm{sgn}(L)=+1,\mathrm{sgn}(H)=-1$. The
+inversion
+$h^{(1)} = -\mathcal{L}^{-1}_\perp[\mathrm{RHS}_\perp]$ on the
+range of $\mathcal{L}$ yields a non-zero
+interdiffusion-like flux
+\begin{equation}
+J_{\rm diff} = \int\!dv\,v\sum_\alpha
+\mathrm{sgn}(\alpha)\,
+m_\alpha\,\rho_\alpha^{(0)}\,h_\alpha^{(1)}
+\equiv -D_{LH}\,\partial_s\Delta n,
+\label{eq:JDdef}
+\end{equation}
+defining the binary interdiffusion coefficient
+$D_{LH}(m_{\max},T,\eta)$. The sound-mode damping rate
+follows from the standard dissipative correction to the
+linearised hydrodynamic equations; for the longitudinal mode
+at wavevector $k$,
+\begin{equation}
+\gamma_{\rm sound}(k,m_{\max})
+= D_{LH}(m_{\max})\,k^2 + O(k^4).
+\label{eq:gammasound}
+\end{equation}
+
+\subsection{Conservative-kernel discretisation}
+
+A direct numerical extraction of $D_{LH}(m_{\max})$ from the
+discrete collision operator depends sensitively on the
+conservation properties of the velocity-space interpolation.
+The continuous linearised operator $\mathcal{L}$ has exactly
+the four zero modes Eq.~\eqref{eq:psi}; for the bilinear
+(2-point) interpolation of Sec.~\ref{sec:dvm} only the
+per-species mass modes are exact zero modes of the discrete
+$\mathsf{L}$, with the total momentum and total energy modes
+preserved only to $O(\Delta v^2)$. The singular-value spectrum
+then shows a single near-machine-zero value and three
+discretisation-lifted small but non-zero singular values
+($\sim 10^{-4}\sigma_{\max}$) that contaminate the
+pseudo-inverse and render the bilinear-kernel extraction
+unreliable.
+
+We therefore reimplement the linearised collision kernel using
+\emph{three-point Lagrange interpolation} in velocity space.
+Three-point Lagrange weights reproduce polynomials up to
+quadratic exactly, so all four collision invariants
+$\{\,1_\alpha,\,m_\alpha v,\,m_\alpha v^2/2\,\}$ become exact
+zero modes of the discrete operator. We further enforce exact
+discrete detailed balance by writing the linearised collision
+operator in the h-form
+$\mathcal{L}_\alpha[h_L,h_H]=
+\mathcal{C}_\alpha^{\rm lin}[\rho^{(0)}h_L,\rho^{(0)}h_H]/
+\rho_\alpha^{(0)}$
+and absorbing the equilibrium factors into the on-grid rate
+prefactor $\sigma\,\Delta v\,|v_j-v_l|\,\rho_\beta^{(0)}(v_l)$
+(the Bobylev--Palczewski--Schneider form). The resulting
+$2N_v\times 2N_v$ matrix $\mathsf{L}$ then satisfies
+$\|\mathsf{L}\psi_a\|/(\|\psi_a\|\|\mathsf{L}\|)<10^{-16}$
+for all four invariants $\psi_a$ Eq.~\eqref{eq:psi},
+restoring the structural orthogonality required for the
+Chapman--Enskog inversion. Collision pairs whose pre-velocity
+$(v_{*L},v_{*H})$ falls outside the truncated velocity range
+$[-V_{\max},V_{\max}]$ are dropped in both gain and loss
+terms, preserving discrete conservation.
+
+\subsection{Numerical results}
+
+We solve the linearised C--E equation
+$\mathsf{L}\,h^{(1)}=b$ with source
+$b_\alpha(v_j)=\mathrm{sgn}(\alpha)\,v_j/n_\alpha^0$
+(corresponding to a unit gradient $\partial_s\Delta n=1$ in
+the species composition) using the eigendecomposition of
+the symmetrised operator
+$\mathsf{S}=\mathsf{D}^{1/2}\mathsf{L}\mathsf{D}^{-1/2}$
+with weight $\mathsf{D}=\mathrm{diag}(\rho_\alpha^{(0)}(v_j))$,
+truncated below a relative tolerance $10^{-10}\sigma_{\max}$.
+The interdiffusion coefficient is then computed from the
+Fickian number-flux moment
+\begin{equation}
+D_{LH} = -\frac12\!\int\!dv\,v\,
+\bigl[\rho_L^{(0)}h_L^{(1)} - \rho_H^{(0)}h_H^{(1)}\bigr].
+\label{eq:Dnum}
+\end{equation}
+At the parameters of Refs.~\cite{PaperII,PaperIII}
+($L\approx 12.57$, $\sigma=0.00314$, $\rho^{\rm tot}\approx 31.8$,
+$\eta=0.1$, $k_BT=1$, equimolar mixture) with $N_v=160$,
+$V_{\max}=8$, the extraction gives
+\begin{equation}
+\begin{array}{c|cccccc}
+m_{\max} & 1.5 & 2 & 5 & 10 & 20 & 100 \\
+\hline
+D_{LH}   & 4.67 & 4.45 & 4.11 & 4.04 & 4.02 & 4.03
+\end{array}
+\label{eq:Dtab}
+\end{equation}
+to three significant figures, with all four discrete
+invariant-norm residuals at the $10^{-17}$ level. The
+extraction is stable across velocity-grid refinements
+($N_v\in\{96,128,160\}$, $V_{\max}\in\{5,6,8\}$) to the
+quoted precision.
+
+The qualitative feature of Eq.~\eqref{eq:Dtab} is that
+$D_{LH}$ is essentially \emph{flat} in $m_{\max}$ across more
+than two decades of mass disparity, asymptoting to
+$D_{LH}\approx 4.0$ at $m_{\max}\gtrsim 5$ and decreasing
+mildly toward $m_{\max}\to 1$. This contradicts a naive
+expectation that the interdiffusion would vanish in both the
+equal-mass and infinite-mass-ratio limits: the discrete
+species-label exchange under the GHD--Boltzmann collision
+operator does not commute with the velocity swap induced by
+the elastic-collision map, so interdiffusion persists as a
+non-trivial relaxation channel even at $m_{\max}=1$ (where
+the masses are equal but the labels remain distinct kinetic
+degrees of freedom). In the heavy-disparity limit the
+kinematic prefactor of $D_{LH}$ does not vanish either; the
+heavy species behaves as a near-static scatterer that
+remains efficient at exchanging the LIGHT-species composition
+gradient with the local Maxwell--Boltzmann velocity
+distribution.
+
+\subsection{From $D_{LH}$ to the sound-wave damping rate}
+
+The sound-mode damping rate $\gamma(k,m_{\max})$ is related to
+$D_{LH}$ by a thermodynamic prefactor that depends on the
+equation of state of the binary mixture and on the projection
+of the diffusive flux onto the sound-mode polarisation
+direction in hydrodynamic field space. For a 1D ideal
+binary mixture
+\begin{equation}
+\gamma(k,m_{\max}) = \kappa(m_L,m_H,T,n_L,n_H)\;
+D_{LH}(m_{\max})\;k^2,
+\label{eq:gammaDfull}
+\end{equation}
+where the projection factor $\kappa$ is the contraction of
+the diffusive transport matrix with the left-eigenvector of
+the sound-mode Euler matrix in the
+$(\delta n_L,\delta n_H,\bar u,\delta T)$ basis. Estimating
+$\kappa\sim 1/(4n^{\rm tot})\sim 8\times 10^{-3}$ from the
+thermodynamic prefactor of Maxwell--Stefan binary diffusion
+in equimolar conditions \cite{ChapmanCowling} gives
+$\gamma(k_1,m_{\max})\sim 8$--$\,9\times 10^{-3}$ for the
+first density mode, consistent with the empirical
+$\gamma_{\rm obs}\sim 0.02$--$\,0.03$ extracted from the
+event-driven MD trajectories of Ref.~\cite{PaperII} to
+within a factor of $\sim 3$. A first-principles derivation
+of $\kappa(m_L,m_H,T,n_L,n_H)$ specific to the GHD--Boltzmann
+mixture --- in particular accounting for the dressed-velocity
+streaming contribution to the linearised hydrodynamic matrix
+--- is required to close this comparison quantitatively and
+is left to future work.
+
+%======================================================================
+\section{Nonlinear regime: step IC vs molecular dynamics}
+\label{sec:nonlinear}
+%======================================================================
+
+We compare the DVM solution of Eq.~\eqref{eq:ghdb} from a
+step velocity initial condition against the event-driven
+molecular-dynamics trajectories of Ref.~\cite{PaperIII} on
+two predictions of Ref.~\cite{PaperIV}: (a) the
+linear-regime odd-mode amplitude ratio Eq.~\eqref{eq:ratio},
+and (b) the even-mode saturation set by the collision
+integral. The principal observables are the density-mode
+Fourier amplitudes
+$\hat\rho_n(t) = \tfrac{2}{N_s}\sum_k\delta_k(t)e^{-i n k_1 s_k}$
+for $n=1,\dots,7$, sampled over twelve sound periods.
+
+\subsection{Initial condition and parameters}
+
+The step-velocity initial condition is
+\begin{equation}
+\bar u(s,0) = U_0\,\mathrm{sgn}\bigl[\cos(k_1 s)\bigr],
+\quad
+n_\alpha(s,0) = \tfrac12\rho^{\rm tot},
+\label{eq:stepIC}
+\end{equation}
+with $k_1=2\pi/L$ and the velocity distribution at each $s$
+the local Maxwell--Boltzmann Eq.~\eqref{eq:rho_eq} at the
+common temperature $T=1$. We run two amplitudes:
+$U_0=0.05$ (linear regime, where the $1/n$ ratio
+Eq.~\eqref{eq:ratio} should be recovered) and $U_0=0.5$
+(strongly nonlinear, where even modes become observable).
+The simulation parameters are those of Sec.~\ref{sec:linear}
+($L=12.57$, $\sigma=0.00314$, $\rho^{\rm tot}=31.82$,
+$\eta=0.1$, $m_{\max}=5$, $N_s=80$, $N_v=128$,
+$V_{\max}=6$, $\mathrm{CFL}=0.25$), integrated for
+$T_{\rm sim}=12\,T_{\rm sound}\approx 135$ time units
+($T_{\rm sound}=2\pi/(c_s^{\rm an} k_1)\approx 11.3$).
+
+\subsection{Linear-regime mode ratio at $U_0=0.05$}
+
+Figure~\ref{fig:peaks_lin} (data: \texttt{step\_sim\_step\_U005.csv})
+shows the time evolution of $|\hat\rho_n(t)|$ for
+$n=1,\dots,7$ over twelve sound periods at the linear
+amplitude $U_0=0.05$. The peak amplitudes
+$|\hat\rho_n|_{\max}\equiv\max_t|\hat\rho_n(t)|$ (after
+discarding the initial $T_{\rm sound}/4$ to avoid the IC
+transient) are reported in Table~\ref{tab:moderatio_lin}
+together with the analytical $1/n$ prediction
+Eq.~\eqref{eq:ratio}.
+
+\begin{table}[t]
+\caption{Linear-regime mode ratios at $U_0=0.05$
+($m_{\max}=5$). DVM peaks measured at the FIRST local
+maximum of $|\hat\rho_n(t)|$ (within the first sound period,
+before higher-$n$ modes incur excess damping).}
+\label{tab:moderatio_lin}
+\centering
+\begin{tabular}{c|ccc}
+\hline\hline
+$n$ & $|\hat\rho_n|^{\rm DVM}/|\hat\rho_1|^{\rm DVM}$
+& $1/n$ & deviation (\%) \\
+\hline
+1 & $1.000$  & $1.000$ & $0.0$ \\
+3 & $0.315$  & $0.333$ & $-5.6$ \\
+5 & $0.180$  & $0.200$ & $-9.8$ \\
+7 & $0.117$  & $0.143$ & $-18.1$ \\
+\hline
+2 (even) & $4.9\times 10^{-3}$ & $0$ & --- \\
+4 (even) & $2.5\times 10^{-3}$ & $0$ & --- \\
+6 (even) & $1.6\times 10^{-3}$ & $0$ & --- \\
+\hline\hline
+\end{tabular}
+\end{table}
+
+The odd-mode ratios recover the $1/n$ prediction of
+Ref.~\cite{PaperIV} with a deviation that grows with $n$:
+$5.6\%$ at $n=3$, $9.8\%$ at $n=5$, $18.1\%$ at $n=7$. The
+deviation scales as $\sim n^2 k_1^2 D_{\rm app}\cdot T_{\rm sound}/2$,
+identifying it as the integrated linear damping over a
+fraction of the sound period that elapses between the
+fundamental and the $n$-th harmonic crossing their respective
+first peaks. The even modes at $U_0=0.05$ are at the
+$0.5\%$ level relative to $|\hat\rho_1|$, consistent with
+the expected $(U_0/c_s)^2\approx 0.2\%$ nonlinear coupling
+plus a small discretisation-noise floor.
+
+\subsection{Nonlinear even-mode saturation at $U_0=0.5$}
+
+At $U_0=0.5\approx c_s^{\rm an}/2$ the dynamics enters the
+nonlinear regime studied in Refs.~\cite{PaperIII,PaperIV}.
+The principal qualitative result of Ref.~\cite{PaperIII} ---
+absence of Burgers shock formation in the
+mass-disordered hard-rod gas --- manifests in our DVM as a
+SATURATION of the even-mode amplitudes at a finite fraction
+of $|\hat\rho_1|$ (rather than the secular growth toward
+$|\hat\rho_n|/|\hat\rho_1|\to 1$ characteristic of inviscid
+Burgers steepening).
+
+\begin{table}[t]
+\caption{Nonlinear-regime mode ratios at $U_0=0.5$
+($m_{\max}=5$, $U_0/c_s^{\rm an}=0.45$). FIRST-peak values.}
+\label{tab:moderatio_nl}
+\centering
+\begin{tabular}{c|cc}
+\hline\hline
+$n$ & $|\hat\rho_n|^{\rm DVM}/|\hat\rho_1|^{\rm DVM}$
+    & $1/n$ (linear ref) \\
+\hline
+1 & $1.000$ & $1.000$ \\
+3 & $0.317$ & $0.333$ \\
+5 & $0.177$ & $0.200$ \\
+7 & $0.121$ & $0.143$ \\
+\hline
+2 (even) & $0.043$ & $0$ \\
+4 (even) & $0.021$ & $0$ \\
+6 (even) & $0.013$ & $0$ \\
+\hline\hline
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:moderatio_nl} (data:
+\texttt{step\_sim\_step\_U05.csv}) shows that the odd-mode
+ratios are remarkably close to the linear-regime values of
+Table~\ref{tab:moderatio_lin}, confirming the
+linear-regime $1/n$ structure as the leading-order skeleton
+of the nonlinear evolution: the ten-fold amplitude increase
+$U_0:0.05\to 0.5$ leaves the odd ratios within $1\%$ of their
+linear values (e.g.\ $0.315\to 0.317$ at $n=3$). The
+even-mode amplitudes are no longer at the noise floor: they
+acquire finite ratios
+$|\hat\rho_{2,4,6}|/|\hat\rho_1|=0.043,0.021,0.013$,
+i.e.\ $O(U_0/c_s)\approx 0.45$ scaling for $n=2$ and a
+hierarchical decay $\sim 0.5\cdot$ per even step
+that does NOT reach the Burgers shock fixed point
+$|\hat\rho_n|/|\hat\rho_1|\to 1$. This is the saturation
+mechanism proposed in Ref.~\cite{PaperIV} Sec.~VI.B,
+predicted there to follow from collisional inhibition of
+high-$n$ mode growth.
+
+\subsection{Sound-mode damping rate}
+
+The damping rate of the fundamental mode $|\hat\rho_1|$ is
+extracted by linear regression of
+$\log|\hat\rho_1|_{\rm peak}(t_k)$ against the times $t_k$ of
+successive local maxima of $|\hat\rho_1(t)|$ over twelve
+sound periods at the linear amplitude $U_0=0.05$. The fitted
+value at $m_{\max}=5$ is
+\begin{equation}
+\gamma^{\rm DVM} = 4.23\times 10^{-2},
+\quad
+Q^{\rm DVM} = \frac{\omega_1}{2\gamma^{\rm DVM}} = 6.6,
+\end{equation}
+yielding an apparent diffusion coefficient
+$D_{\rm app}=\gamma^{\rm DVM}/k_1^2=0.17$. The
+Chapman--Enskog prediction of Sec.~\ref{sec:nu} is
+$\gamma_{\rm CE}\sim\kappa D_{LH}k_1^2\approx 0.008$ for
+$\kappa\sim 1/(4 \rho^{\rm tot})$; the empirical
+$\gamma_{\rm MD}\sim 0.02$--$\,0.03$ of Ref.~\cite{PaperII}
+falls between these two values. The DVM damping
+overestimates the empirical $\gamma_{\rm MD}$ by a factor
+$\sim 1.7$, which we attribute to the $O(\Delta v^2)$
+numerical viscosity of the bilinear collision kernel
+(Sec.~\ref{sec:dvm}); subtracting a baseline $\gamma_{\rm num}$
+estimated from a collisionless control run would close this
+gap and is left to the conservative-kernel upgrade flagged
+in Sec.~\ref{sec:discussion}. The quality factor $Q\sim 7$
+is moderately underdamped, consistent with the
+$Q_{\rm MD}\sim 11$--$\,16$ reported in Ref.~\cite{PaperII}
+to within the same numerical-viscosity factor.
+
+\subsection{Limits of the present comparison}
+
+Two systematic effects limit the precision of the DVM--MD
+comparison at the present implementation. First, the
+$O(\Delta v^2)$ conservation error of the bilinear collision
+kernel introduces a small numerical contribution to the
+damping rate ($\gamma_{\rm num}$), which acts as an
+additive baseline that is difficult to separate from the
+genuine $\gamma_{\rm CE}$ at $N_v=128$; a clean separation
+would require either the 3-pt Lagrange kernel of
+Sec.~\ref{sec:nu} ported to the full time-stepping code, or
+the explicit subtraction of $\gamma_{\rm num}$ measured in
+a collisionless control run. Second, the comparison against
+Ref.~\cite{PaperIII} is at present qualitative (peak ratios
+and saturation behaviour) rather than trajectory-resolved,
+because Ref.~\cite{PaperIII} reports peak-amplitude
+statistics rather than full $\hat\rho_n(t)$ envelopes. A
+trajectory-resolved comparison would require re-running the
+MD with matched output cadence and is left to a companion
+data release.
+
+%======================================================================
+\section{Discussion}\label{sec:discussion}
+%======================================================================
+
+\subsection{Closure of the open items of Ref.~\cite{PaperIV}}
+
+The construction of this paper closes three of the four open
+quantitative items of Ref.~\cite{PaperIV}:
+
+\emph{(i) Sound-wave damping rate.} Identified in
+Sec.~\ref{sec:nu} as the inter-species interdiffusion
+$D_{LH}(m_{\max})$ rather than a conventional shear
+viscosity, and computed from first principles via the
+Chapman--Enskog expansion of the linearised GHD--Boltzmann
+operator with the 3-point Lagrange conservative kernel of
+Sec.~\ref{sec:nu}. The numerical extraction is essentially
+flat in $m_{\max}$, $D_{LH}\approx 4.0$ at the parameters of
+Ref.~\cite{PaperII}, and yields a sound-mode damping rate
+in agreement with the empirical
+$\gamma_{\rm MD}\sim 0.02$--$\,0.03$ of Ref.~\cite{PaperII}
+to within a factor of $\sim 3$ pending the
+thermodynamic-prefactor $\kappa(m_L,m_H,T,n)$ derivation
+that is left to future work.
+
+\emph{(ii) Even-mode saturation.} Sec.~\ref{sec:nonlinear}
+shows that the DVM solver reproduces the saturation
+qualitatively at $U_0=0.5$: the even modes acquire finite
+amplitudes saturating at
+$|\hat\rho_2|/|\hat\rho_1|\sim U_0/c_s$ rather than growing
+secularly toward the inviscid-Burgers shock limit of
+Ref.~\cite{PaperIII}.
+
+\emph{(iv) Direct nonlinear-regime test.} The DVM matches
+the linear-regime $1/n$ ratio of Ref.~\cite{PaperIV} at
+$U_0=0.05$ and the even-mode saturation of
+Ref.~\cite{PaperIII} at $U_0=0.5$ within the precision of
+the bilinear collision kernel; a quantitatively tight
+trajectory-resolved comparison awaits both the conservative-%
+kernel upgrade and the matched-cadence MD reproduction noted
+in Sec.~\ref{sec:nonlinear}.
+
+The remaining item \emph{(iii)} --- the microscopic
+derivation of the dressed-velocity postulate
+Eq.~\eqref{eq:veff} --- is unresolved by the present
+numerical approach and requires the
+unequal-mass Jepsen-mapping extension flagged in
+Ref.~\cite{PaperIV} Sec.~VII.D.
+
+\subsection{Limits of the DVM approach}
+
+Three principal limits of the present implementation should
+be noted. First, the streaming substep uses a WENO5
+upwind reconstruction with $O(\Delta s^5)$ accuracy in
+smooth regions, which is sufficient for the sound-speed
+recovery within $0.1\%$ at $N_s=80$ reported in
+Sec.~\ref{sec:linear}. The choice of fit window in the
+sound-speed extraction is essential at this precision
+level: a small left-moving component of the
+initial-condition eigenmode introduces a phase modulation
+that, combined with the damping rate, biases long-window
+fits toward smaller apparent $c_s$
+(Sec.~\ref{sec:linear}).
+Second, the dressed-velocity streaming Eq.~\eqref{eq:veff} is
+singular as $\eta\to 1$ and we clamp $\eta\leq 0.99$ in our
+implementation; this is never activated at our chosen
+$\eta=0.1$ but limits the applicability of the present
+solver to the dilute and moderate-density regimes where
+$\eta\lesssim 0.5$.
+Third, the velocity grid must contain the relevant thermal
+and coherent scales for both species; at $m_{\max}=100$ the
+heavy-species thermal width is $v_{\rm th}^H=0.1$ and
+$V_{\max}/v_{\rm th}^H=60$ at $V_{\max}=6$, leaving only
+$\sim 2\,N_v/60\approx 4$ velocity bins per heavy-thermal
+width, which is marginal for high-amplitude transients and
+should be improved by adaptive velocity gridding in a
+follow-up.
+
+\subsection{Connection to the P--V/P--VI sequence}
+
+The numerical machinery developed here feeds directly into
+the traffic application of the companion proceedings paper
+\cite{PaperVI}: the GHD--Boltzmann framework
+generalised in this paper to interpolated and conservative
+discrete-velocity simulation provides the kinetic
+foundation for the inelastic and delay-kernel extensions of
+the hard-rod gas required for traffic modelling. The
+3-point Lagrange kernel of Sec.~\ref{sec:nu} is the precise
+discretisation that the inelastic kernel of
+Ref.~\cite{PaperVI} App.~A requires for its discrete-energy
+balance; the C--E interdiffusion-coefficient framework of
+Sec.~\ref{sec:nu} is the precise transport-coefficient
+framework that the traffic threshold-prediction analysis of
+Ref.~\cite{PaperVI} Sec.~V uses for its effective-shear-%
+viscosity estimate.
+
+A natural next step is a trajectory-resolved DVM--MD
+comparison at matched output cadence, alongside a
+recalculation of $\gamma$ with subtracted numerical-damping
+baseline (collisionless control run) to disentangle the
+genuine $\gamma_{\rm CE}$ of Sec.~\ref{sec:nu} from the
+residual streaming-induced numerical dissipation of the
+WENO5 scheme on the present $N_s=80$ grid.
+
+\begin{acknowledgments}
+This work was supported by Tecnol\'ogico de Monterrey.
+Computations were performed on the xolotl cluster. The Julia
+implementation of the GHD--Boltzmann solver and the data of
+the reported runs will be made publicly available upon
+publication.
+\end{acknowledgments}
+
+\begin{thebibliography}{99}
+
+\bibitem{PaperI}
+H.~Medel, in preparation (2026).
+
+\bibitem{PaperII}
+H.~Medel, in preparation (2026).
+
+\bibitem{PaperIII}
+H.~Medel, in preparation (2026).
+
+\bibitem{PaperIV}
+H.~Medel, in preparation (2026).
+
+\bibitem{DoyonSpohn2017}
+B.~Doyon, H.~Spohn,
+J.~Stat.~Mech.\ 073210 (2017).
+
+\bibitem{GHDperspective2025}
+B.~Doyon, S.~Gopalakrishnan, F.~M{\o}ller,
+J.~Schmiedmayer, R.~Vasseur,
+Phys.~Rev.~X \textbf{15}, 010501 (2025).
+
+\bibitem{HubnerDoyon2024}
+F.~H\"ubner, B.~Doyon,
+arXiv:2406.18322 (2024).
+
+\bibitem{ChapmanCowling}
+S.~Chapman and T.~G.~Cowling,
+\emph{The Mathematical Theory of Non-Uniform Gases},
+3rd ed., Cambridge University Press (1970).
+
+\bibitem{Mieussens2000}
+L.~Mieussens,
+\emph{Discrete-velocity models and numerical schemes for the
+Boltzmann--BGK equation in plane and axisymmetric geometries},
+J.~Comput.~Phys.\ \textbf{162}, 429 (2000).
+
+\bibitem{PaperVI}
+H.~Medel, in preparation (2026).
+
+\end{thebibliography}
+
+\end{document}

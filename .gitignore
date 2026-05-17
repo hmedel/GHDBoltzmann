@@ -1,0 +1,35 @@
+# OS noise
+.DS_Store
+*.swp
+*~
+
+# LaTeX intermediates
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+texput.log
+
+# Julia
+*.cov
+deps/deps.jl
+deps/build.log
+deps/downloads/
+deps/usr/
+deps/src/
+Manifest.toml
+
+# Editor
+.vscode/
+.idea/
+
+# Large generated data (track scripts, not outputs)
+*.csv
+
+# Sim logs (track scripts, not run output)
+GHDBoltzmann/*.log
