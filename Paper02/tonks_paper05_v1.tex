@@ -172,8 +172,7 @@ our knowledge this is the first first-principles
 quantification of this crossover in the hard-rod system at
 the level of the linearised binary kinetic operator.
 
-The remaining sections (Secs.~\ref{sec:recap}--%
-\ref{sec:nu}--\ref{sec:dispersion}--\ref{sec:nonlinear})
+The remaining sections (Secs.~\ref{sec:recap}--\ref{sec:nonlinear})
 develop the framework that underlies
 Eq.~\eqref{eq:lambdaT-main} and resolve in addition the
 sound-mode damping puzzle of Refs.~\cite{PaperII,PaperIV}:
@@ -197,6 +196,9 @@ Section~\ref{sec:dvm} describes the discrete-velocity numerical
 method, with a 3-point Lagrange conservative collision kernel
 that preserves the four collision invariants of the linearised
 operator to machine precision.
+Section~\ref{sec:linear} validates the DVM solver against
+the linear-regime sound-wave data of
+Refs.~\cite{PaperII,PaperIV}.
 Section~\ref{sec:nu} sets up the first-order Chapman--Enskog
 expansion and extracts the two Onsager-diagonal transport
 coefficients $D_{LH}$ (binary interdiffusion) and $\lambda_T$
@@ -211,10 +213,6 @@ $\mathsf{M}(k)=k\mathsf{A}+i\mathsf{L}$ and identifies the
 experimental wavenumber regime ($\mathrm{Kn}\approx 3.5$)
 as kinetic rather than hydrodynamic, resolving the
 sound-mode damping puzzle of Refs.~\cite{PaperII,PaperIV}.
-Section~\ref{sec:linear} validates the DVM solver against
-the linear-regime sound-wave data of
-Refs.~\cite{PaperII,PaperIV} with the kinetic-regime
-interpretation in place.
 Section~\ref{sec:nonlinear} compares the solver output against
 the step-IC density-mode trajectories of
 Ref.~\cite{PaperIII}.
@@ -262,7 +260,7 @@ binary mass disorder enters entirely through the collision
 integral $\mathcal{C}_\alpha$ described below. In the
 single-species (equal-mass) limit the mass disorder is
 absent and the model reduces to the standard integrable
-GHD hard-rod gas. Equation Eq.~\eqref{eq:veff} is the
+GHD hard-rod gas. Equation~\eqref{eq:veff} is the
 central postulate of Ref.~\cite{PaperIV} and is taken here
 as input; a microscopic Jepsen-mapping derivation for
 unequal masses is left for future work
@@ -282,8 +280,8 @@ one-dimensional hard-rod gas is
 with $\beta\neq\alpha$ and $(v_*,v'_*)$ the pre-collision pair
 that yields $(v,v')$ after the elastic update
 \begin{equation}
-v' = \frac{m_\alpha - m_\beta}{m_\alpha + m_\beta}\,v
-   + \frac{2 m_\beta}{m_\alpha + m_\beta}\,v_\beta,
+v'_{\rm post} = \frac{m_\alpha - m_\beta}{m_\alpha + m_\beta}\,v
+   + \frac{2 m_\beta}{m_\alpha + m_\beta}\,v',
 \quad\text{etc.}
 \label{eq:elcoll}
 \end{equation}
@@ -370,7 +368,8 @@ collision rate $\tau_{\rm break}^{-1}$.
 \subsection{Phase-space grid}
 
 We discretise the species-resolved distribution
-$\rho_\alpha(s,v,t)$ on a uniform tensor-product grid:
+$\rho_\alpha(s,v,t)$ on a uniform tensor-product grid
+\cite{Mieussens2000}:
 $N_s$ cells in arc length $s_k = (k-1/2)\,L/N_s$ for
 $k=1,\dots,N_s$, and $N_v$ velocity bins
 $v_j = -V_{\max} + (j-1/2)\,\Delta v$ for $j=1,\dots,N_v$ with
@@ -502,8 +501,8 @@ condition is the standard
 which for $V^{\rm eff}\sim V_{\max}/(1-\eta)$ at our parameters
 ($V_{\max}=5,\eta=0.1$) gives $\Delta t\lesssim 0.014\,L/N_s$.
 The collision condition is
-$\Delta t \lesssim \tau_{\rm break}\sim 0.05$, which is the
-weaker of the two for $N_s\gtrsim 80$. We take
+$\Delta t \lesssim \tau_{\rm break}\sim 9$, which is the
+weaker of the two for all $N_s$ of interest. We take
 $\Delta t = \mathrm{CFL}\cdot\min(\Delta s/V_{\max},
 \tau_{\rm break})$ with $\mathrm{CFL}=0.25$.
 
@@ -647,7 +646,7 @@ Table~\ref{tab:cs} reports $c_s^{\rm DVM}(m_{\max})$ at the
 three mass ratios of Ref.~\cite{PaperII} alongside the
 analytical prediction Eq.~\eqref{eq:cs} and the event-driven
 MD value from Table~I of Ref.~\cite{PaperIV}.
-\begin{table}[t]
+\begin{table}[htbp]
 \caption{Sound speed at $\eta=0.1$, $k_BT=1$, $k=k_1=2\pi/L$.
 $c_s^{\rm an}$: analytical Eq.~\eqref{eq:cs};
 $c_s^{\rm DVM}$: present DVM solver;
@@ -888,7 +887,8 @@ orthogonality of $b^{(T)}$ to the total-momentum invariant
 $\psi_3=m_\alpha v$ in the $\rho^{(0)}$-weighted inner
 product Eq.~\eqref{eq:innerprod}; for a single-species gas
 ($m_\alpha\equiv \bar m$) this reduces to $C=3/2$, the 1D
-analogue of the 5/2 Eucken constant of 3D kinetic theory.
+analogue of the 5/2 Eucken constant of 3D kinetic theory
+\cite{ChapmanCowling}.
 The corresponding heat flux is
 \begin{equation}
 q = \!\int\!dv\,v
@@ -993,7 +993,7 @@ mildly toward $m_{\max}\to 1$. The structural origin of this
 flatness is made transparent by the per-species kinetic flux
 decomposition $j_\alpha=\int dv\,v\rho_\alpha^{(0)}h_\alpha^{(1)}$
 of the C--E solution, summarised in Table~\ref{tab:jLjH}.
-\begin{table}[t]
+\begin{table}[htbp]
 \caption{Per-species kinetic fluxes from the C--E solution for
 unit composition gradient $\partial_s\Delta n=1$, equimolar
 mixture at $\eta=0.1$, $kT=1$. The ratio $j_H/j_L$ verifies
@@ -1149,7 +1149,7 @@ the kinetic-theory framework of the linearised binary
 GHD--Boltzmann operator. Figure~\ref{fig:lambdaT-crossover}
 displays the data and the power-law fit.
 
-\begin{figure}[t]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig_lambdaT_crossover.pdf}
 \caption{Integrability-to-diffusion crossover in the
@@ -1202,7 +1202,7 @@ mass disorder of Ref.~\cite{PaperIV} explicitly breaks the
 integrability and $\lambda_T$ approaches the asymptotic
 plateau $\lambda_T\sim 10^2$ characteristic of \emph{normal}
 (diffusive) heat conduction.
-Equation~\eqref{eq:lambdaT}--\eqref{eq:lambdaT_scaling} is,
+Equations~\eqref{eq:lambdaT}--\eqref{eq:lambdaT_scaling} are,
 to our knowledge, the first first-principles
 quantification of the integrability-to-diffusion crossover
 in the mass-disordered hard-rod gas, and provides the
@@ -1222,7 +1222,8 @@ limit is addressed in Sec.~\ref{sec:dispersion} below.
 
 The unperturbed single-species hard-rod gas
 ($m_{\max}=1$) is the prototype integrable model of the
-generalised hydrodynamics (GHD) program: the rapidities
+generalised hydrodynamics (GHD) program
+\cite{DoyonSpohn2017,GHDperspective2025}: the rapidities
 of its quasiparticle description are the bare particle
 velocities $v$, and the dressed velocity Eq.~\eqref{eq:veff}
 is the geometric scattering shift derived for this system
@@ -1237,7 +1238,7 @@ $\langle J_E(t)J_E(0)\rangle$ decays slowly (algebraically),
 implying a divergence of $\lambda_T$ with system size
 $L$ at a rate set by anomalous-transport (nonlinear
 fluctuating hydrodynamic) exponents
-\cite{Spohn2014,MendlSpohn2013}. For the hard-rod gas the
+\cite{Spohn2014,MendlSpohn2013,HubnerDoyon2024}. For the hard-rod gas the
 corresponding scaling is
 \begin{equation}
 \lambda_T^{(L)}(m_{\max}=1)\;\sim\; L^{\beta},
@@ -1300,7 +1301,9 @@ rate $\sim \lambda_T/(\rho c_p)\cdot k^2$ with
 $\lambda_T/(\rho c_p)\sim 10^{2}$), as may be verified
 explicitly: at $m_{\max}=5$, $k=0.05$ we recover
 $\kappa_{\rm eff}=3.98$, matching $D_{LH}=4.11$ rather than
-$\kappa_{T}=2\lambda_T/(3 n_{\rm tot}T)\approx 8$. We further attempted a direct Green--Kubo computation of
+$\kappa_{T}=2\lambda_T/(3 n_{\rm tot}T)\approx 8$.
+
+We further attempted a direct Green--Kubo computation of
 the wavenumber-resolved transport coefficient,
 \begin{equation}
 \lambda_T(k) =
@@ -1471,13 +1474,14 @@ problem (Table~\ref{tab:omega-k}) shows that
 $\mathrm{Im}(\omega_{\rm sound})$ does not follow the
 $-\gamma_{\rm CE}k^2$ scaling but instead saturates at a
 value of order the inverse collision time
-$\tau_{\rm break}^{-1}\approx 0.1$ for all $k\gtrsim 0.05$.
+$\tau_{\rm break}^{-1}\approx 0.1$ for all $k\gtrsim 0.05$
+(Fig.~\ref{fig:omega-k}).
 The saturation regime is the \emph{kinetic} (collisional)
 regime where the sound-mode lifetime is set directly by the
 inter-species collision rate, not by a transport
 coefficient.
 
-\begin{table}[t]
+\begin{table}[htbp]
 \caption{Dispersion-relation wavenumber sweep at $m_{\max}=5$.
 $c_s(k)\equiv\mathrm{Re}\,\omega_{\rm sound}/k$,
 $\gamma_{\rm eff}(k)\equiv-\mathrm{Im}\,\omega_{\rm sound}/k^2$.
@@ -1503,7 +1507,7 @@ $1.00$ & $+0.5341$ & $-0.0214$  & $0.534$ & $0.021$ \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[t]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=0.49\columnwidth]{figures/fig_omega_k_Im.pdf}\hfill
 \includegraphics[width=0.49\columnwidth]{figures/fig_omega_k_gamma.pdf}
@@ -1644,7 +1648,7 @@ damping) are reported in Table~\ref{tab:moderatio_lin}
 together with the analytical $1/n$ prediction
 Eq.~\eqref{eq:ratio}.
 
-\begin{figure}[t]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig_mode_trajectories.pdf}
 \caption{Density-mode trajectories $|\hat\rho_n(t)|$ for
@@ -1659,7 +1663,7 @@ discussed in Sec.~\ref{sec:dispersion}.}
 \label{fig:mode-trajectories}
 \end{figure}
 
-\begin{table}[t]
+\begin{table}[htbp]
 \caption{Linear-regime mode ratios at $U_0=0.05$
 ($m_{\max}=5$). DVM peaks measured at the FIRST local
 maximum of $|\hat\rho_n(t)|$ (within the first sound period,
@@ -1707,7 +1711,7 @@ of $|\hat\rho_1|$ (rather than the secular growth toward
 $|\hat\rho_n|/|\hat\rho_1|\to 1$ characteristic of inviscid
 Burgers steepening).
 
-\begin{table}[t]
+\begin{table}[htbp]
 \caption{Nonlinear-regime mode ratios at $U_0=0.5$
 ($m_{\max}=5$, $U_0/c_s^{\rm an}=0.45$). FIRST-peak values.}
 \label{tab:moderatio_nl}
@@ -1749,7 +1753,7 @@ predicted there to follow from collisional inhibition of
 high-$n$ mode growth. Figure~\ref{fig:mode-ratios} compares
 the linear and nonlinear first-peak amplitude ratios.
 
-\begin{figure}[t]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig_mode_ratios.pdf}
 \caption{First-peak amplitude ratios
@@ -1858,9 +1862,9 @@ near the integrable single-species limit, signalling the
 anomalous heat conduction of the 1D hard-rod gas at
 $m_{\max}=1$, and approaches a finite plateau
 $\lambda_T\sim 10^2$ at large mass disparity that is
-characteristic of normal Fourier-law diffusion. To our
-knowledge this is the first first-principles quantification
-of this crossover in the hard-rod system, and provides the
+characteristic of normal Fourier-law diffusion. This
+quantification of the crossover (Sec.~\ref{sec:crossover})
+provides the
 quantitative kinetic underpinning for the
 $m_{\max}$-dependent sound-coherence quality factor
 reported empirically in Ref.~\cite{PaperII}.
@@ -1954,7 +1958,7 @@ dispersion-relation diagonalisations were performed on
 Tecnol\'ogico's xolotl cluster (Intel Xeon, $\sim 10^3$
 core-hours total). The Julia implementation of the
 GHD--Boltzmann solver and the simulation data are
-available at \texttt{github.com/hmedel/GHDBoltzmann}.
+available at \url{https://github.com/hmedel/GHDBoltzmann}.
 \end{acknowledgments}
 
 \begin{thebibliography}{99}
