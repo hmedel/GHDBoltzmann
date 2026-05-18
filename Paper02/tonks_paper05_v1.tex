@@ -1300,14 +1300,39 @@ rate $\sim \lambda_T/(\rho c_p)\cdot k^2$ with
 $\lambda_T/(\rho c_p)\sim 10^{2}$), as may be verified
 explicitly: at $m_{\max}=5$, $k=0.05$ we recover
 $\kappa_{\rm eff}=3.98$, matching $D_{LH}=4.11$ rather than
-$\kappa_{T}=2\lambda_T/(3 n_{\rm tot}T)\approx 8$. A clean
-verification of the hyperscaling prediction
+$\kappa_{T}=2\lambda_T/(3 n_{\rm tot}T)\approx 8$. We further attempted a direct Green--Kubo computation of
+the wavenumber-resolved transport coefficient,
+\begin{equation}
+\lambda_T(k) =
+\frac{1}{T^{2}}\,\mathrm{Im}\,
+\langle J_E, \mathsf{M}(k)^{-1} J_E\rangle_{\rho^{(0)}},
+\label{eq:GK}
+\end{equation}
+which projects directly onto the heat-current operator
+$J_E^{(\alpha)}(v)=v(m_\alpha v^2/2 - 3T/2)$ rather than
+selecting a mode by spectral filtering. At $k=0$ this
+formula recovers the Chapman--Enskog $\lambda_T$ to all
+digits ($\lambda_T^{\rm GK}(0)=1845, 428, 291$ for
+$m_{\max}=2, 5, 10$ vs the Sec.~\ref{sec:nu} values,
+identical), providing an independent algebraic
+verification of the C--E result. At finite $k$, however,
+Eq.~\eqref{eq:GK} returns numerically vanishing values
+across all $k\in[0.025, 1.0]$, $m_{\max}\in[1.1, 10]$ probed
+here. The vanishing has a parity origin: $J_E$ is odd
+in $v$, $\mathsf{L}$ is even, $\mathsf{A}$ (streaming) is
+odd, and $\mathsf{M}(k)=k\mathsf{A}+i\mathsf{L}$ mixes
+parities such that the bilinear
+$\langle J_E,\mathsf{M}(k)^{-1}J_E\rangle$ has no
+$k$-dependent imaginary part to leading order in
+$k$. The Green--Kubo formula Eq.~\eqref{eq:GK} therefore
+does not extend naively to finite $k$ in our binary
+kinetic setup; a clean verification of the hyperscaling
 Eq.~\eqref{eq:hyperscaling}--%
-\eqref{eq:hyperscaling-relation} therefore requires
-Green--Kubo simulations of the equilibrium heat-current
-autocorrelator $\langle J_E(t)J_E(0)\rangle$ at multiple
-ring lengths $L$, where the heat mode is selected by its
-$J_E$ projection rather than by spectral isolation. This
+\eqref{eq:hyperscaling-relation} requires the full
+real-time autocorrelator
+$\langle J_E(t)J_E(0)\rangle$ measured from equilibrium
+DVM (or MD) trajectories at multiple ring lengths $L$,
+where the kinetic regime crossover appears naturally. This
 direct test is left to future work.
 
 A further conceptual point. Our Chapman--Enskog
