@@ -1280,17 +1280,35 @@ hyperscaling relation
 predicting a crossover scale $L^*\sim(m_{\max}-1)^{-1/\zeta}$
 between ballistic and diffusive transport. With our
 $\alpha\approx 1.5$ and the anomalous-transport
-$\beta\approx 1/3$ this gives
-$\zeta\approx 0.22$, and a crossover ring size at
-$m_{\max}=5$ of
-$L^*\sim 4^{-1/0.22}\approx 0.005$ in natural units, much
-smaller than any reasonable system size. The expected
-crossover therefore sits at $m_{\max}$ values much closer
-to unity than we probe here; a direct numerical
-verification of Eq.~\eqref{eq:hyperscaling} via
-combined $L$- and $m_{\max}$-sweeps would test the
-hyperscaling prediction Eq.~\eqref{eq:hyperscaling-relation}
-and is left to future work.
+$\beta\approx 1/3$ this gives $\zeta\approx 0.22$. We
+attempted a direct numerical test of the scaling form
+Eq.~\eqref{eq:hyperscaling} via a sweep of the heat-mode
+eigenvalue of the linearised operator $\mathsf{M}(k)$ on a
+$(k, m_{\max})$ grid with $k\in[0.05,1.0]$ and
+$m_{\max}\in[1.1,20]$. The resulting effective heat
+diffusivity $\kappa_{\rm eff}(k,m)=-\mathrm{Im}\,\omega_{\rm
+heat}/k^{2}$ does \emph{not} exhibit a clean collapse under
+the rescaling: the within-bin standard deviation of
+$\log_{10}(\kappa_{\rm eff}\,k^{\beta})$ at fixed
+$(m_{\max}-1)\,k^{-\zeta}$ is $\sim 0.5$--$0.7$ dex, of
+order the total spread itself. The obstruction is mode
+identification: the smallest-$|\mathrm{Im}|$
+non-propagating eigenvalue at finite $k$ in our binary
+system is the composition mode (decay rate $\sim D_{LH}k^2$
+with $D_{LH}\approx 4$) rather than the heat mode (decay
+rate $\sim \lambda_T/(\rho c_p)\cdot k^2$ with
+$\lambda_T/(\rho c_p)\sim 10^{2}$), as may be verified
+explicitly: at $m_{\max}=5$, $k=0.05$ we recover
+$\kappa_{\rm eff}=3.98$, matching $D_{LH}=4.11$ rather than
+$\kappa_{T}=2\lambda_T/(3 n_{\rm tot}T)\approx 8$. A clean
+verification of the hyperscaling prediction
+Eq.~\eqref{eq:hyperscaling}--%
+\eqref{eq:hyperscaling-relation} therefore requires
+Green--Kubo simulations of the equilibrium heat-current
+autocorrelator $\langle J_E(t)J_E(0)\rangle$ at multiple
+ring lengths $L$, where the heat mode is selected by its
+$J_E$ projection rather than by spectral isolation. This
+direct test is left to future work.
 
 A further conceptual point. Our Chapman--Enskog
 computation is performed in the linearised binary kinetic
