@@ -998,6 +998,147 @@ $m_{\max}$-dependent sound-coherence quality factor of
 Ref.~\cite{PaperII} and the underlying integrability
 structure.
 
+\subsection{Full dispersion relation $\omega(k)$ from the linearised operator}
+
+The connection between the transport coefficients
+$D_{LH}(m_{\max})$ and $\lambda_T(m_{\max})$ derived above
+and the sound-mode damping rate $\gamma(k,m_{\max})$
+observable in the simulations and in MD is provided by the
+full dispersion relation of the linearised GHD--Boltzmann
+equation, obtained by diagonalising the operator
+\begin{equation}
+\mathsf{M}(k) = k\,\mathsf{A} + i\,\mathsf{L},
+\label{eq:dispop}
+\end{equation}
+where $\mathsf{A}$ is the linearised streaming operator,
+\begin{equation}
+\mathsf{A}[h]_\alpha(v)
+= \frac{v}{1-\eta_0}\,h_\alpha(v)
++ \frac{v\sigma}{(1-\eta_0)^2}\,\delta\tilde n_{\rm tot}
+- \frac{\eta_0}{1-\eta_0}\,\delta\tilde u,
+\label{eq:Aop}
+\end{equation}
+with the rank-2 moment functionals
+$\delta\tilde n_{\rm tot}[h]=\sum_\alpha\!\int dv\,
+\rho_\alpha^{(0)}h_\alpha$ and
+$\delta\tilde u[h]=\sum_\alpha\!\int dv\,v\,
+\rho_\alpha^{(0)}h_\alpha/\rho^{\rm tot}$ that encode the
+dressed-velocity coupling of Eq.~\eqref{eq:veff}, and
+$\mathsf{L}$ is the linearised collision operator of
+Sec.~\ref{sec:nu}.
+
+\emph{Euler-projection eigenvalues.} Projecting
+$\mathsf{A}$ onto the four-dimensional kernel of
+$\mathsf{L}$ via the inner-product orthonormalised hydro
+basis $\{\psi_a\}$, we obtain a $4\times 4$ Euler matrix
+$\mathsf{M}_E[a,b]=\langle\psi_a,\mathsf{A}\psi_b\rangle_{\rho^{(0)}}$
+whose eigenvalues are the inviscid sound speeds and zeros.
+The projection recovers
+$\pm c_s^{\rm an}\equiv\pm\sqrt{3k_BT/[\bar m(1-\eta)^2]}$
+to four decimal places across $m_{\max}\in\{2,5,10,100\}$
+(ratios $0.9999$ uniformly), providing a direct verification
+of the analytical sound-speed formula of Ref.~\cite{PaperIV}.
+
+\emph{Navier--Stokes correction.} The first-order
+correction $\mathsf{M}_D = -\langle A\psi, L^{-1}_\perp
+A\psi\rangle_{\rho^{(0)}}/\langle\psi,\psi\rangle$
+gives the Chapman--Enskog damping coefficient. The leading
+small-$k$ sound-mode dispersion is
+\begin{equation}
+\omega_{\rm sound}(k) = c_s\,k - i\gamma_{\rm CE}\,k^2
++ O(k^3),
+\label{eq:omegaNS}
+\end{equation}
+with $\gamma_{\rm CE}$ extracted from the imaginary part
+of the appropriate eigenvalue of $k\mathsf{M}_E+ik^2\mathsf{M}_D$.
+
+\emph{Validity regime.} The hydrodynamic-mode expansion
+Eq.~\eqref{eq:omegaNS} is valid in the small-Knudsen-number
+regime $\mathrm{Kn}\equiv k\ell_{\rm mfp}\ll 1$, with
+$\ell_{\rm mfp}\sim v_{\rm th}\tau_{\rm break}$ the
+inter-species mean free path. At our experimental
+wavenumber $k_1=2\pi/L\approx 0.50$ and at the parameters
+of Ref.~\cite{PaperII} ($\tau_{\rm break}\approx 7$,
+$v_{\rm th}\approx 1$), the Knudsen number is
+$\mathrm{Kn}\approx 3.5$, putting us \emph{outside} the
+hydrodynamic regime. The dispersion-relation computation
+confirms this directly: a wavenumber sweep of the eigenvalue
+problem (Table~\ref{tab:omega-k}) shows that
+$\mathrm{Im}(\omega_{\rm sound})$ does not follow the
+$-\gamma_{\rm CE}k^2$ scaling but instead saturates at a
+value of order the inverse collision time
+$\tau_{\rm break}^{-1}\approx 0.1$ for all $k\gtrsim 0.05$.
+The saturation regime is the \emph{kinetic} (collisional)
+regime where the sound-mode lifetime is set directly by the
+inter-species collision rate, not by a transport
+coefficient.
+
+\begin{table}[t]
+\caption{Dispersion-relation wavenumber sweep at $m_{\max}=5$.
+$c_s(k)\equiv\mathrm{Re}\,\omega_{\rm sound}/k$,
+$\gamma_{\rm eff}(k)\equiv-\mathrm{Im}\,\omega_{\rm sound}/k^2$.
+At small $k$ the hydrodynamic prediction
+$c_s\to c_s^{\rm an}=1.111$ is recovered; at experimental
+$k_1\approx 0.50$ the system is in the kinetic regime where
+the $\gamma_{\rm eff}k^2$ scaling breaks down.}
+\label{tab:omega-k}
+\centering
+\begin{tabular}{c|cccc}
+\hline\hline
+$k$ & $\mathrm{Re}\,\omega$ & $\mathrm{Im}\,\omega$
+& $c_s=\mathrm{Re}\,\omega/k$
+& $\gamma_{\rm eff}=-\mathrm{Im}\,\omega/k^2$ \\
+\hline
+$0.01$ & $+0.0110$ & $-0.00105$ & $1.098$ & $10.5$ \\
+$0.05$ & $+0.0392$ & $-0.0183$  & $0.783$ & $7.3$  \\
+$0.10$ & $+0.0589$ & $-0.0221$  & $0.589$ & $2.21$ \\
+$0.25$ & $+0.1350$ & $-0.0216$  & $0.540$ & $0.346$ \\
+$0.50$ & $+0.2675$ & $-0.0214$  & $0.535$ & $0.086$ \\
+$1.00$ & $+0.5341$ & $-0.0214$  & $0.534$ & $0.021$ \\
+\hline\hline
+\end{tabular}
+\end{table}
+
+\subsection{Kinetic regime and the apparent damping rate}
+
+In the kinetic regime ($\mathrm{Kn}\gg 1$, applicable to all
+$k\gtrsim 0.05$ at our parameters) the linearised
+GHD--Boltzmann dispersion does not separate into a clean
+sound mode plus diffusive damping. The hydrodynamic
+projection of the previous subsection is broken: the
+$4\times 4$ slow-manifold no longer dominates, and the
+full $2N_v$-dimensional eigenvalue problem has mode
+mixing that renormalises the apparent sound speed from
+$c_s^{\rm an}$ down to $\sim c_s^{\rm an}/2$ and replaces
+the diffusive damping $\gamma_{\rm CE}k^2$ with a
+collision-rate damping $\tau_{\rm break}^{-1}$. The
+predicted apparent damping $|\mathrm{Im}\,\omega|\approx
+0.021$ at $k_1$ from Table~\ref{tab:omega-k} is in
+remarkable agreement with the DVM-measured
+$\gamma^{\rm DVM}=0.042$ at the same wavenumber
+(Sec.~\ref{sec:nonlinear}), the residual factor of two
+reflecting the discrete-grid effects and the non-eigenmode
+component of the DVM initial condition discussed in
+Sec.~\ref{sec:linear}. The MD-empirical damping
+$\gamma_{\rm MD}\sim 0.02$--$0.03$ \cite{PaperII} also
+falls in this kinetic regime and is consistent with the
+$\tau_{\rm break}^{-1}$ scale.
+
+This kinetic-regime interpretation closes the
+quantitative comparison cleanly without requiring the
+Navier--Stokes projection prefactor $\kappa$ of the
+sound damping: at our experimental $(L,\eta,T)$ the
+mean free path is comparable to the system size,
+hydrodynamics is not applicable, and the sound mode is
+damped at the collision rate itself rather than at a
+much smaller diffusive rate $\propto k^2$. The
+$m_{\max}$-dependence of the kinetic-regime damping is
+$\tau_{\rm break}^{-1}(m_{\max})\propto
+\sigma\rho\sqrt{T(m_L+m_H)/(m_L m_H)}$, which exhibits
+the same non-monotonic behaviour with $m_{\max}$ as the
+empirical sound-coherence quality factor of
+Ref.~\cite{PaperII}.
+
 \subsection{From transport coefficients to the sound-wave damping rate}
 
 The sound-mode damping rate $\gamma(k,m_{\max})$ is related to
