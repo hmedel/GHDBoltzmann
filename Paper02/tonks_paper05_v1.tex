@@ -864,20 +864,59 @@ The qualitative feature of Eq.~\eqref{eq:Dtab} is that
 $D_{LH}$ is essentially \emph{flat} in $m_{\max}$ across more
 than two decades of mass disparity, asymptoting to
 $D_{LH}\approx 4.0$ at $m_{\max}\gtrsim 5$ and decreasing
-mildly toward $m_{\max}\to 1$. This contradicts a naive
-expectation that the interdiffusion would vanish in both the
-equal-mass and infinite-mass-ratio limits: the discrete
-species-label exchange under the GHD--Boltzmann collision
-operator does not commute with the velocity swap induced by
-the elastic-collision map, so interdiffusion persists as a
-non-trivial relaxation channel even at $m_{\max}=1$ (where
-the masses are equal but the labels remain distinct kinetic
-degrees of freedom). In the heavy-disparity limit the
-kinematic prefactor of $D_{LH}$ does not vanish either; the
-heavy species behaves as a near-static scatterer that
-remains efficient at exchanging the LIGHT-species composition
-gradient with the local Maxwell--Boltzmann velocity
-distribution.
+mildly toward $m_{\max}\to 1$. The structural origin of this
+flatness is made transparent by the per-species kinetic flux
+decomposition $j_\alpha=\int dv\,v\rho_\alpha^{(0)}h_\alpha^{(1)}$
+of the C--E solution, summarised in Table~\ref{tab:jLjH}.
+\begin{table}[t]
+\caption{Per-species kinetic fluxes from the C--E solution for
+unit composition gradient $\partial_s\Delta n=1$, equimolar
+mixture at $\eta=0.1$, $kT=1$. The ratio $j_H/j_L$ verifies
+the total-momentum-zero-mode constraint
+$m_L j_L+m_H j_H=0$ to numerical precision.}
+\label{tab:jLjH}
+\centering
+\begin{tabular}{c|ccccc}
+\hline\hline
+$m_{\max}$ & $j_L$ & $j_H$ & $j_H/j_L$ & $-m_L/m_H$ & $D_{LH}$ \\
+\hline
+$2$   & $-5.94$ & $+2.97$  & $-0.500$ & $-0.500$ & $4.45$ \\
+$5$   & $-6.86$ & $+1.37$  & $-0.200$ & $-0.200$ & $4.11$ \\
+$10$  & $-7.36$ & $+0.74$  & $-0.100$ & $-0.100$ & $4.05$ \\
+$100$ & $-7.88$ & $+0.079$ & $-0.010$ & $-0.010$ & $3.98$ \\
+\hline\hline
+\end{tabular}
+\end{table}
+Two complementary kinetic limits are visible. \emph{(a)
+Heavy-disparity}: $j_H\to 0$ as $m_{\max}\to\infty$ and
+$D_{LH}\to (D_L+D_H)/2\to D_L/2\approx 4.0$, with $D_L$
+approaching the single-species self-diffusivity of the light
+gas in the static-scatterer background of the heavy species.
+\emph{(b) Light-disparity ($m_{\max}\to 1$)}: the
+$j_H/j_L=-m_L/m_H\to -1$ constraint enforces near-equal
+magnitudes and the $D_{LH}$ value approaches the
+self-diffusivity of the binary-coloured but
+mass-indistinguishable gas. The discrete kinetic operator
+treats the L/H labels as conserved tags and propagates them
+as a colour field whose diffusivity does not vanish at
+$m_{\max}=1$; this is the standard ``tracer
+self-diffusion'' interpretation of the equal-mass limit.
+
+\subsection{Internal consistency and pseudo-inverse threshold}
+
+The interdiffusion coefficient Eq.~\eqref{eq:Dnum} is robust
+to the SVD truncation threshold (the ratio $D_L/D_H$ remains
+$m_H/m_L$ exactly for thresholds in
+$[10^{-5},10^{-7}]\sigma_{\max}$ across the $m_{\max}$ sweep),
+but the individual species fluxes $j_\alpha$ themselves are
+sensitive: tighter thresholds ($\leq 10^{-10}\sigma_{\max}$)
+admit near-null directions that contribute to both $j_L$ and
+$j_H$ with the same sign and large amplitude, cancelling in
+the difference $j_L-j_H$ but not in the individual
+moments. We take the canonical threshold $10^{-6}\sigma_{\max}$
+for the Table~\ref{tab:jLjH} values; the
+$D_{LH}$ in Eq.~\eqref{eq:Dtab} is unchanged by the choice in
+the $[10^{-5},10^{-12}]$ window.
 
 \subsection{From $D_{LH}$ to the sound-wave damping rate}
 
