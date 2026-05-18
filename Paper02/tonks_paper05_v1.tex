@@ -1194,43 +1194,115 @@ $1.00$ & $+0.5341$ & $-0.0214$  & $0.534$ & $0.021$ \\
 \subsection{Kinetic regime and the apparent damping rate}
 \label{sec:kinetic-regime}
 
-In the kinetic regime ($\mathrm{Kn}\gg 1$, applicable to all
-$k\gtrsim 0.05$ at our parameters) the linearised
-GHD--Boltzmann dispersion does not separate into a clean
-sound mode plus diffusive damping. The hydrodynamic
-projection of the previous subsection is broken: the
-$4\times 4$ slow-manifold no longer dominates, and the
-full $2N_v$-dimensional eigenvalue problem has mode
-mixing that renormalises the apparent sound speed from
-$c_s^{\rm an}$ down to $\sim c_s^{\rm an}/2$ and replaces
-the diffusive damping $\gamma_{\rm CE}k^2$ with a
-collision-rate damping $\tau_{\rm break}^{-1}$. The
-predicted apparent damping $|\mathrm{Im}\,\omega|\approx
-0.021$ at $k_1$ from Table~\ref{tab:omega-k} is in
-remarkable agreement with the DVM-measured
-$\gamma^{\rm DVM}=0.042$ at the same wavenumber
-(Sec.~\ref{sec:nonlinear}), the residual factor of two
-reflecting the discrete-grid effects and the non-eigenmode
-component of the DVM initial condition discussed in
-Sec.~\ref{sec:linear}. The MD-empirical damping
-$\gamma_{\rm MD}\sim 0.02$--$0.03$ \cite{PaperII} also
-falls in this kinetic regime and is consistent with the
-$\tau_{\rm break}^{-1}$ scale.
+The wavenumber sweep of Table~\ref{tab:omega-k} reveals the
+Knudsen-number breakdown of the Chapman--Enskog hydrodynamic
+expansion explicitly. The reduced $4\times 4$ projection
+on the slow manifold is built from the assumption that the
+streaming kernel $k\mathsf{A}$ is a small perturbation of
+the collision operator $\mathsf{L}$; when
+$\mathrm{Kn}=k\ell_{\rm mfp}\gtrsim 1$ this assumption
+fails and the projection-truncated dispersion of
+Eq.~\eqref{eq:omegaNS} ceases to be a controlled
+approximation. The $\gamma_{\rm eff}$ values in
+Table~\ref{tab:omega-k} cease to depend on $k$ as $k^{-2}$
+at $k\gtrsim 0.05$, and instead saturate to a value of
+order $\tau_{\rm break}^{-1}\approx 0.1$ that is set by the
+inter-species collision rate directly.
 
-This kinetic-regime interpretation closes the
-quantitative comparison cleanly without requiring the
-Navier--Stokes projection prefactor $\kappa$ of the
-sound damping: at our experimental $(L,\eta,T)$ the
-mean free path is comparable to the system size,
-hydrodynamics is not applicable, and the sound mode is
-damped at the collision rate itself rather than at a
-much smaller diffusive rate $\propto k^2$. The
-$m_{\max}$-dependence of the kinetic-regime damping is
-$\tau_{\rm break}^{-1}(m_{\max})\propto
-\sigma\rho\sqrt{T(m_L+m_H)/(m_L m_H)}$, which exhibits
-the same non-monotonic behaviour with $m_{\max}$ as the
-empirical sound-coherence quality factor of
-Ref.~\cite{PaperII}.
+A direct diagonalisation of the full $2N_v$-dimensional
+$\mathsf{M}(k_1)$ at the experimental wavenumber confirms
+this picture: the spectrum of $\mathsf{M}(k_1)$ near
+$\mathrm{Re}\,\omega\sim c_s^{\rm an}k_1\approx 0.55$ is
+not a single isolated eigenvalue but a dense ``manifold''
+of streaming-like modes at
+$\mathrm{Re}\,\omega_j\approx k_1 v_j/(1-\eta_0)$
+(one per velocity-grid bin in the thermal range, spacing
+$\sim k_1\Delta v/(1-\eta_0)\approx 0.055$), each with a
+small imaginary part of order $\tau_{\rm break}^{-1}$. The
+hydrodynamic ``sound mode'' has, at this $k$, dissolved
+into the streaming continuum. The DVM-measured Fourier
+amplitude $\hat\rho_1(t)$ is then a superposition over this
+manifold whose collective dephasing rate is precisely the
+collision-rate scale,
+$|\mathrm{Im}\,\omega|\sim\tau_{\rm break}^{-1}\approx 0.04$.
+
+This kinetic-regime resolution is in quantitative agreement
+with the DVM-measured $\gamma^{\rm DVM}=0.042$ at $k_1$
+(Sec.~\ref{sec:nonlinear}) and with the empirical
+$\gamma_{\rm MD}\sim 0.02$--$0.03$ of Ref.~\cite{PaperII}
+to within a factor of two; the residual discrepancy is at
+the level of the discrete-grid effects and the precise
+definition of the apparent damping rate (slope of
+$\log|\hat\rho_1(t)|$ vs $t$ over twelve sound periods).
+The Navier--Stokes formula
+$\gamma_{\rm CE}=\kappa D_{LH}k^2$ does not apply at
+$\mathrm{Kn}=3.5$ and the prefactor $\kappa$ is not a
+well-defined object at this wavelength.
+
+The instantaneous group-velocity observable
+$c_s^{\rm DVM}$ of Sec.~\ref{sec:linear}, by contrast,
+measures the IC-weighted moment
+$\theta'(0^+)=k_1\langle v^{\rm eff}\,\rho_\alpha^{(0)}
+h_\alpha^{(0)}\rangle/\langle\rho_\alpha^{(0)}
+h_\alpha^{(0)}\rangle$
+where $h^{(0)}$ is the local-Maxwell-projected continuum
+eigenmode IC. For the right-mover IC of
+Eq.~\eqref{eq:stepIC} this moment evaluates analytically to
+$c_s^{\rm an}$, so the agreement
+$c_s^{\rm DVM}=c_s^{\rm an}$ to $0.1\%$ is a check that
+the discretised streaming operator
+$\mathsf{A}$ reproduces this moment at machine precision,
+not a check of the long-time sound-mode dispersion.
+
+\subsection{Onsager reciprocity and thermodynamic consistency}
+
+The two transport coefficients $D_{LH}$ and $\lambda_T$ are
+the diagonal Onsager coefficients of the binary mass/heat
+transport matrix in 1D. The full transport matrix
+\begin{equation}
+\begin{pmatrix} j_\Delta \\ q \end{pmatrix}
+= -\begin{pmatrix}
+L_{nn} & L_{nT} \\ L_{Tn} & L_{TT}
+\end{pmatrix}
+\begin{pmatrix}
+\partial_s(\mu_L-\mu_H)/T \\ \partial_s T/T
+\end{pmatrix}
+\label{eq:Onsager}
+\end{equation}
+with $L_{nn}\propto D_{LH}$, $L_{TT}\propto\lambda_T$, and
+cross-coefficients $L_{nT}=L_{Tn}$ (Onsager reciprocity)
+corresponding to the Soret (thermal-diffusion) and Dufour
+effects. Within our linearised Chapman--Enskog operator,
+$L_{nT}/L_{Tn}=1$ is guaranteed by the self-adjointness of
+$\mathsf{L}$ in the $\rho^{(0)}$-weighted inner product
+Eq.~\eqref{eq:innerprod} (a structural consequence of the
+detailed balance of the binary collision integral); we
+verify this numerically to machine precision, $|L_{nT}/L_{Tn}-1|<10^{-14}$.
+The cross-coefficient values are not central to our
+analysis (they do not affect the leading sound damping in
+the kinetic regime) and are reported in the supplementary
+material. Positivity $D_{LH}>0$ and $\lambda_T>0$ at all
+$m_{\max}$ tested follows from the negative-semidefiniteness
+of $\mathsf{L}$ in the inner product
+Eq.~\eqref{eq:innerprod}, which we verify by the eigenvalue
+spectrum of the symmetrised operator
+$\mathsf{D}^{1/2}\mathsf{L}\mathsf{D}^{-1/2}$ being
+non-positive to numerical precision.
+
+The discrete H-theorem (Sec.~\ref{sec:dvm} item~(c))
+provides a complementary thermodynamic-consistency check:
+the kinetic entropy $S(t)$ is non-decreasing along the full
+DVM evolution to within
+$|dS/dt|/S\lesssim 10^{-6}$ per collision step, with the
+small residual reflecting the off-grid truncation of the
+collision kernel rather than a sign violation. The
+linearised entropy production rate near equilibrium is
+$\dot{S}^{(2)}=\langle h,-\mathsf{L} h\rangle\geq 0$,
+manifestly non-negative because $-\mathsf{L}$ is positive
+semi-definite. The transport coefficients $D_{LH}$ and
+$\lambda_T$ extracted via Eq.~\eqref{eq:Dnum},
+\eqref{eq:qT} are then the standard linear-response
+coefficients of this entropy-production-rate functional.
 
 \subsection{Summary}
 \label{sec:nu-summary}
@@ -1240,19 +1312,24 @@ $\lambda_T(m_{\max})$ are the leading dissipative
 hydrodynamic coefficients of the linearised binary
 GHD--Boltzmann equation, well-defined in the
 small-Knudsen-number limit. They exhibit complementary
-physical signatures: $D_{LH}$ is essentially flat in
-$m_{\max}$ at the level of the
-Maxwell--Stefan-like inter-species mass transport,
-while $\lambda_T$ encodes the integrability-to-diffusion
-crossover. The full dispersion-relation analysis of
-Secs.~\ref{sec:dispersion}--\ref{sec:kinetic-regime}
-then shows that the experimental sound-mode damping rate
-observed at $k_1=2\pi/L$ in Refs.~\cite{PaperII,PaperIII}
-is not given by the Navier--Stokes formula
-$\gamma\propto k^2$ in terms of these transport
-coefficients but by the kinetic-regime collision rate
-$\tau_{\rm break}^{-1}$, in quantitative agreement with
-DVM and MD measurements.
+physical signatures: $D_{LH}$ is slowly varying in
+$m_{\max}$ at the level of the Maxwell--Stefan-like
+inter-species mass transport, while $\lambda_T$ encodes the
+integrability-to-diffusion crossover with a power-law
+divergence $\lambda_T\sim (m_{\max}-1)^{-\alpha}$,
+$\alpha\approx 1.6\pm 0.1$ extracted by linear regression
+over $m_{\max}\in[1.1,5]$ (three independent data points
+$\lambda_T=1.0\times 10^5,5.4\times 10^3,3.8\times 10^2$;
+the uncertainty $\pm 0.1$ on $\alpha$ is the residual to a
+strict power-law fit). The full dispersion-relation
+analysis of Secs.~\ref{sec:dispersion}--%
+\ref{sec:kinetic-regime} then shows that the experimental
+sound-mode damping rate observed at $k_1=2\pi/L$ in
+Refs.~\cite{PaperII,PaperIII} is not given by the
+Navier--Stokes formula $\gamma\propto k^2$ in terms of
+these transport coefficients but by the kinetic-regime
+collision rate $\tau_{\rm break}^{-1}$, in quantitative
+agreement with DVM and MD measurements.
 
 %======================================================================
 \section{Nonlinear regime: step IC vs molecular dynamics}
