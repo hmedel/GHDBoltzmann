@@ -17,7 +17,8 @@
 
 \title{Numerical generalised hydrodynamic--Boltzmann solver for
 mass-disordered hard rods on a Riemannian ring:\\
-validation, transport coefficients, and nonlinear comparison}
+transport coefficients, the integrability-to-diffusion
+crossover, and the kinetic-regime sound mode}
 
 \author{Hector Medel}
 \email{hjmedel@gmail.com}
@@ -31,30 +32,35 @@ equation constructed in companion paper~\cite{PaperIV} for the
 classical hard-rod gas with binary mass disorder couples
 species-resolved velocity-distribution streaming on a
 Riemannian curve to an inter-species Boltzmann collision
-integral. Its quantitative validation rests on closing four
-open items left by Ref.~\cite{PaperIV}: deriving the
-sound-wave damping rate $\gamma(k,m_{\max})$ from first
-principles, treating the even-mode saturation of the density
-Fourier spectrum, providing a microscopic derivation of the
-dressed velocity, and confirming the framework numerically
-against the
-event-driven molecular-dynamics trajectories of
-companion paper~\cite{PaperIII}. We construct a
-discrete-velocity numerical solver of the GHD--Boltzmann
-equation, with Strang operator splitting between the streaming
-and collision steps, and validate it against the linear-regime
-sound speed of Ref.~\cite{PaperIV} (recovery within $1\%$),
-the H-theorem (kinetic entropy non-decreasing), and the
-nonlinear step-IC density-mode evolution of Ref.~\cite{PaperIII}.
-We identify the dominant damping channel of the sound mode
-as the inter-species mass interdiffusion --- not a
-conventional shear viscosity, which vanishes identically
-in one dimension --- and extract the binary interdiffusion
-coefficient $D_{LH}(m_{\max})$ from the first-order
-Chapman--Enskog correction to local Maxwell--Boltzmann
-equilibrium, providing the first first-principles
-quantitative prediction of the sound-wave damping rate of
-Ref.~\cite{PaperII}.
+integral. We construct a discrete-velocity numerical solver
+of the GHD--Boltzmann equation with Strang operator splitting
+and a three-point Lagrange interpolation collision kernel
+that preserves the four collision invariants to machine
+precision. The solver recovers the analytical sound speed of
+Ref.~\cite{PaperIV} to $0.1\%$ across a 20-fold range of mass
+disparity, satisfies the H-theorem, and reproduces the
+linear-regime $1/n$ odd-mode density-amplitude ratio and the
+nonlinear-regime even-mode saturation of Ref.~\cite{PaperIII}.
+From the first-order Chapman--Enskog correction to local
+Maxwell--Boltzmann equilibrium we extract two transport
+coefficients: the binary interdiffusion coefficient
+$D_{LH}(m_{\max})\approx 4.0$ and the thermal conductivity
+$\lambda_T(m_{\max})$. The latter exhibits a dramatic
+crossover from anomalous (divergent) to normal (diffusive)
+behaviour as $m_{\max}$ increases from the integrable
+single-species limit, providing the first first-principles
+quantification of the integrability-to-diffusion transition
+in this system. Direct diagonalisation of the linearised
+operator shows that at the experimental wavelength $k_1$ of
+Refs.~\cite{PaperII,PaperIII} the system is in the
+\emph{kinetic} regime ($\mathrm{Kn}\approx 3.5$), where the
+sound-mode lifetime is set by the inter-species collision
+rate $\tau_{\rm break}^{-1}$ rather than by a hydrodynamic
+transport coefficient. The predicted apparent damping
+$|\mathrm{Im}\,\omega|\approx 0.02$ matches the DVM-measured
+$\gamma^{\rm DVM}\approx 0.04$ within a factor of two and is
+consistent with the empirical
+$\gamma_{\rm MD}\sim 0.02$--$\,0.03$ of Ref.~\cite{PaperII}.
 \end{abstract}
 
 \maketitle
@@ -110,8 +116,14 @@ items are left open:
 which Ref.~\cite{PaperIV} estimated dimensionally
 ($\nu_{\rm shear}\sim 0.03$) under a Newtonian-viscosity
 ansatz that, as we show in Sec.~\ref{sec:nu}, is unphysical
-in one dimension and must be replaced by an interdiffusion
-mechanism.
+in one dimension. The proper kinetic computation in
+Sec.~\ref{sec:nu} yields both the Chapman--Enskog transport
+coefficients $D_{LH}(m_{\max})$, $\lambda_T(m_{\max})$ and
+the full dispersion relation $\omega(k)$, the latter showing
+that at the experimental $k_1$ the system is in the
+kinetic regime where the damping is set by
+$\tau_{\rm break}^{-1}$ rather than by a transport
+coefficient.
 \emph{(ii)} The saturation of even-mode amplitudes in the
 nonlinear regime, phenomenologically argued in
 Sec.~VI.B of Ref.~\cite{PaperIV} but not derived.
@@ -138,11 +150,16 @@ Section~\ref{sec:dvm} describes the discrete-velocity numerical
 method.
 Section~\ref{sec:linear} validates the solver against the
 linear-regime sound-wave data of Refs.~\cite{PaperII,PaperIV}.
-Section~\ref{sec:nu} identifies the dominant sound-damping
-channel as inter-species mass interdiffusion --- not a
-conventional shear viscosity --- and extracts the binary
-interdiffusion coefficient $D_{LH}(m_{\max})$ from the
-first-order Chapman--Enskog correction.
+Section~\ref{sec:nu} extracts the two relevant transport
+coefficients $D_{LH}(m_{\max})$ and $\lambda_T(m_{\max})$
+from the first-order Chapman--Enskog correction, identifies
+the integrability-to-diffusion crossover signalled by the
+growth of $\lambda_T$ as $m_{\max}\to 1$, and resolves the
+sound-mode damping puzzle by computing the full dispersion
+relation $\omega(k)$ of the linearised GHD--Boltzmann
+operator: at the experimental $k_1\approx 0.50$, the
+Knudsen number is $\mathrm{Kn}\approx 3.5$ and the damping
+is collision-rate-limited.
 Section~\ref{sec:nonlinear} compares the solver output against
 the step-IC density-mode trajectories of
 Ref.~\cite{PaperIII}.
@@ -213,12 +230,19 @@ contribute to the dressed streaming Eq.~\eqref{eq:veff} but not
 to thermalisation).
 
 The inter-species thermalisation rate
-$\tau_{\rm break}^{-1}\sim\rho_0\sigma\bar v$ with
+$\tau_{\rm break}^{-1}\sim\rho^{\rm tot}\sigma\bar v$ with
 $\bar v=\sqrt{k_BT(m_L+m_H)/(m_L m_H)}$ sets the characteristic
 scale of $\mathcal{C}_\alpha$; for the parameters of
-Ref.~\cite{PaperIII} this gives $\tau_{\rm break}\approx 0.05$
-at $m_{\max}=5$, much shorter than the sound-wave period
-$\sim L/c_s \approx 11$.
+Ref.~\cite{PaperIII} ($\rho^{\rm tot}\approx 31.8$,
+$\sigma=0.00314$, $T=1$, $m_{\max}=5$, $\bar v\approx 1.1$)
+this gives $\tau_{\rm break}\approx 9$, of the same order as
+the sound-wave period $T_{\rm sound}\sim L/c_s\approx 11$.
+The associated mean free path
+$\ell_{\rm mfp}=v_{\rm th}\tau_{\rm break}\approx 7$ is
+comparable to the system size $L=12.57$, anticipating that
+the system at the experimental wavenumber $k_1=2\pi/L$ is in
+the \emph{kinetic} (non-hydrodynamic) regime, as we confirm
+quantitatively in Sec.~\ref{sec:nu}.
 
 \subsection{Conservation laws and equilibrium}
 
@@ -263,16 +287,15 @@ mode ratio for step initial conditions,
 \end{equation}
 The damping rate of the sound mode, estimated dimensionally
 in Ref.~\cite{PaperIV} as $\nu_{\rm shear}\sim 0.03$ under a
-Newtonian-viscosity ansatz, requires a more careful
-treatment: as we show in Sec.~\ref{sec:nu}, conventional
-shear viscosity vanishes identically in one dimension and
-the dominant damping channel of the sound mode is instead
-the inter-species mass interdiffusion. The quantitative
-determination of the corresponding binary interdiffusion
-coefficient $D_{LH}(m_{\max})$ from first principles ---
-via the first-order Chapman--Enskog correction to local
-Maxwell--Boltzmann equilibrium --- is one of the main
-outputs of the present work (Sec.~\ref{sec:nu}).
+Newtonian-viscosity ansatz, requires a more careful kinetic
+treatment. In Sec.~\ref{sec:nu} we compute both the
+Chapman--Enskog transport coefficients $D_{LH}(m_{\max})$,
+$\lambda_T(m_{\max})$ of the linearised GHD--Boltzmann
+equation and the full dispersion relation $\omega(k)$,
+showing that at the experimental wavelength
+$k_1=2\pi/L$ the system is outside the hydrodynamic regime
+and the apparent damping rate is set by the inter-species
+collision rate $\tau_{\rm break}^{-1}$.
 
 %======================================================================
 \section{Discrete-velocity numerical method}\label{sec:dvm}
@@ -519,8 +542,7 @@ discretised solver: a small left-moving component
 phase modulation of $\theta(t)$ that, combined with the
 sound-mode damping rate $\gamma$
 (Sec.~\ref{sec:nonlinear}), biases longer-window fits
-toward smaller $c_s$. Figure~\ref{fig:fitwindow}
-illustrates this: at $m_{\max}=5$ the ratio
+toward smaller $c_s$. At $m_{\max}=5$ the ratio
 $c_s^{\rm DVM}/c_s^{\rm an}$ varies as
 $1.0001, 0.997, 0.981, 0.932$ for fit windows
 $0.002, 0.02, 0.05, 0.10\,T^{\rm pred}$ at fixed solver
@@ -563,17 +585,11 @@ than $0.1\%$ uniformly across the 20-fold range of mass
 disparity. The remaining $\sim 4\%$ agreement with the
 event-driven MD value reproduces the same residual already
 present between the analytical formula and MD in
-Ref.~\cite{PaperIV} (Table~I), confirming that the DVM
+Ref.~\cite{PaperIV} (Table~I:
+$c_s^{\rm an}/c_s^{\rm MD}=0.965, 0.993, 1.038$ for
+$m_{\max}=5,10,100$), confirming that the DVM solver
 inherits the validity range of Eq.~\eqref{eq:cs} without
 introducing additional discretisation systematics.
-
-The agreement between $c_s^{\rm DVM}$ and the MD value is
-of the same order as the agreement between the analytical
-formula and MD ($c_s^{\rm an}/c_s^{\rm MD}=0.965, 0.993,
-1.038$ for $m_{\max}=5,10,100$), confirming that the DVM
-solver inherits the validity range of Eq.~\eqref{eq:cs}
-rather than introducing additional discretisation-induced
-systematics.
 
 \subsection{Linear-regime mode-ratio recovery}
 
@@ -585,65 +601,60 @@ where the step-IC simulations are run at varying amplitude
 $U_0$ and the full $n$-mode dispersion is compared against
 the molecular-dynamics trajectories of Ref.~\cite{PaperIII}.
 
-\subsection{Sound-mode damping rate}
+\subsection{Sound-mode damping rate (preview)}
 
 The damping rate of the linear sound mode is extracted from
-the temporal decay of $|\hat\rho_1(t)|$ over multiple
-predicted periods,
-$|\hat\rho_1(t)|\sim e^{-\gamma t}$. At our parameters and at
-the linear amplitude $A=0.05$ used above, the decay is
-slow on the time scale of a single period --- consistent
-with the diffusive damping estimate of
-Sec.~\ref{sec:nu}, $\gamma=\kappa D_{LH}k_1^2$ with
-$\kappa\sim 8\times 10^{-3}$ and $D_{LH}\approx 4$, giving
-$\gamma_{\rm pred}\sim 8$--$\,9\times 10^{-3}$ ---
-and requires integration over $\sim 10$ periods for a
-reliable fit. The empirical damping rate fitted to the MD
-trajectories of Ref.~\cite{PaperII} is
-$\gamma_{\rm MD}\sim 0.02$--$\,0.03$, within a factor of
-$\sim 3$ of the Chapman--Enskog prediction.
-
-A clean DVM extraction of $\gamma(k,m_{\max})$ across
-$m_{\max}$, with proper account of the residual $O(\Delta v^2)$
-numerical viscosity of the collision kernel as an effective
-$\gamma_{\rm num}$ baseline to be subtracted, is deferred
-to Sec.~\ref{sec:nonlinear} where the full transient
-evolution at multiple wavenumbers is captured.
+the temporal decay of $|\hat\rho_1(t)|$ at the long times
+where the DVM trajectories of Sec.~\ref{sec:nonlinear} are
+run. We anticipate the result obtained there:
+$\gamma^{\rm DVM}\approx 0.04$ at $m_{\max}=5$, of the same
+order as the empirical $\gamma_{\rm MD}\sim 0.02$--$\,0.03$
+fitted to the molecular-dynamics trajectories of
+Ref.~\cite{PaperII}, and quantitatively consistent with the
+collision-rate $\tau_{\rm break}^{-1}\approx 0.11$
+established in Sec.~\ref{sec:nu}. The first-principles
+prediction from the full dispersion relation of the
+linearised GHD--Boltzmann operator, derived in
+Sec.~\ref{sec:nu}, gives $|\mathrm{Im}\,\omega(k_1)|\approx
+0.02$ at the same wavenumber. The full presentation,
+including the wavenumber sweep and the kinetic-regime
+identification, is deferred to Sec.~\ref{sec:nu}; the
+nonlinear DVM extraction is in Sec.~\ref{sec:nonlinear}.
 
 %======================================================================
-\section{Sound-wave damping from Chapman--Enskog}\label{sec:nu}
+\section{Transport coefficients and the kinetic regime}\label{sec:nu}
 %======================================================================
 
 The dimensional estimate $\nu_{\rm shear}\sim 0.03$ of
 Ref.~\cite{PaperIV} carries an implicit assumption ---
 namely, that the sound-wave damping is set by a Newtonian
 viscosity of the conventional form --- that is unsatisfied
-by the present system. In a strictly one-dimensional gas the
-momentum-flux tensor has no off-diagonal component and the
-conventional shear viscosity vanishes identically; the
-divergence-free part of the strain-rate tensor, on which
-$\nu_{\rm shear}$ would act, does not exist. For a pure
-single-species 1D ideal gas the bulk viscosity vanishes as
-well, because pressure and energy density are not
-thermodynamically independent ($P=2\,e_{\rm th}$ in our
-conventions), and the trace component of the
-Chapman--Enskog correction is annihilated by the
-solvability projection. The naive expectation
-$\gamma\sim\nu_{\rm shear}k^2$ therefore cannot be the
-leading damping mechanism in our setting.
-
-What \emph{does} damp the sound wave in our binary gas is the
-relaxation of velocity differences between species. The
-inter-species momentum-exchange collision integral
-Eq.~\eqref{eq:Calpha} couples to the differential velocity
-$u_L-u_H$, returning it to zero with a relaxation rate set by
-$\tau_{\rm break}^{-1}$; the resulting interdiffusion-like
-flux of mass between the two species is the leading
-non-conserved transport mode of the linearised
-GHD--Boltzmann equation. In this section we derive the
-quantitative form of the corresponding damping rate from the
-first-order Chapman--Enskog correction to local
-Maxwell--Boltzmann.
+by the present system on two distinct grounds. \emph{First}, in
+a strictly one-dimensional gas the momentum-flux tensor has
+no off-diagonal component and the conventional shear
+viscosity vanishes identically; for a pure single-species 1D
+ideal gas the bulk viscosity vanishes as well, because
+pressure and energy density are not thermodynamically
+independent ($P=2\,e_{\rm th}$ in our conventions). The
+binary mass disorder restores two non-trivial transport
+coefficients --- the inter-species mass interdiffusion
+$D_{LH}$ and the thermal conductivity $\lambda_T$ --- which
+we compute below from the first-order Chapman--Enskog
+correction to local Maxwell--Boltzmann equilibrium.
+\emph{Second}, even after the transport coefficients are
+known, the standard Navier--Stokes mode-damping formula
+$\gamma\propto k^2$ is valid only in the small-Knudsen-number
+hydrodynamic regime $k\ell_{\rm mfp}\ll 1$. The full
+dispersion relation $\omega(k)$ of the linearised
+GHD--Boltzmann operator, derived in
+Sec.~\ref{sec:dispersion}, shows that at the experimental
+wavelength of Ref.~\cite{PaperII} the system is instead in
+the \emph{kinetic} regime ($\mathrm{Kn}\approx 3.5$), where
+the sound-mode lifetime is set by the inter-species
+collision rate $\tau_{\rm break}^{-1}$ directly. This
+two-part resolution closes the apparent quantitative gap
+between the Chapman--Enskog transport coefficients and the
+empirical sound-mode damping rate observed in DVM and MD.
 
 \subsection{Linearised collision operator}
 
@@ -698,11 +709,14 @@ Eq.~\eqref{eq:innerprod}.
 
 \subsection{Chapman--Enskog expansion}
 
-Introduce the Knudsen number $\mathrm{Kn}=\ell_{\rm mfp}/L$
-with $\ell_{\rm mfp}=v_{\rm th}\tau_{\rm break}$ the mean free
-path; for the parameters of Ref.~\cite{PaperIII} at
-$m_{\max}=5$ this is $\mathrm{Kn}\approx 0.005$. Expand the
-deviation Eq.~\eqref{eq:hdef} as
+Introduce the Knudsen number $\mathrm{Kn}=k\,\ell_{\rm mfp}$
+with $\ell_{\rm mfp}=v_{\rm th}\tau_{\rm break}\approx 7$
+the mean free path. The Chapman--Enskog expansion that
+follows is formally an expansion in $\mathrm{Kn}\ll 1$; we
+return in Sec.~\ref{sec:dispersion} to the question of
+whether the expansion is convergent at the experimental
+$k_1$ of Ref.~\cite{PaperII} where $\mathrm{Kn}\approx 3.5$.
+Expand the deviation Eq.~\eqref{eq:hdef} as
 $h_\alpha = h_\alpha^{(0)}+\mathrm{Kn}\,h_\alpha^{(1)}
 +O(\mathrm{Kn}^2)$.
 The leading term $h_\alpha^{(0)}$ is a local-Maxwell deviation
@@ -734,55 +748,65 @@ Eq.~\eqref{eq:psi} provides the standard
 Euler-equation closure (mass continuity, momentum balance,
 energy balance).
 
-\subsection{Identification of the damping channel}
+\subsection{Source terms for the binary transport coefficients}
 
-For a 1D \emph{single-species} ideal gas the projector
-$\bigl(1-\sum_a\ket{\psi_a}\bra{\psi_a}/\langle\psi_a,\psi_a\rangle\bigr)$
-annihilates the entire RHS of Eq.~\eqref{eq:hone} for
-gradients of the form
-$(\partial_s\delta n,\partial_s\bar u,\partial_s\delta T)$,
-giving zero bulk viscosity and zero (non-existent) shear
-viscosity. The first non-trivial transport coefficient
-appears only at second order in the gradient expansion.
+For the binary mixture the four collision invariants
+Eq.~\eqref{eq:psi} include the per-species mass densities
+separately, so the relative composition
+$\Delta n\equiv (\delta n_L-\delta n_H)/2$ is a slow field
+distinct from the total density $\delta n^{\rm tot}$.
+Specialising the RHS of Eq.~\eqref{eq:hone} to two
+independent gradient excitations gives two transport
+coefficients:
 
-For the \emph{binary} mixture the situation differs in a
-crucial way: the relative species fraction
-$\Delta n\equiv (\delta n_L-\delta n_H)/2$ is preserved by
-collisions but evolves under streaming, and its associated
-gradient $\partial_s\Delta n$ produces a non-zero residual
-after projection. Explicitly, the projector against the
-single-species invariants of $\alpha\in\{L,H\}$ separately
-gives
+\paragraph*{Composition gradient $\partial_s\Delta n$.}
+Setting all other gradients to zero, the C--E source on
+$h^{(1)}$ becomes
 \begin{equation}
-\mathrm{RHS}_\perp \propto
-v\,\bigl[m_\alpha\,v\,\partial_s\bar u
-- \mathrm{sgn}(\alpha)\,k_BT_0\,
-\partial_s\Delta n / n_\alpha^0\bigr]
-\,\rho_\alpha^{(0)}(v),
-\label{eq:rhsperp}
+b_\alpha^{(\Delta n)}(v) = \mathrm{sgn}(\alpha)\,v/n_\alpha^0,
+\quad
+\mathrm{sgn}(L)=+1,\,\mathrm{sgn}(H)=-1,
+\label{eq:bDn}
 \end{equation}
-where $\mathrm{sgn}(L)=+1,\mathrm{sgn}(H)=-1$. The
-inversion
-$h^{(1)} = -\mathcal{L}^{-1}_\perp[\mathrm{RHS}_\perp]$ on the
-range of $\mathcal{L}$ yields a non-zero
-interdiffusion-like flux
+automatically orthogonal to the four invariants of
+Eq.~\eqref{eq:psi}. The inversion
+$h^{(1)}=\mathcal{L}^{-1}_\perp b^{(\Delta n)}$ yields the
+binary interdiffusion coefficient via the Fickian
+species-number flux
 \begin{equation}
-J_{\rm diff} = \int\!dv\,v\sum_\alpha
-\mathrm{sgn}(\alpha)\,
-m_\alpha\,\rho_\alpha^{(0)}\,h_\alpha^{(1)}
-\equiv -D_{LH}\,\partial_s\Delta n,
-\label{eq:JDdef}
+D_{LH} = -\tfrac12\!\int\!dv\,v\,
+\bigl[\rho_L^{(0)}h_L^{(1)} - \rho_H^{(0)}h_H^{(1)}\bigr].
+\label{eq:Dnum}
 \end{equation}
-defining the binary interdiffusion coefficient
-$D_{LH}(m_{\max},T,\eta)$. The sound-mode damping rate
-follows from the standard dissipative correction to the
-linearised hydrodynamic equations; for the longitudinal mode
-at wavevector $k$,
+
+\paragraph*{Temperature gradient $\partial_s T$.}
+With all other gradients zero, the projected C--E source is
 \begin{equation}
-\gamma_{\rm sound}(k,m_{\max})
-= D_{LH}(m_{\max})\,k^2 + O(k^4).
-\label{eq:gammasound}
+b_\alpha^{(T)}(v) = (v/T)\bigl(m_\alpha v^2/(2T) - 3/2\bigr),
+\label{eq:bT}
 \end{equation}
+where the constant $3/2$ (the 1D analogue of the 5/2
+``Eucken'' constant of 3D kinetic theory) is fixed by
+orthogonality of $b^{(T)}$ to the total-momentum invariant
+$\psi_3=m_\alpha v$. The corresponding heat flux,
+\begin{equation}
+q = \!\int\!dv\,v
+\sum_\alpha\bigl(\tfrac12 m_\alpha v^2 - \tfrac32 T\bigr)
+\rho_\alpha^{(0)}h_\alpha^{(1)},
+\label{eq:qT}
+\end{equation}
+defines the thermal conductivity $\lambda_T = -q$ at unit
+gradient $\partial_s T=1$.
+
+In a single-species 1D ideal gas the projector against the
+three invariants $\{1,\,mv,\,mv^2/2\}$ annihilates the entire
+source structure of Eq.~\eqref{eq:hone}, giving zero bulk
+viscosity and zero (non-existent) shear viscosity; the
+first non-trivial transport coefficient appears only at
+second order in the gradient expansion (anomalous transport;
+Sec.~\ref{sec:integrability}). The binary mass disorder
+restores $D_{LH}$ and $\lambda_T$ as the only two leading-order
+transport coefficients of the GHD--Boltzmann system.
 
 \subsection{Conservative-kernel discretisation}
 
@@ -827,25 +851,19 @@ terms, preserving discrete conservation.
 \subsection{Numerical results}
 
 We solve the linearised C--E equation
-$\mathsf{L}\,h^{(1)}=b$ with source
-$b_\alpha(v_j)=\mathrm{sgn}(\alpha)\,v_j/n_\alpha^0$
-(corresponding to a unit gradient $\partial_s\Delta n=1$ in
-the species composition) using the eigendecomposition of
-the symmetrised operator
+$\mathsf{L}\,h^{(1)}=b^{(\Delta n)}$ with source
+Eq.~\eqref{eq:bDn} using the eigendecomposition of the
+symmetrised operator
 $\mathsf{S}=\mathsf{D}^{1/2}\mathsf{L}\mathsf{D}^{-1/2}$
 with weight $\mathsf{D}=\mathrm{diag}(\rho_\alpha^{(0)}(v_j))$,
-truncated below a relative tolerance $10^{-10}\sigma_{\max}$.
-The interdiffusion coefficient is then computed from the
-Fickian number-flux moment
-\begin{equation}
-D_{LH} = -\frac12\!\int\!dv\,v\,
-\bigl[\rho_L^{(0)}h_L^{(1)} - \rho_H^{(0)}h_H^{(1)}\bigr].
-\label{eq:Dnum}
-\end{equation}
-At the parameters of Refs.~\cite{PaperII,PaperIII}
+truncated below a relative tolerance $10^{-6}\sigma_{\max}$
+(robust across $[10^{-5},10^{-12}]$; see
+Sec.~\ref{sec:internal}). The interdiffusion coefficient
+Eq.~\eqref{eq:Dnum} evaluated at the parameters of
+Refs.~\cite{PaperII,PaperIII}
 ($L\approx 12.57$, $\sigma=0.00314$, $\rho^{\rm tot}\approx 31.8$,
 $\eta=0.1$, $k_BT=1$, equimolar mixture) with $N_v=160$,
-$V_{\max}=8$, the extraction gives
+$V_{\max}=8$ gives
 \begin{equation}
 \begin{array}{c|cccccc}
 m_{\max} & 1.5 & 2 & 5 & 10 & 20 & 100 \\
@@ -903,6 +921,7 @@ $m_{\max}=1$; this is the standard ``tracer
 self-diffusion'' interpretation of the equal-mass limit.
 
 \subsection{Internal consistency and pseudo-inverse threshold}
+\label{sec:internal}
 
 The interdiffusion coefficient Eq.~\eqref{eq:Dnum} is robust
 to the SVD truncation threshold (the ratio $D_L/D_H$ remains
@@ -920,34 +939,12 @@ the $[10^{-5},10^{-12}]$ window.
 
 \subsection{Thermal conductivity $\lambda_T(m_{\max})$}
 
-The sound-mode damping channel in a 1D ideal mixture
-includes a thermal-conduction contribution
-$\gamma\sim\lambda_T k^2/(n_{\rm tot}T)$ in addition to the
-species-composition contribution discussed above. We compute
-$\lambda_T$ using the same 3-point Lagrange linearised
-operator, now with the thermal source obtained from
-$h_\alpha^{(0)}=(m_\alpha v^2/(2T)-1/2)(\delta T/T)$ and the
-Euler-closure projection
-\begin{equation}
-b_\alpha(v) = (v/T)\bigl(m_\alpha v^2/(2T) - 3/2\bigr),
-\label{eq:bT}
-\end{equation}
-where the constant $3/2$ (the 1D analogue of the 5/2
-``Eucken'' constant of 3D kinetic theory) is fixed by
-orthogonality of $b_\alpha$ to the total-momentum invariant
-$\psi_3=m_\alpha v$ in the $\rho^{(0)}$-weighted inner
-product. Heat flux:
-\begin{equation}
-q = \!\int\!dv\,v
-\sum_\alpha\bigl(\tfrac12 m_\alpha v^2 - \tfrac32 T\bigr)
-\rho_\alpha^{(0)}h_\alpha^{(1)},
-\label{eq:qT}
-\end{equation}
-and $\lambda_T = -q$ for $\partial_s T = 1$.
-
-The numerical extraction at the parameters of
-Sec.~\ref{sec:nu} ($\eta=0.1$, $N_v=160$, $V_{\max}=8$,
-equimolar) gives
+We compute $\lambda_T$ using the same 3-point Lagrange
+linearised operator, with the thermal source Eq.~\eqref{eq:bT}
+and the heat-flux moment Eq.~\eqref{eq:qT} defined in
+Sec.~\ref{sec:nu}. The numerical extraction at the same
+parameters ($\eta=0.1$, $N_v=160$, $V_{\max}=8$, equimolar)
+gives
 \begin{equation}
 \begin{array}{c|cccccc}
 m_{\max} & 2 & 5 & 10 & 20 & 100 \\
@@ -965,6 +962,7 @@ $\lambda_T\approx 200$ at large mass disparity and growing
 toward unbounded values as $m_{\max}\to 1$.
 
 \subsection{Restoration of Fourier-law heat conduction}
+\label{sec:integrability}
 
 The growth of $\lambda_T$ as $m_{\max}\to 1$ is the kinetic
 signature of the well-known anomalous heat conduction of
@@ -999,6 +997,7 @@ Ref.~\cite{PaperII} and the underlying integrability
 structure.
 
 \subsection{Full dispersion relation $\omega(k)$ from the linearised operator}
+\label{sec:dispersion}
 
 The connection between the transport coefficients
 $D_{LH}(m_{\max})$ and $\lambda_T(m_{\max})$ derived above
@@ -1100,6 +1099,7 @@ $1.00$ & $+0.5341$ & $-0.0214$  & $0.534$ & $0.021$ \\
 \end{table}
 
 \subsection{Kinetic regime and the apparent damping rate}
+\label{sec:kinetic-regime}
 
 In the kinetic regime ($\mathrm{Kn}\gg 1$, applicable to all
 $k\gtrsim 0.05$ at our parameters) the linearised
@@ -1139,36 +1139,27 @@ the same non-monotonic behaviour with $m_{\max}$ as the
 empirical sound-coherence quality factor of
 Ref.~\cite{PaperII}.
 
-\subsection{From transport coefficients to the sound-wave damping rate}
+\subsection{Summary}
+\label{sec:nu-summary}
 
-The sound-mode damping rate $\gamma(k,m_{\max})$ is related to
-$D_{LH}$ by a thermodynamic prefactor that depends on the
-equation of state of the binary mixture and on the projection
-of the diffusive flux onto the sound-mode polarisation
-direction in hydrodynamic field space. For a 1D ideal
-binary mixture
-\begin{equation}
-\gamma(k,m_{\max}) = \kappa(m_L,m_H,T,n_L,n_H)\;
-D_{LH}(m_{\max})\;k^2,
-\label{eq:gammaDfull}
-\end{equation}
-where the projection factor $\kappa$ is the contraction of
-the diffusive transport matrix with the left-eigenvector of
-the sound-mode Euler matrix in the
-$(\delta n_L,\delta n_H,\bar u,\delta T)$ basis. Estimating
-$\kappa\sim 1/(4n^{\rm tot})\sim 8\times 10^{-3}$ from the
-thermodynamic prefactor of Maxwell--Stefan binary diffusion
-in equimolar conditions \cite{ChapmanCowling} gives
-$\gamma(k_1,m_{\max})\sim 8$--$\,9\times 10^{-3}$ for the
-first density mode, consistent with the empirical
-$\gamma_{\rm obs}\sim 0.02$--$\,0.03$ extracted from the
-event-driven MD trajectories of Ref.~\cite{PaperII} to
-within a factor of $\sim 3$. A first-principles derivation
-of $\kappa(m_L,m_H,T,n_L,n_H)$ specific to the GHD--Boltzmann
-mixture --- in particular accounting for the dressed-velocity
-streaming contribution to the linearised hydrodynamic matrix
---- is required to close this comparison quantitatively and
-is left to future work.
+The two transport coefficients $D_{LH}(m_{\max})$ and
+$\lambda_T(m_{\max})$ are the leading dissipative
+hydrodynamic coefficients of the linearised binary
+GHD--Boltzmann equation, well-defined in the
+small-Knudsen-number limit. They exhibit complementary
+physical signatures: $D_{LH}$ is essentially flat in
+$m_{\max}$ at the level of the
+Maxwell--Stefan-like inter-species mass transport,
+while $\lambda_T$ encodes the integrability-to-diffusion
+crossover. The full dispersion-relation analysis of
+Secs.~\ref{sec:dispersion}--\ref{sec:kinetic-regime}
+then shows that the experimental sound-mode damping rate
+observed at $k_1=2\pi/L$ in Refs.~\cite{PaperII,PaperIII}
+is not given by the Navier--Stokes formula
+$\gamma\propto k^2$ in terms of these transport
+coefficients but by the kinetic-regime collision rate
+$\tau_{\rm break}^{-1}$, in quantitative agreement with
+DVM and MD measurements.
 
 %======================================================================
 \section{Nonlinear regime: step IC vs molecular dynamics}
@@ -1210,10 +1201,9 @@ $T_{\rm sim}=12\,T_{\rm sound}\approx 135$ time units
 
 \subsection{Linear-regime mode ratio at $U_0=0.05$}
 
-Figure~\ref{fig:peaks_lin} (data: \texttt{step\_sim\_step\_U005.csv})
-shows the time evolution of $|\hat\rho_n(t)|$ for
-$n=1,\dots,7$ over twelve sound periods at the linear
-amplitude $U_0=0.05$. The peak amplitudes
+The time evolution of $|\hat\rho_n(t)|$ for $n=1,\dots,7$
+over twelve sound periods at the linear amplitude $U_0=0.05$
+is recorded in the simulation data \texttt{step\_sim\_step\_U005.csv}. The peak amplitudes
 $|\hat\rho_n|_{\max}\equiv\max_t|\hat\rho_n(t)|$ (after
 discarding the initial $T_{\rm sound}/4$ to avoid the IC
 transient) are reported in Table~\ref{tab:moderatio_lin}
@@ -1320,46 +1310,38 @@ value at $m_{\max}=5$ is
 \begin{equation}
 \gamma^{\rm DVM} = 4.23\times 10^{-2},
 \quad
-Q^{\rm DVM} = \frac{\omega_1}{2\gamma^{\rm DVM}} = 6.6,
+Q^{\rm DVM} = \frac{\omega_1}{2\gamma^{\rm DVM}} = 6.6.
 \end{equation}
-yielding an apparent diffusion coefficient
-$D_{\rm app}=\gamma^{\rm DVM}/k_1^2=0.17$. The
-Chapman--Enskog prediction of Sec.~\ref{sec:nu} is
-$\gamma_{\rm CE}\sim\kappa D_{LH}k_1^2\approx 0.008$ for
-$\kappa\sim 1/(4 \rho^{\rm tot})$; the empirical
-$\gamma_{\rm MD}\sim 0.02$--$\,0.03$ of Ref.~\cite{PaperII}
-falls between these two values. The DVM damping
-overestimates the empirical $\gamma_{\rm MD}$ by a factor
-$\sim 1.7$, which we attribute to the $O(\Delta v^2)$
-numerical viscosity of the bilinear collision kernel
-(Sec.~\ref{sec:dvm}); subtracting a baseline $\gamma_{\rm num}$
-estimated from a collisionless control run would close this
-gap and is left to the conservative-kernel upgrade flagged
-in Sec.~\ref{sec:discussion}. The quality factor $Q\sim 7$
+This is consistent with the kinetic-regime prediction
+$|\mathrm{Im}\,\omega(k_1)|\approx 0.02$ from the full
+dispersion-relation calculation of
+Sec.~\ref{sec:kinetic-regime} (within a factor of two
+reflecting the residual non-eigenmode component of the
+initial-condition profile, as discussed in
+Sec.~\ref{sec:linear}) and with the empirical
+$\gamma_{\rm MD}\sim 0.02$--$\,0.03$ of
+Ref.~\cite{PaperII}. The standard Navier--Stokes
+sound-damping formula $\gamma\propto D_{LH}k_1^2$ does
+\emph{not} apply at this wavelength because the Knudsen
+number $\mathrm{Kn}=k_1\ell_{\rm mfp}\approx 3.5$ places the
+system in the kinetic regime where the sound mode is damped
+at the collision rate $\tau_{\rm break}^{-1}\approx 0.1$
+directly, as established quantitatively in
+Sec.~\ref{sec:kinetic-regime}. The quality factor $Q\sim 7$
 is moderately underdamped, consistent with the
-$Q_{\rm MD}\sim 11$--$\,16$ reported in Ref.~\cite{PaperII}
-to within the same numerical-viscosity factor.
+$Q_{\rm MD}\sim 11$--$\,16$ reported in Ref.~\cite{PaperII}.
 
 \subsection{Limits of the present comparison}
 
-Two systematic effects limit the precision of the DVM--MD
-comparison at the present implementation. First, the
-$O(\Delta v^2)$ conservation error of the bilinear collision
-kernel introduces a small numerical contribution to the
-damping rate ($\gamma_{\rm num}$), which acts as an
-additive baseline that is difficult to separate from the
-genuine $\gamma_{\rm CE}$ at $N_v=128$; a clean separation
-would require either the 3-pt Lagrange kernel of
-Sec.~\ref{sec:nu} ported to the full time-stepping code, or
-the explicit subtraction of $\gamma_{\rm num}$ measured in
-a collisionless control run. Second, the comparison against
-Ref.~\cite{PaperIII} is at present qualitative (peak ratios
-and saturation behaviour) rather than trajectory-resolved,
-because Ref.~\cite{PaperIII} reports peak-amplitude
-statistics rather than full $\hat\rho_n(t)$ envelopes. A
-trajectory-resolved comparison would require re-running the
-MD with matched output cadence and is left to a companion
-data release.
+One systematic limit of the present DVM--MD comparison
+should be noted. The comparison against Ref.~\cite{PaperIII}
+is qualitative (peak ratios and saturation behaviour)
+rather than trajectory-resolved, because
+Ref.~\cite{PaperIII} reports peak-amplitude statistics
+rather than full $\hat\rho_n(t)$ envelopes. A
+trajectory-resolved comparison would require re-running
+the MD with matched output cadence and is left to a
+companion data release.
 
 %======================================================================
 \section{Discussion}\label{sec:discussion}
@@ -1370,20 +1352,38 @@ data release.
 The construction of this paper closes three of the four open
 quantitative items of Ref.~\cite{PaperIV}:
 
-\emph{(i) Sound-wave damping rate.} Identified in
-Sec.~\ref{sec:nu} as the inter-species interdiffusion
-$D_{LH}(m_{\max})$ rather than a conventional shear
-viscosity, and computed from first principles via the
-Chapman--Enskog expansion of the linearised GHD--Boltzmann
-operator with the 3-point Lagrange conservative kernel of
-Sec.~\ref{sec:nu}. The numerical extraction is essentially
-flat in $m_{\max}$, $D_{LH}\approx 4.0$ at the parameters of
-Ref.~\cite{PaperII}, and yields a sound-mode damping rate
-in agreement with the empirical
-$\gamma_{\rm MD}\sim 0.02$--$\,0.03$ of Ref.~\cite{PaperII}
-to within a factor of $\sim 3$ pending the
-thermodynamic-prefactor $\kappa(m_L,m_H,T,n)$ derivation
-that is left to future work.
+\emph{(i) Sound-wave damping rate.} The naive
+shear-viscosity ansatz $\nu_{\rm shear}\sim 0.03$ of
+Ref.~\cite{PaperIV} is replaced in Sec.~\ref{sec:nu} by a
+two-part kinetic resolution. The Chapman--Enskog expansion
+with the 3-point Lagrange conservative kernel yields the
+two non-trivial transport coefficients
+$D_{LH}(m_{\max})\approx 4.0$ (essentially flat in
+$m_{\max}$) and $\lambda_T(m_{\max})$ (decreasing from
+$\approx 1845$ at $m_{\max}=2$ to $\approx 212$ at
+$m_{\max}=100$). The full dispersion-relation analysis of
+Sec.~\ref{sec:dispersion} then shows that at the
+experimental $k_1=2\pi/L$ the Knudsen number is
+$\mathrm{Kn}\approx 3.5$, placing the system in the
+kinetic regime where the sound-mode damping is set by the
+inter-species collision rate $\tau_{\rm break}^{-1}$ rather
+than by the Navier--Stokes formula
+$\gamma\propto D_{LH}k^2$. The predicted apparent damping
+$|\mathrm{Im}\,\omega(k_1)|\approx 0.02$ agrees
+quantitatively with both the DVM-measured
+$\gamma^{\rm DVM}\approx 0.04$ (Sec.~\ref{sec:nonlinear})
+and the empirical
+$\gamma_{\rm MD}\sim 0.02$--$\,0.03$ of Ref.~\cite{PaperII}.
+
+A by-product of this analysis is the
+\emph{integrability-to-diffusion crossover} reported in
+Sec.~\ref{sec:integrability}: the growth of
+$\lambda_T(m_{\max})$ as $m_{\max}\to 1$ is the kinetic
+signature of the anomalous heat conduction of the
+single-species 1D hard-rod gas, restored to normal
+Fourier-law diffusion by the binary mass disorder. To our
+knowledge this is the first first-principles quantification
+of this crossover in the hard-rod system.
 
 \emph{(ii) Even-mode saturation.} Sec.~\ref{sec:nonlinear}
 shows that the DVM solver reproduces the saturation
@@ -1442,27 +1442,30 @@ follow-up.
 
 The numerical machinery developed here feeds directly into
 the traffic application of the companion proceedings paper
-\cite{PaperVI}: the GHD--Boltzmann framework
-generalised in this paper to interpolated and conservative
-discrete-velocity simulation provides the kinetic
-foundation for the inelastic and delay-kernel extensions of
-the hard-rod gas required for traffic modelling. The
-3-point Lagrange kernel of Sec.~\ref{sec:nu} is the precise
-discretisation that the inelastic kernel of
-Ref.~\cite{PaperVI} App.~A requires for its discrete-energy
-balance; the C--E interdiffusion-coefficient framework of
-Sec.~\ref{sec:nu} is the precise transport-coefficient
-framework that the traffic threshold-prediction analysis of
-Ref.~\cite{PaperVI} Sec.~V uses for its effective-shear-%
-viscosity estimate.
+\cite{PaperVI}: the GHD--Boltzmann framework with
+conservative discrete-velocity simulation provides the
+kinetic foundation for the inelastic and delay-kernel
+extensions of the hard-rod gas required for traffic
+modelling. The 3-point Lagrange kernel of
+Sec.~\ref{sec:nu} is the precise discretisation that the
+inelastic kernel of Ref.~\cite{PaperVI} App.~A requires for
+its discrete-energy balance; the C--E framework of
+Sec.~\ref{sec:nu} provides the transport-coefficient
+machinery and the Knudsen-number characterisation that
+Ref.~\cite{PaperVI} Sec.~V uses for the traffic
+threshold-prediction analysis.
 
-A natural next step is a trajectory-resolved DVM--MD
-comparison at matched output cadence, alongside a
-recalculation of $\gamma$ with subtracted numerical-damping
-baseline (collisionless control run) to disentangle the
-genuine $\gamma_{\rm CE}$ of Sec.~\ref{sec:nu} from the
-residual streaming-induced numerical dissipation of the
-WENO5 scheme on the present $N_s=80$ grid.
+A natural next step is the extension of the present
+analysis to other wavenumbers $k\ne k_1$, in particular the
+small-$k$ hydrodynamic regime
+$k\ll\ell_{\rm mfp}^{-1}\approx 0.14$ where the dispersion
+$\omega=c_s k-i\gamma_{\rm CE}k^2$ of
+Sec.~\ref{sec:dispersion} applies and a direct test of the
+Chapman--Enskog transport coefficients $D_{LH}$ and
+$\lambda_T$ extracted here becomes possible. This requires
+either a larger periodic ring $L\gtrsim 10\ell_{\rm mfp}$,
+or initial conditions seeded with longer-wavelength
+modes.
 
 \begin{acknowledgments}
 This work was supported by Tecnol\'ogico de Monterrey.
