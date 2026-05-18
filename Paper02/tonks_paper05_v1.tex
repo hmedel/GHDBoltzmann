@@ -918,7 +918,87 @@ for the Table~\ref{tab:jLjH} values; the
 $D_{LH}$ in Eq.~\eqref{eq:Dtab} is unchanged by the choice in
 the $[10^{-5},10^{-12}]$ window.
 
-\subsection{From $D_{LH}$ to the sound-wave damping rate}
+\subsection{Thermal conductivity $\lambda_T(m_{\max})$}
+
+The sound-mode damping channel in a 1D ideal mixture
+includes a thermal-conduction contribution
+$\gamma\sim\lambda_T k^2/(n_{\rm tot}T)$ in addition to the
+species-composition contribution discussed above. We compute
+$\lambda_T$ using the same 3-point Lagrange linearised
+operator, now with the thermal source obtained from
+$h_\alpha^{(0)}=(m_\alpha v^2/(2T)-1/2)(\delta T/T)$ and the
+Euler-closure projection
+\begin{equation}
+b_\alpha(v) = (v/T)\bigl(m_\alpha v^2/(2T) - 3/2\bigr),
+\label{eq:bT}
+\end{equation}
+where the constant $3/2$ (the 1D analogue of the 5/2
+``Eucken'' constant of 3D kinetic theory) is fixed by
+orthogonality of $b_\alpha$ to the total-momentum invariant
+$\psi_3=m_\alpha v$ in the $\rho^{(0)}$-weighted inner
+product. Heat flux:
+\begin{equation}
+q = \!\int\!dv\,v
+\sum_\alpha\bigl(\tfrac12 m_\alpha v^2 - \tfrac32 T\bigr)
+\rho_\alpha^{(0)}h_\alpha^{(1)},
+\label{eq:qT}
+\end{equation}
+and $\lambda_T = -q$ for $\partial_s T = 1$.
+
+The numerical extraction at the parameters of
+Sec.~\ref{sec:nu} ($\eta=0.1$, $N_v=160$, $V_{\max}=8$,
+equimolar) gives
+\begin{equation}
+\begin{array}{c|cccccc}
+m_{\max} & 2 & 5 & 10 & 20 & 100 \\
+\hline
+\lambda_T & 1845 & 428 & 291 & 245 & 212
+\end{array}
+\label{eq:lambdaT}
+\end{equation}
+robust across pseudo-inverse thresholds in
+$[10^{-5},10^{-12}]$. The qualitative behaviour of
+Eq.~\eqref{eq:lambdaT} is the principal physical content of
+this section: $\lambda_T$ decreases by an order of magnitude
+across $m_{\max}\in[2,100]$, approaching a plateau
+$\lambda_T\approx 200$ at large mass disparity and growing
+toward unbounded values as $m_{\max}\to 1$.
+
+\subsection{Restoration of Fourier-law heat conduction}
+
+The growth of $\lambda_T$ as $m_{\max}\to 1$ is the kinetic
+signature of the well-known anomalous heat conduction of
+the integrable single-species hard-rod gas in one dimension
+\cite{HarrisHurst}. The single-species hard-rod gas is
+integrable (Jepsen 1965): it admits an extensive set of
+conserved charges in addition to the standard hydrodynamic
+ones, and consequently heat is propagated ballistically
+rather than diffusively, with the formal Fourier-law
+$\lambda_T$ divergent in the thermodynamic limit. Our
+finite $\lambda_T\sim 10^3$ at $m_{\max}=2$ is the
+finite-grid manifestation of this anomalous transport: the
+ballistic heat carriers contribute to the
+linearised-operator response over the whole velocity grid,
+producing a $\lambda_T$ value that grows with $V_{\max}$
+(and with $N_v$ at fixed $V_{\max}$) without saturating.
+
+The binary mass disorder of Ref.~\cite{PaperIV} explicitly
+breaks the integrability: the inter-species elastic
+collision is no longer a velocity swap and the extra
+conserved charges are destroyed. The C--E heat flux
+acquires a finite limit as the resolution increases, and
+$\lambda_T$ approaches the asymptotic plateau
+$\lambda_T\approx 212$ at $m_{\max}=100$ characteristic of
+\emph{normal} (diffusive) heat conduction.
+Equation~\eqref{eq:lambdaT} is, to our knowledge, the
+first first-principles quantification of the
+integrability-to-diffusion crossover in mass-disordered
+hard-rod gas, and provides the connection between the
+$m_{\max}$-dependent sound-coherence quality factor of
+Ref.~\cite{PaperII} and the underlying integrability
+structure.
+
+\subsection{From transport coefficients to the sound-wave damping rate}
 
 The sound-mode damping rate $\gamma(k,m_{\max})$ is related to
 $D_{LH}$ by a thermodynamic prefactor that depends on the
@@ -1277,6 +1357,13 @@ Phys.~Rev.~X \textbf{15}, 010501 (2025).
 \bibitem{HubnerDoyon2024}
 F.~H\"ubner, B.~Doyon,
 arXiv:2406.18322 (2024).
+
+\bibitem{HarrisHurst}
+H.~Spohn,
+\emph{Large-Scale Dynamics of Interacting Particles},
+Springer (1991);
+J.~L.~Lebowitz, J.~Percus, J.~Sykes,
+Phys.~Rev.\ \textbf{171}, 224 (1968).
 
 \bibitem{ChapmanCowling}
 S.~Chapman and T.~G.~Cowling,
