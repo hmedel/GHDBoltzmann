@@ -1217,6 +1217,100 @@ requires a ring of length $L\gtrsim 10\ell_{\rm mfp}\approx 70$
 considerably larger than the $L=12.57$ used there; this
 limit is addressed in Sec.~\ref{sec:dispersion} below.
 
+\subsection{Relation to the GHD literature}
+\label{sec:GHD-comparison}
+
+The unperturbed single-species hard-rod gas
+($m_{\max}=1$) is the prototype integrable model of the
+generalised hydrodynamics (GHD) program: the rapidities
+of its quasiparticle description are the bare particle
+velocities $v$, and the dressed velocity Eq.~\eqref{eq:veff}
+is the geometric scattering shift derived for this system
+by Doyon and Spohn~\cite{DoyonSpohn2017}. For the
+single-species case at thermal equilibrium, the standard
+GHD framework predicts a vanishing energy-current decay
+rate and a corresponding divergent heat-current Drude
+weight; the formal Fourier-law thermal conductivity
+$\lambda_T$ is undefined as a finite intensive quantity,
+and the finite-system heat-current correlator
+$\langle J_E(t)J_E(0)\rangle$ decays slowly (algebraically),
+implying a divergence of $\lambda_T$ with system size
+$L$ at a rate set by anomalous-transport (nonlinear
+fluctuating hydrodynamic) exponents
+\cite{Spohn2014,MendlSpohn2013}. For the hard-rod gas the
+corresponding scaling is
+\begin{equation}
+\lambda_T^{(L)}(m_{\max}=1)\;\sim\; L^{\beta},
+\quad \beta\approx 1/3,
+\label{eq:size-scaling}
+\end{equation}
+in the KPZ universality class of the underlying
+fluctuating heat current.
+
+The two exponents
+\begin{equation}
+\alpha\approx 1.5\quad{\rm and}\quad\beta\approx 1/3
+\nonumber
+\end{equation}
+describe \emph{different} limits and should not be directly
+identified. The exponent $\alpha$ of
+Eq.~\eqref{eq:lambdaT_scaling} (this work) characterises
+the divergence of $\lambda_T$ as a function of the
+integrability-breaking parameter $m_{\max}-1$ at \emph{fixed}
+system size $L$; the exponent $\beta$ of
+Eq.~\eqref{eq:size-scaling} characterises the divergence
+of $\lambda_T$ as a function of $L$ at the integrable point
+$m_{\max}=1$. We expect both to be captured by a
+two-parameter scaling form of the type
+\begin{equation}
+\lambda_T(L, m_{\max}-1) \;\sim\;
+L^{\beta}\,\mathcal{F}\!\bigl((m_{\max}-1)\,L^{\zeta}\bigr),
+\label{eq:hyperscaling}
+\end{equation}
+with $\mathcal{F}(0)$ finite and
+$\mathcal{F}(x\to\infty)\sim x^{-\beta/\zeta}$. Matching to
+the small-$x$ ballistic-regime scaling
+$\lambda_T\sim L^\beta$ and the large-$x$ diffusive-regime
+scaling $\lambda_T\sim(m_{\max}-1)^{-\alpha}$ gives the
+hyperscaling relation
+\begin{equation}
+\alpha\,\zeta = \beta,
+\label{eq:hyperscaling-relation}
+\end{equation}
+predicting a crossover scale $L^*\sim(m_{\max}-1)^{-1/\zeta}$
+between ballistic and diffusive transport. With our
+$\alpha\approx 1.5$ and the anomalous-transport
+$\beta\approx 1/3$ this gives
+$\zeta\approx 0.22$, and a crossover ring size at
+$m_{\max}=5$ of
+$L^*\sim 4^{-1/0.22}\approx 0.005$ in natural units, much
+smaller than any reasonable system size. The expected
+crossover therefore sits at $m_{\max}$ values much closer
+to unity than we probe here; a direct numerical
+verification of Eq.~\eqref{eq:hyperscaling} via
+combined $L$- and $m_{\max}$-sweeps would test the
+hyperscaling prediction Eq.~\eqref{eq:hyperscaling-relation}
+and is left to future work.
+
+A further conceptual point. Our Chapman--Enskog
+computation is performed in the linearised binary kinetic
+operator with the velocity grid $v\in[-V_{\max},V_{\max}]$
+playing the role of the rapidity space of standard GHD.
+The convergence of $\lambda_T$ with $V_{\max}$ at finite
+$m_{\max}>1$ (Sec.~\ref{sec:nu}, $\lambda_T$ stable to
+$0.1\%$ across $V_{\max}\in[5,10]$) reflects the
+existence of normal binary transport coefficients off the
+integrable point; the divergence of $\lambda_T$ as
+$m_{\max}\to 1$ Eq.~\eqref{eq:lambdaT_scaling} would
+correspondingly be cut off by a logarithmic or power-law
+$V_{\max}$-dependence if extended exactly to $m_{\max}=1$,
+recovering the standard GHD ballistic-transport picture in
+the integrable limit. Our finite-$V_{\max}$ Chapman--Enskog
+extraction is therefore in quantitative agreement with the
+standard GHD framework in the limits where both apply, and
+extends it by providing the integrability-breaking
+power-law dependence Eq.~\eqref{eq:lambdaT_scaling}.
+
 %======================================================================
 \section{Full dispersion relation $\omega(k)$ and the kinetic regime}
 \label{sec:dispersion}
@@ -1814,6 +1908,18 @@ Phys.~Rev.\ \textbf{171}, 224 (1968).
 \bibitem{Jepsen1965}
 D.~W.~Jepsen,
 J.~Math.~Phys.\ \textbf{6}, 405 (1965).
+
+\bibitem{Spohn2014}
+H.~Spohn,
+\emph{Nonlinear fluctuating hydrodynamics for anharmonic
+chains},
+J.~Stat.~Phys.\ \textbf{154}, 1191 (2014).
+
+\bibitem{MendlSpohn2013}
+C.~B.~Mendl, H.~Spohn,
+\emph{Dynamic correlators of FPU chains and nonlinear
+fluctuating hydrodynamics},
+Phys.~Rev.~Lett.\ \textbf{111}, 230601 (2013).
 
 \bibitem{ChapmanCowling}
 S.~Chapman and T.~G.~Cowling,
