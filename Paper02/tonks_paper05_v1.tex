@@ -32,7 +32,7 @@ hard-rod gas on a one-dimensional ring is shown to diverge
 as a power law
 \begin{equation*}
 \lambda_T(m_{\max}) \sim A\,(m_{\max}-1)^{-\alpha},
-\quad \alpha = 1.6\pm 0.1,
+\quad \alpha = 1.5\pm 0.15,
 \end{equation*}
 as the mass disparity is reduced toward the integrable
 single-species limit $m_{\max}\to 1$, providing the first
@@ -155,7 +155,7 @@ equilibrium gives a thermal-conductivity coefficient
 $\lambda_T(m_{\max})$ that diverges as
 \begin{equation}
 \lambda_T(m_{\max}) \sim A\,(m_{\max}-1)^{-\alpha},
-\quad \alpha = 1.6\pm 0.1
+\quad \alpha = 1.5\pm 0.15
 \label{eq:lambdaT-main}
 \end{equation}
 as the single-species (integrable, $m_{\max}=1$) limit is
@@ -1079,14 +1079,14 @@ $1.0\times 10^7$ respectively, consistent with a power-law
 divergence
 \begin{equation}
 \lambda_T(m_{\max}) \sim
-A\,(m_{\max}-1)^{-\alpha}, \quad \alpha \approx 1.6
+A\,(m_{\max}-1)^{-\alpha}, \quad \alpha \approx 1.53
 \label{eq:lambdaT_scaling}
 \end{equation}
 extrapolated from the $m_{\max}\in[1.1,5]$ window (linear
 regression in $\log\lambda_T$ vs $\log(m_{\max}-1)$ gives
-slope $-1.59$ over this range; the $m_{\max}=1.001$ point
+slope $-1.53$ over this range; the $m_{\max}=1.001$ point
 is below numerical resolution of the binary structure and is
-discarded). The exponent $\alpha\approx 1.6$ is the kinetic
+discarded). The exponent $\alpha\approx 1.5$ is the kinetic
 signature, at the level of the linearised
 Chapman--Enskog operator, of the anomalous heat conduction of
 the integrable hard-rod gas; the integrable limit itself
@@ -1146,7 +1146,30 @@ approached, signalling the well-known anomalous heat
 conduction of the integrable 1D hard-rod gas
 \cite{HarrisHurst,Jepsen1965,DoyonSpohn2017} from within
 the kinetic-theory framework of the linearised binary
-GHD--Boltzmann operator.
+GHD--Boltzmann operator. Figure~\ref{fig:lambdaT-crossover}
+displays the data and the power-law fit.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_lambdaT_crossover.pdf}
+\caption{Integrability-to-diffusion crossover in the
+Chapman--Enskog thermal conductivity $\lambda_T(m_{\max})$
+of the binary mass-disordered hard-rod gas, computed from
+Eq.~\eqref{eq:qT}. Red points: numerical extraction at
+$\eta=0.1$, equimolar, $T=1$, $N_v=160$, $V_{\max}=8$ (the
+$m_{\max}\geq 100$ point has larger error bar from
+heavy-species under-resolution; the $m_{\max}=1.01$ point
+is shown for reference but excluded from the fit). Grey
+dashed: power-law fit $\lambda_T\sim(m_{\max}-1)^{-1.5}$ on
+$m_{\max}\in[1.1,5]$ (slope $\alpha=-1.53$ from log--log
+linear regression). Blue dotted: large-$m_{\max}$ plateau
+$\lambda_T\approx 80$ characteristic of normal Fourier-law
+heat conduction. The divergence at $m_{\max}\to 1$ is the
+kinetic signature of the anomalous heat conduction of the
+integrable single-species hard-rod gas
+\cite{Jepsen1965,HarrisHurst}.}
+\label{fig:lambdaT-crossover}
+\end{figure}
 
 \subsection{Numerical extraction of the crossover}
 
@@ -1165,12 +1188,12 @@ Chapman--Enskog expansion does not produce a finite
 transport coefficient; for $m_{\max}>1$ but close to it, the
 deformation is small and the $\lambda_T$ value computed by
 our linearised Chapman--Enskog framework is large but
-finite, scaling with $(m_{\max}-1)^{-1.6}$ in the window
+finite, scaling with $(m_{\max}-1)^{-1.5}$ in the window
 $1.1\leq m_{\max}\leq 5$ (Eq.~\eqref{eq:lambdaT_scaling}).
 The exponent is robust to the velocity-grid choice
 (variation $<2\%$ across $N_v\in\{96,128,160,200\}$ and
 $V_{\max}\in\{6,8,10\}$). A first-principles derivation of
-$\alpha\approx 1.6$ from the perturbative structure of the
+$\alpha\approx 1.5$ from the perturbative structure of the
 binary collision operator around the integrable limit is
 deferred to future work.
 
@@ -1300,6 +1323,29 @@ $1.00$ & $+0.5341$ & $-0.0214$  & $0.534$ & $0.021$ \\
 \end{tabular}
 \end{table}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.49\columnwidth]{figures/fig_omega_k_Im.pdf}\hfill
+\includegraphics[width=0.49\columnwidth]{figures/fig_omega_k_gamma.pdf}
+\caption{Dispersion-relation wavenumber sweep at $m_{\max}=5$.
+Left: $|\mathrm{Im}\,\omega(k)|$ from the reduced 4D Euler+%
+Navier--Stokes projection of the linearised GHD--Boltzmann
+operator. The grey-dashed line is the small-$k$
+Chapman--Enskog prediction
+$|\mathrm{Im}\,\omega|=\gamma_{\rm CE}k^2$ valid in the
+hydrodynamic regime $\mathrm{Kn}=k\ell_{\rm mfp}\ll 1$; at
+$k\gtrsim 0.05$ the actual $|\mathrm{Im}\,\omega|$ departs
+from the $k^2$ scaling and saturates at a value of order
+the inter-species collision rate
+$\tau_{\rm break}^{-1}\approx 0.1$ (grey dotted), signalling
+the breakdown of the hydrodynamic expansion. Right: the
+ratio $\gamma_{\rm eff}=-\mathrm{Im}\,\omega/k^2$ ceases to
+be constant at $\mathrm{Kn}\gtrsim 1$. The experimental
+wavenumber of Refs.~\cite{PaperII,PaperIII} is
+$k_1\approx 0.50$, deep in the kinetic regime.}
+\label{fig:omega-k}
+\end{figure}
+
 \subsection{Kinetic regime and the apparent damping rate}
 \label{sec:kinetic-regime}
 
@@ -1408,14 +1454,30 @@ $T_{\rm sim}=12\,T_{\rm sound}\approx 135$ time units
 
 \subsection{Linear-regime mode ratio at $U_0=0.05$}
 
-The time evolution of $|\hat\rho_n(t)|$ for $n=1,\dots,7$
-over twelve sound periods at the linear amplitude $U_0=0.05$
-is recorded in the simulation data \texttt{step\_sim\_step\_U005.csv}. The peak amplitudes
-$|\hat\rho_n|_{\max}\equiv\max_t|\hat\rho_n(t)|$ (after
-discarding the initial $T_{\rm sound}/4$ to avoid the IC
-transient) are reported in Table~\ref{tab:moderatio_lin}
+Figure~\ref{fig:mode-trajectories} shows the time evolution
+of $|\hat\rho_n(t)|$ for $n=1,\dots,7$ over twelve sound
+periods at the linear amplitude $U_0=0.05$. The first-peak
+amplitudes $|\hat\rho_n|^{(1)}\equiv|\hat\rho_n(t_{n,\rm peak})|$
+(extracted at the first local maximum within the first sound
+period, before higher-$n$ modes have incurred excess
+damping) are reported in Table~\ref{tab:moderatio_lin}
 together with the analytical $1/n$ prediction
 Eq.~\eqref{eq:ratio}.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_mode_trajectories.pdf}
+\caption{Density-mode trajectories $|\hat\rho_n(t)|$ for
+$n=1,\dots,7$ from the step-velocity IC
+Eq.~\eqref{eq:stepIC} at linear amplitude $U_0=0.05$,
+$m_{\max}=5$, over twelve sound periods. Odd modes
+($n=1,3,5,7$) carry the linear-regime $1/n$ amplitude
+structure; even modes ($n=2,4,6$) remain at the
+noise/discretisation floor below $10^{-3}$. The slow decay
+of $|\hat\rho_1|$ is the apparent sound-mode damping
+discussed in Sec.~\ref{sec:dispersion}.}
+\label{fig:mode-trajectories}
+\end{figure}
 
 \begin{table}[t]
 \caption{Linear-regime mode ratios at $U_0=0.05$
@@ -1504,7 +1566,28 @@ that does NOT reach the Burgers shock fixed point
 $|\hat\rho_n|/|\hat\rho_1|\to 1$. This is the saturation
 mechanism proposed in Ref.~\cite{PaperIV} Sec.~VI.B,
 predicted there to follow from collisional inhibition of
-high-$n$ mode growth.
+high-$n$ mode growth. Figure~\ref{fig:mode-ratios} compares
+the linear and nonlinear first-peak amplitude ratios.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_mode_ratios.pdf}
+\caption{First-peak amplitude ratios
+$|\hat\rho_n|/|\hat\rho_1|$ versus mode index $n$ at
+$m_{\max}=5$. Red circles: linear regime ($U_0=0.05$,
+Table~\ref{tab:moderatio_lin}); blue squares: nonlinear
+regime ($U_0=0.5$, Table~\ref{tab:moderatio_nl}). Grey
+dashed: $1/n$ analytical prediction
+Eq.~\eqref{eq:ratio} of Ref.~\cite{PaperIV} for odd $n$.
+The odd-mode ratios are remarkably independent of $U_0$
+across a 10-fold amplitude increase, confirming the $1/n$
+structure as the linear-regime skeleton of the nonlinear
+evolution. Even modes ($n=2,4,6$) emerge at $U_0=0.5$ with
+finite amplitudes $\sim 0.04, 0.02, 0.013$ that exhibit
+hierarchical decay and do not approach the inviscid-Burgers
+shock fixed point $|\hat\rho_n|/|\hat\rho_1|\to 1$.}
+\label{fig:mode-ratios}
+\end{figure}
 
 \subsection{Sound-mode damping rate}
 
@@ -1590,7 +1673,7 @@ The principal physical result of this work is the
 \emph{integrability-to-diffusion crossover} reported in
 Sec.~\ref{sec:crossover}: the thermal conductivity
 $\lambda_T(m_{\max})$ diverges as a power law
-$(m_{\max}-1)^{-\alpha}$ with $\alpha\approx 1.6$
+$(m_{\max}-1)^{-\alpha}$ with $\alpha\approx 1.5$
 near the integrable single-species limit, signalling the
 anomalous heat conduction of the 1D hard-rod gas at
 $m_{\max}=1$, and approaches a finite plateau
