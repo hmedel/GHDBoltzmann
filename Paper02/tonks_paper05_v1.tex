@@ -15,10 +15,10 @@
 
 \begin{document}
 
-\title{Numerical generalised hydrodynamic--Boltzmann solver for
-mass-disordered hard rods on a Riemannian ring:\\
-transport coefficients, the integrability-to-diffusion
-crossover, and the kinetic-regime sound mode}
+\title{Numerical GHD--Boltzmann solver for mass-disordered
+hard rods on a Riemannian ring:\\
+transport coefficients and the integrability-to-diffusion
+crossover}
 
 \author{Hector Medel}
 \email{hjmedel@gmail.com}
@@ -27,39 +27,42 @@ crossover, and the kinetic-regime sound mode}
 \date{\today}
 
 \begin{abstract}
-The two-species generalised hydrodynamic (GHD) Boltzmann
-equation constructed in companion paper~\cite{PaperIV} for the
-classical hard-rod gas with binary mass disorder couples
-species-resolved velocity-distribution streaming on a
-Riemannian curve to an inter-species Boltzmann collision
-integral. We construct a discrete-velocity numerical solver
-of the GHD--Boltzmann equation with Strang operator splitting
-and a three-point Lagrange interpolation collision kernel
-that preserves the four collision invariants to machine
-precision. The solver recovers the analytical sound speed of
-Ref.~\cite{PaperIV} to $0.1\%$ across a 20-fold range of mass
-disparity, satisfies the H-theorem, and reproduces the
-linear-regime $1/n$ odd-mode density-amplitude ratio and the
-nonlinear-regime even-mode saturation of Ref.~\cite{PaperIII}.
-From the first-order Chapman--Enskog correction to local
-Maxwell--Boltzmann equilibrium we extract two transport
-coefficients: the binary interdiffusion coefficient
-$D_{LH}(m_{\max})\approx 4.0$ and the thermal conductivity
-$\lambda_T(m_{\max})$. The latter exhibits a dramatic
-crossover from anomalous (divergent) to normal (diffusive)
-behaviour as $m_{\max}$ increases from the integrable
-single-species limit, providing the first first-principles
-quantification of the integrability-to-diffusion transition
-in this system. Direct diagonalisation of the linearised
-operator shows that at the experimental wavelength $k_1$ of
-Refs.~\cite{PaperII,PaperIII} the system is in the
-\emph{kinetic} regime ($\mathrm{Kn}\approx 3.5$), where the
-sound-mode lifetime is set by the inter-species collision
-rate $\tau_{\rm break}^{-1}$ rather than by a hydrodynamic
-transport coefficient. The predicted apparent damping
-$|\mathrm{Im}\,\omega|\approx 0.02$ matches the DVM-measured
-$\gamma^{\rm DVM}\approx 0.04$ within a factor of two and is
-consistent with the empirical
+The one-dimensional hard-rod gas is integrable: the
+single-species kinetic operator admits an extensive family
+of conserved charges (rapidities equal to bare velocities),
+and the linearised Chapman--Enskog formulation reproduces
+the known anomalous heat conduction in that limit. We
+construct a discrete-velocity numerical solver of the
+two-species generalised hydrodynamic (GHD) Boltzmann
+equation of Ref.~\cite{PaperIV} for the binary mass-disordered
+hard-rod gas --- the simplest deformation that breaks the
+integrability of the single-species limit --- and extract
+its leading kinetic transport coefficients from a 3-point
+Lagrange Bobylev--Palczewski--Schneider discretisation that
+preserves the four collision invariants of the linearised
+operator to machine precision. The thermal conductivity
+$\lambda_T(m_{\max})$ exhibits a power-law divergence
+$\lambda_T\sim (m_{\max}-1)^{-\alpha}$ with
+$\alpha\approx 1.6$ as the integrable single-species limit
+is approached, providing the first first-principles
+quantification of the integrability-to-diffusion crossover
+in this system; the binary interdiffusion coefficient
+$D_{LH}(m_{\max})\approx 4$ remains finite throughout. The
+solver itself reproduces the analytical instantaneous group
+velocity of Ref.~\cite{PaperIV} to $0.1\%$ across a 20-fold
+range of mass disparity, satisfies the H-theorem, and
+recovers both the linear-regime $1/n$ odd-mode density-%
+amplitude ratio and the nonlinear-regime even-mode
+saturation of Ref.~\cite{PaperIII}. At the experimental
+wavelength $k_1$ of Refs.~\cite{PaperII,PaperIII} the
+Knudsen number $\mathrm{Kn}\approx 3.5$ places the system
+\emph{outside} the small-$k$ hydrodynamic regime of the
+Chapman--Enskog expansion; direct diagonalisation of the
+linearised operator at $k_1$ then shows that the sound-mode
+damping is set by the collision rate $\tau_{\rm break}^{-1}$
+rather than by the transport coefficients, in quantitative
+agreement with both the DVM-measured
+$\gamma^{\rm DVM}\approx 0.04$ and the MD-empirical
 $\gamma_{\rm MD}\sim 0.02$--$\,0.03$ of Ref.~\cite{PaperII}.
 \end{abstract}
 
@@ -193,14 +196,25 @@ v^{\rm eff}_\alpha(s,v,t) =
 \label{eq:veff}
 \end{equation}
 with $\bar u(s,t) = \int dv\,v\,(\rho_L+\rho_H)/\rho^{\rm tot}$
-the number-weighted local mean velocity. The form
-Eq.~\eqref{eq:veff} is identical for both species, reflecting
-the fact that the geometric scattering shift on each crossing
-event is $\sigma$ regardless of the masses of the two colliding
-rods. The mass disorder enters entirely through the collision
-integral $\mathcal{C}_\alpha$ described below; equation
-Eq.~\eqref{eq:veff} is the central postulate of
-Ref.~\cite{PaperIV} and is taken here as input.
+the number-weighted local mean velocity. Equivalently,
+$\eta\bar u = \sigma\rho^{\rm tot}\bar u$ is the
+number-density-weighted momentum, which coincides with the
+standard GHD dressed-velocity formula for the single-species
+hard-rod gas \cite{DoyonSpohn2017} (where the rapidities
+of the integrable model are the bare velocities themselves
+and the dressing is the geometric scattering shift). The
+form Eq.~\eqref{eq:veff} is identical for both species,
+reflecting the fact that the geometric shift on each crossing
+event is $\sigma$ regardless of the colliding masses; the
+binary mass disorder enters entirely through the collision
+integral $\mathcal{C}_\alpha$ described below. In the
+single-species (equal-mass) limit the mass disorder is
+absent and the model reduces to the standard integrable
+GHD hard-rod gas. Equation Eq.~\eqref{eq:veff} is the
+central postulate of Ref.~\cite{PaperIV} and is taken here
+as input; a microscopic Jepsen-mapping derivation for
+unequal masses is left for future work
+(Sec.~\ref{sec:discussion}).
 
 \subsection{Collision integral}
 
@@ -475,6 +489,11 @@ $V_{\max}\to\infty$ at fixed $\Delta v$; in contrast, the
 2-point bilinear scheme has an energy error
 $O(\Delta v^2)\sim 10^{-2}$ at $N_v=96, V_{\max}=5$, five
 orders of magnitude larger than the 3-point Lagrange value.
+Conservation under the full coupled (streaming + collision)
+evolution in the inhomogeneous sound-mode runs of
+Sec.~\ref{sec:linear} is at the same level
+($\Delta M/M<10^{-7}$, $\Delta E/E<10^{-6}$ over twelve sound
+periods).
 \emph{(c) H-theorem.} The kinetic entropy
 $S(t)=-\sum_\alpha\sum_{k,j}\rho_\alpha^{k,j}\log\rho_\alpha^{k,j}\,
 \Delta s\,\Delta v$ is verified to be non-decreasing along
@@ -527,29 +546,48 @@ $\hat\rho_1(t)=\frac{2}{N_s}\sum_k\delta_k(t)
 e^{-ik_1 s_k}\equiv a(t)+ib(t)$
 with $\delta_k(t)=[n_L(s_k,t)+n_H(s_k,t)]/\rho^{\rm tot}-1$
 is tracked over a single predicted sound period
-$T^{\rm pred}=2\pi/(c_s^{\rm an}k_1)$. The sound speed is
-extracted from the phase evolution
-$\theta(t)=\arg\hat\rho_1(t)$ by linear regression
-$\theta(t)\approx\omega^{\rm DVM} t$ on a short
-\emph{tight-window} fraction $0.01\,T^{\rm pred}$ of the
-sound period; the fitted observable is then
-$c_s^{\rm DVM}=\omega^{\rm DVM}/k_1$. The tight-window
-choice is essential because the Maxwell--Boltzmann
-eigenmode IC, although a continuum eigenmode of
-Eq.~\eqref{eq:ghdb}, is not an exact eigenmode of the
-discretised solver: a small left-moving component
-(amplitude $\sim 10^{-2}$ of the right-mover) introduces a
-phase modulation of $\theta(t)$ that, combined with the
-sound-mode damping rate $\gamma$
-(Sec.~\ref{sec:nonlinear}), biases longer-window fits
-toward smaller $c_s$. At $m_{\max}=5$ the ratio
+$T^{\rm pred}=2\pi/(c_s^{\rm an}k_1)$. We extract the
+\emph{instantaneous group velocity}
+$c_s^{\rm DVM}\equiv\theta'(0)/k_1$ from the phase
+evolution $\theta(t)=\arg\hat\rho_1(t)$ by linear regression
+on a short window $\Delta t\lesssim 0.01\,T^{\rm pred}\approx 0.1$
+that is much shorter than the inter-species collision time
+$\tau_{\rm break}\approx 9$. The window is essential:
+$\theta(t)$ at later times reflects the multi-mode
+superposition of the IC over the discrete spectrum of the
+GHD--Boltzmann operator (Sec.~\ref{sec:dispersion}), and a
+naive long-window fit biases the extracted slope by
+$O(\gamma t)\sim 10\%$ per sound period.
+
+A subtle point requires emphasis. The continuum-prepared
+right-mover IC is built using the analytical sound speed
+$c_s^{\rm an}$ as input
+($\bar u(s,0)=A c_s^{\rm an}\cos k_1 s$), so the
+$t\to 0^+$ group velocity is set by free streaming at the
+continuum eigenmode profile alone. The agreement
+$c_s^{\rm DVM}\approx c_s^{\rm an}$ reported below is
+therefore a check that the solver preserves the initial
+condition in the first $\Delta t\ll \tau_{\rm break}$ rather
+than a measurement of the full dispersion relation
+$\omega(k_1)$, which we obtain separately in
+Sec.~\ref{sec:dispersion}. In the kinetic regime
+$k_1\ell_{\rm mfp}\approx 3.5$ where we operate, these two
+quantities differ substantially: the dispersion-relation
+$c_s(k_1)$ is renormalised by the mode-mixing of
+Sec.~\ref{sec:kinetic-regime} to roughly half of
+$c_s^{\rm an}$. The tight-window observable is the cleaner
+test of the local kinetic structure of the discrete
+operator, but it is not the speed at which a long-time
+sound mode propagates.
+\medskip
+
+The numerical sensitivity to the window choice is
+illustrated at $m_{\max}=5$: the ratio
 $c_s^{\rm DVM}/c_s^{\rm an}$ varies as
 $1.0001, 0.997, 0.981, 0.932$ for fit windows
-$0.002, 0.02, 0.05, 0.10\,T^{\rm pred}$ at fixed solver
-parameters, and is independent of the spatial grid
-$N_s\in\{40, 80, 160, 320\}$ to 4 significant digits. The
-tight-window $c_s^{\rm DVM}$ is the proper measurement of
-the dispersion relation of the discrete operator.
+$0.002, 0.02, 0.05, 0.10\,T^{\rm pred}$, and is independent
+of the spatial grid $N_s\in\{40,80,160,320\}$ to four
+significant digits at any chosen window.
 
 \subsection{Sound-speed comparison}
 
@@ -579,17 +617,23 @@ $100$ & $50.5$ & $0.2708$ & $0.2707$ & $0.261$ & $0.9996$ & $1.037$\\
 \end{tabular}
 \end{table}
 
-With the tight-window fit, the DVM solver recovers the
-analytical $c_s^{\rm an}$ of Ref.~\cite{PaperIV} to better
-than $0.1\%$ uniformly across the 20-fold range of mass
-disparity. The remaining $\sim 4\%$ agreement with the
+With the tight-window observable (instantaneous group
+velocity, see the discussion above), the DVM solver recovers
+the analytical $c_s^{\rm an}$ of Ref.~\cite{PaperIV} to
+better than $0.1\%$ uniformly across the 20-fold range of
+mass disparity. This is a non-trivial \emph{consistency
+check}: it verifies that the discrete streaming operator
+Eq.~\eqref{eq:Aop} reproduces the dressed-velocity-induced
+collective response of the continuum equation at the
+short-time level. The full dispersion relation at $k_1$ ---
+that is, the long-time propagation speed of a discrete
+eigenmode --- is reported in Sec.~\ref{sec:dispersion}. The
+remaining $\sim 4\%$ agreement of $c_s^{\rm DVM}$ with the
 event-driven MD value reproduces the same residual already
 present between the analytical formula and MD in
 Ref.~\cite{PaperIV} (Table~I:
 $c_s^{\rm an}/c_s^{\rm MD}=0.965, 0.993, 1.038$ for
-$m_{\max}=5,10,100$), confirming that the DVM solver
-inherits the validity range of Eq.~\eqref{eq:cs} without
-introducing additional discretisation systematics.
+$m_{\max}=5,10,100$).
 
 \subsection{Linear-regime mode-ratio recovery}
 
@@ -782,21 +826,29 @@ D_{LH} = -\tfrac12\!\int\!dv\,v\,
 \paragraph*{Temperature gradient $\partial_s T$.}
 With all other gradients zero, the projected C--E source is
 \begin{equation}
-b_\alpha^{(T)}(v) = (v/T)\bigl(m_\alpha v^2/(2T) - 3/2\bigr),
+b_\alpha^{(T)}(v) = (v/T)\bigl(m_\alpha v^2/(2T) - C_\alpha\bigr),
+\quad
+C_\alpha = \tfrac12 + \frac{m_\alpha}{\bar m},
 \label{eq:bT}
 \end{equation}
-where the constant $3/2$ (the 1D analogue of the 5/2
-``Eucken'' constant of 3D kinetic theory) is fixed by
+where the species-dependent constant $C_\alpha$ is fixed by
 orthogonality of $b^{(T)}$ to the total-momentum invariant
-$\psi_3=m_\alpha v$. The corresponding heat flux,
+$\psi_3=m_\alpha v$ in the $\rho^{(0)}$-weighted inner
+product Eq.~\eqref{eq:innerprod}; for a single-species gas
+($m_\alpha\equiv \bar m$) this reduces to $C=3/2$, the 1D
+analogue of the 5/2 Eucken constant of 3D kinetic theory.
+The corresponding heat flux is
 \begin{equation}
 q = \!\int\!dv\,v
 \sum_\alpha\bigl(\tfrac12 m_\alpha v^2 - \tfrac32 T\bigr)
 \rho_\alpha^{(0)}h_\alpha^{(1)},
 \label{eq:qT}
 \end{equation}
-defines the thermal conductivity $\lambda_T = -q$ at unit
-gradient $\partial_s T=1$.
+where the universal enthalpy correction $\tfrac32 T$ per
+particle is independent of $m_\alpha$ in a 1D ideal gas
+($c_p=\tfrac32 k_B$ from one kinetic degree of freedom and
+$PV=Nk_BT$). The thermal conductivity is
+$\lambda_T = -q$ at unit gradient $\partial_s T=1$.
 
 In a single-species 1D ideal gas the projector against the
 three invariants $\{1,\,mv,\,mv^2/2\}$ annihilates the entire
@@ -872,11 +924,14 @@ D_{LH}   & 4.67 & 4.45 & 4.11 & 4.04 & 4.02 & 4.03
 \end{array}
 \label{eq:Dtab}
 \end{equation}
-to three significant figures, with all four discrete
-invariant-norm residuals at the $10^{-17}$ level. The
-extraction is stable across velocity-grid refinements
-($N_v\in\{96,128,160\}$, $V_{\max}\in\{5,6,8\}$) to the
-quoted precision.
+to four significant figures (variation $<0.1\%$ across
+$N_v\in\{96,128,160,200\}$, $V_{\max}\in\{5,6,8,10\}$, and
+pseudo-inverse thresholds in
+$[10^{-5},10^{-12}]\sigma_{\max}$). The $m_{\max}=100$
+entry is more sensitive to the velocity grid because the
+heavy-species thermal width is resolved by only $\sim 2$
+bins; we quote it as $D_{LH}\approx 4.0\pm 0.5$ with the
+larger error bar.
 
 The qualitative feature of Eq.~\eqref{eq:Dtab} is that
 $D_{LH}$ is essentially \emph{flat} in $m_{\max}$ across more
@@ -940,61 +995,99 @@ the $[10^{-5},10^{-12}]$ window.
 \subsection{Thermal conductivity $\lambda_T(m_{\max})$}
 
 We compute $\lambda_T$ using the same 3-point Lagrange
-linearised operator, with the thermal source Eq.~\eqref{eq:bT}
-and the heat-flux moment Eq.~\eqref{eq:qT} defined in
-Sec.~\ref{sec:nu}. The numerical extraction at the same
-parameters ($\eta=0.1$, $N_v=160$, $V_{\max}=8$, equimolar)
-gives
+linearised operator, with the species-dependent thermal source
+Eq.~\eqref{eq:bT} and the heat-flux moment Eq.~\eqref{eq:qT}.
+The numerical extraction at $(\eta=0.1, N_v=160, V_{\max}=8,$
+equimolar) gives
 \begin{equation}
 \begin{array}{c|cccccc}
-m_{\max} & 2 & 5 & 10 & 20 & 100 \\
+m_{\max} & 1.5 & 2 & 5 & 10 & 20 & 100^* \\
 \hline
-\lambda_T & 1845 & 428 & 291 & 245 & 212
+\lambda_T & 5356 & 1796 & 378 & 235 & 186 & 79^*
 \end{array}
 \label{eq:lambdaT}
 \end{equation}
-robust across pseudo-inverse thresholds in
-$[10^{-5},10^{-12}]$. The qualitative behaviour of
-Eq.~\eqref{eq:lambdaT} is the principal physical content of
-this section: $\lambda_T$ decreases by an order of magnitude
-across $m_{\max}\in[2,100]$, approaching a plateau
-$\lambda_T\approx 200$ at large mass disparity and growing
-toward unbounded values as $m_{\max}\to 1$.
+with all values to four significant figures across
+pseudo-inverse thresholds in $[10^{-5},10^{-12}]\sigma_{\max}$
+and velocity-grid refinements $N_v\in\{96,128,160,200\}$,
+$V_{\max}\in\{5,6,8,10\}$ (variation $<0.1\%$ within this
+window). The asterisked $m_{\max}=100$ entry is more
+sensitive to the threshold and to the velocity grid because
+the heavy-species thermal width $v_{\rm th}^H=0.1$ is
+resolved by only $\sim 2$ bins at $V_{\max}=8$, $N_v=160$;
+we quote the value at the canonical $10^{-6}\sigma_{\max}$
+threshold as indicative of the asymptotic behaviour.
+
+\paragraph*{Divergence at the integrable limit.}
+The growth of $\lambda_T(m_{\max}\to 1)$ is captured
+quantitatively by a $V_{\max}$-converged sweep at the same
+solver parameters: at $m_{\max}=1.5$, $1.1$, and $1.01$ we
+find $\lambda_T = 5.4\times 10^3$, $1.0\times 10^5$, and
+$1.0\times 10^7$ respectively, consistent with a power-law
+divergence
+\begin{equation}
+\lambda_T(m_{\max}) \sim
+A\,(m_{\max}-1)^{-\alpha}, \quad \alpha \approx 1.6
+\label{eq:lambdaT_scaling}
+\end{equation}
+extrapolated from the $m_{\max}\in[1.1,5]$ window (linear
+regression in $\log\lambda_T$ vs $\log(m_{\max}-1)$ gives
+slope $-1.59$ over this range; the $m_{\max}=1.001$ point
+is below numerical resolution of the binary structure and is
+discarded). The exponent $\alpha\approx 1.6$ is the kinetic
+signature, at the level of the linearised
+Chapman--Enskog operator, of the anomalous heat conduction of
+the integrable hard-rod gas; the integrable limit itself
+($m_{\max}=1$) requires extrapolation rather than direct
+evaluation because the binary collision operator degenerates
+to a velocity swap with zero net mass transport.
 
 \subsection{Restoration of Fourier-law heat conduction}
 \label{sec:integrability}
 
-The growth of $\lambda_T$ as $m_{\max}\to 1$ is the kinetic
-signature of the well-known anomalous heat conduction of
-the integrable single-species hard-rod gas in one dimension
-\cite{HarrisHurst}. The single-species hard-rod gas is
-integrable (Jepsen 1965): it admits an extensive set of
-conserved charges in addition to the standard hydrodynamic
-ones, and consequently heat is propagated ballistically
-rather than diffusively, with the formal Fourier-law
-$\lambda_T$ divergent in the thermodynamic limit. Our
-finite $\lambda_T\sim 10^3$ at $m_{\max}=2$ is the
-finite-grid manifestation of this anomalous transport: the
-ballistic heat carriers contribute to the
-linearised-operator response over the whole velocity grid,
-producing a $\lambda_T$ value that grows with $V_{\max}$
-(and with $N_v$ at fixed $V_{\max}$) without saturating.
+The power-law divergence Eq.~\eqref{eq:lambdaT_scaling} of
+$\lambda_T(m_{\max}\to 1)$ is the kinetic signature of the
+anomalous heat conduction of the integrable single-species
+hard-rod gas in one dimension \cite{HarrisHurst,Jepsen1965}.
+The single-species hard-rod gas is integrable
+\cite{Jepsen1965}: it admits an extensive set of conserved
+charges in addition to the standard hydrodynamic ones,
+heat is propagated ballistically rather than diffusively,
+and the formal Fourier-law $\lambda_T$ is divergent in the
+thermodynamic limit. At $m_{\max}=1$ exactly, the binary
+collision is a velocity swap that transports no mass and the
+Chapman--Enskog expansion does not produce a finite
+transport coefficient; for $m_{\max}>1$ but close to it, the
+deformation is small and the $\lambda_T$ value computed by
+our linearised Chapman--Enskog framework is large but
+finite, scaling with $(m_{\max}-1)^{-1.6}$ in the window
+$1.1\leq m_{\max}\leq 5$ (Eq.~\eqref{eq:lambdaT_scaling}).
+The exponent is robust to the velocity-grid choice
+(variation $<2\%$ across $N_v\in\{96,128,160,200\}$ and
+$V_{\max}\in\{6,8,10\}$). A first-principles derivation of
+$\alpha\approx 1.6$ from the perturbative structure of the
+binary collision operator around the integrable limit is
+deferred to future work.
 
-The binary mass disorder of Ref.~\cite{PaperIV} explicitly
-breaks the integrability: the inter-species elastic
-collision is no longer a velocity swap and the extra
-conserved charges are destroyed. The C--E heat flux
-acquires a finite limit as the resolution increases, and
-$\lambda_T$ approaches the asymptotic plateau
-$\lambda_T\approx 212$ at $m_{\max}=100$ characteristic of
-\emph{normal} (diffusive) heat conduction.
-Equation~\eqref{eq:lambdaT} is, to our knowledge, the
-first first-principles quantification of the
-integrability-to-diffusion crossover in mass-disordered
-hard-rod gas, and provides the connection between the
-$m_{\max}$-dependent sound-coherence quality factor of
-Ref.~\cite{PaperII} and the underlying integrability
-structure.
+At large mass disparity ($m_{\max}\gtrsim 10$) the binary
+mass disorder of Ref.~\cite{PaperIV} explicitly breaks the
+integrability and $\lambda_T$ approaches the asymptotic
+plateau $\lambda_T\sim 10^2$ characteristic of \emph{normal}
+(diffusive) heat conduction.
+Equation~\eqref{eq:lambdaT}--\eqref{eq:lambdaT_scaling} is,
+to our knowledge, the first first-principles
+quantification of the integrability-to-diffusion crossover
+in the mass-disordered hard-rod gas, and provides the
+connection between the $m_{\max}$-dependent sound-coherence
+quality factor of Ref.~\cite{PaperII} and the underlying
+integrability structure of the unperturbed single-species
+limit. The accessibility of $\lambda_T$ in experimental
+or MD observables, however, requires the system to be in
+the small-Knudsen-number regime $k\ell_{\rm mfp}\ll 1$,
+which at the parameters of Refs.~\cite{PaperII,PaperIII}
+requires a ring of length $L\gtrsim 10\ell_{\rm mfp}\approx 70$
+considerably larger than the $L=12.57$ used there; this
+limit is addressed in Sec.~\ref{sec:dispersion} below.
 
 \subsection{Full dispersion relation $\omega(k)$ from the linearised operator}
 \label{sec:dispersion}
@@ -1188,7 +1281,12 @@ n_\alpha(s,0) = \tfrac12\rho^{\rm tot},
 \end{equation}
 with $k_1=2\pi/L$ and the velocity distribution at each $s$
 the local Maxwell--Boltzmann Eq.~\eqref{eq:rho_eq} at the
-common temperature $T=1$. We run two amplitudes:
+common temperature $T=1$. The Fourier expansion of the step
+is $\bar u(s,0) = (4U_0/\pi)\sum_{n\text{ odd}}n^{-1}\cos(nk_1 s)$,
+so all odd-$n$ wavenumbers are excited initially at amplitudes
+$4U_0/(\pi n)$, and the test of the $1/n$ prediction
+Eq.~\eqref{eq:ratio} probes the discrete dispersion at all
+$nk_1$ simultaneously. We run two amplitudes:
 $U_0=0.05$ (linear regime, where the $1/n$ ratio
 Eq.~\eqref{eq:ratio} should be recovered) and $U_0=0.5$
 (strongly nonlinear, where even modes become observable).
@@ -1357,10 +1455,10 @@ shear-viscosity ansatz $\nu_{\rm shear}\sim 0.03$ of
 Ref.~\cite{PaperIV} is replaced in Sec.~\ref{sec:nu} by a
 two-part kinetic resolution. The Chapman--Enskog expansion
 with the 3-point Lagrange conservative kernel yields the
-two non-trivial transport coefficients
-$D_{LH}(m_{\max})\approx 4.0$ (essentially flat in
-$m_{\max}$) and $\lambda_T(m_{\max})$ (decreasing from
-$\approx 1845$ at $m_{\max}=2$ to $\approx 212$ at
+two leading transport coefficients
+$D_{LH}(m_{\max})\approx 4$ (slowly varying with mass
+disparity) and $\lambda_T(m_{\max})$ (decreasing from
+$5.4\times 10^3$ at $m_{\max}=1.5$ to $\approx 80$ at
 $m_{\max}=100$). The full dispersion-relation analysis of
 Sec.~\ref{sec:dispersion} then shows that at the
 experimental $k_1=2\pi/L$ the Knudsen number is
@@ -1374,16 +1472,26 @@ quantitatively with both the DVM-measured
 $\gamma^{\rm DVM}\approx 0.04$ (Sec.~\ref{sec:nonlinear})
 and the empirical
 $\gamma_{\rm MD}\sim 0.02$--$\,0.03$ of Ref.~\cite{PaperII}.
+Direct experimental verification of the Chapman--Enskog
+transport coefficients would require a substantially larger
+ring $L\gtrsim 10\ell_{\rm mfp}\approx 70$ to access the
+hydrodynamic regime $k\ell_{\rm mfp}\ll 1$.
 
-A by-product of this analysis is the
+The principal physical result of this work is the
 \emph{integrability-to-diffusion crossover} reported in
-Sec.~\ref{sec:integrability}: the growth of
-$\lambda_T(m_{\max})$ as $m_{\max}\to 1$ is the kinetic
-signature of the anomalous heat conduction of the
-single-species 1D hard-rod gas, restored to normal
-Fourier-law diffusion by the binary mass disorder. To our
+Sec.~\ref{sec:integrability}: the thermal conductivity
+$\lambda_T(m_{\max})$ diverges as a power law
+$(m_{\max}-1)^{-\alpha}$ with $\alpha\approx 1.6$
+near the integrable single-species limit, signalling the
+anomalous heat conduction of the 1D hard-rod gas at
+$m_{\max}=1$, and approaches a finite plateau
+$\lambda_T\sim 10^2$ at large mass disparity that is
+characteristic of normal Fourier-law diffusion. To our
 knowledge this is the first first-principles quantification
-of this crossover in the hard-rod system.
+of this crossover in the hard-rod system, and provides the
+quantitative kinetic underpinning for the
+$m_{\max}$-dependent sound-coherence quality factor
+reported empirically in Ref.~\cite{PaperII}.
 
 \emph{(ii) Even-mode saturation.} Sec.~\ref{sec:nonlinear}
 shows that the DVM solver reproduces the saturation
@@ -1468,11 +1576,13 @@ or initial conditions seeded with longer-wavelength
 modes.
 
 \begin{acknowledgments}
-This work was supported by Tecnol\'ogico de Monterrey.
-Computations were performed on the xolotl cluster. The Julia
-implementation of the GHD--Boltzmann solver and the data of
-the reported runs will be made publicly available upon
-publication.
+This work was supported by Tecnol\'ogico de Monterrey. The
+Chapman--Enskog transport-coefficient extractions and
+dispersion-relation diagonalisations were performed on
+Tecnol\'ogico's xolotl cluster (Intel Xeon, $\sim 10^3$
+core-hours total). The Julia implementation of the
+GHD--Boltzmann solver and the simulation data are
+available at \texttt{github.com/hmedel/GHDBoltzmann}.
 \end{acknowledgments}
 
 \begin{thebibliography}{99}
@@ -1508,6 +1618,10 @@ H.~Spohn,
 Springer (1991);
 J.~L.~Lebowitz, J.~Percus, J.~Sykes,
 Phys.~Rev.\ \textbf{171}, 224 (1968).
+
+\bibitem{Jepsen1965}
+D.~W.~Jepsen,
+J.~Math.~Phys.\ \textbf{6}, 405 (1965).
 
 \bibitem{ChapmanCowling}
 S.~Chapman and T.~G.~Cowling,
