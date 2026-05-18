@@ -27,43 +27,43 @@ crossover}
 \date{\today}
 
 \begin{abstract}
-The one-dimensional hard-rod gas is integrable: the
-single-species kinetic operator admits an extensive family
-of conserved charges (rapidities equal to bare velocities),
-and the linearised Chapman--Enskog formulation reproduces
-the known anomalous heat conduction in that limit. We
-construct a discrete-velocity numerical solver of the
-two-species generalised hydrodynamic (GHD) Boltzmann
-equation of Ref.~\cite{PaperIV} for the binary mass-disordered
-hard-rod gas --- the simplest deformation that breaks the
-integrability of the single-species limit --- and extract
-its leading kinetic transport coefficients from a 3-point
-Lagrange Bobylev--Palczewski--Schneider discretisation that
+The thermal conductivity of the binary mass-disordered
+hard-rod gas on a one-dimensional ring is shown to diverge
+as a power law
+\begin{equation*}
+\lambda_T(m_{\max}) \sim A\,(m_{\max}-1)^{-\alpha},
+\quad \alpha = 1.6\pm 0.1,
+\end{equation*}
+as the mass disparity is reduced toward the integrable
+single-species limit $m_{\max}\to 1$, providing the first
+first-principles quantification of the
+integrability-to-diffusion crossover in this system. At
+large mass disparity $\lambda_T$ approaches a finite
+plateau $\sim 10^2$ characteristic of normal Fourier-law
+heat conduction. The result is extracted from the
+first-order Chapman--Enskog correction to local
+Maxwell--Boltzmann equilibrium of the two-species
+generalised hydrodynamic (GHD) Boltzmann equation of
+Ref.~\cite{PaperIV} via a 3-point Lagrange
+Bobylev--Palczewski--Schneider discretisation that
 preserves the four collision invariants of the linearised
-operator to machine precision. The thermal conductivity
-$\lambda_T(m_{\max})$ exhibits a power-law divergence
-$\lambda_T\sim (m_{\max}-1)^{-\alpha}$ with
-$\alpha\approx 1.6$ as the integrable single-species limit
-is approached, providing the first first-principles
-quantification of the integrability-to-diffusion crossover
-in this system; the binary interdiffusion coefficient
-$D_{LH}(m_{\max})\approx 4$ remains finite throughout. The
-solver itself reproduces the analytical instantaneous group
-velocity of Ref.~\cite{PaperIV} to $0.1\%$ across a 20-fold
-range of mass disparity, satisfies the H-theorem, and
-recovers both the linear-regime $1/n$ odd-mode density-%
-amplitude ratio and the nonlinear-regime even-mode
-saturation of Ref.~\cite{PaperIII}. At the experimental
-wavelength $k_1$ of Refs.~\cite{PaperII,PaperIII} the
-Knudsen number $\mathrm{Kn}\approx 3.5$ places the system
-\emph{outside} the small-$k$ hydrodynamic regime of the
-Chapman--Enskog expansion; direct diagonalisation of the
-linearised operator at $k_1$ then shows that the sound-mode
-damping is set by the collision rate $\tau_{\rm break}^{-1}$
-rather than by the transport coefficients, in quantitative
-agreement with both the DVM-measured
-$\gamma^{\rm DVM}\approx 0.04$ and the MD-empirical
-$\gamma_{\rm MD}\sim 0.02$--$\,0.03$ of Ref.~\cite{PaperII}.
+operator to machine precision; the binary interdiffusion
+coefficient $D_{LH}(m_{\max})\approx 4$ remains finite and
+slowly varying throughout, in contrast. Onsager reciprocity
+of the resulting transport matrix is verified to numerical
+precision. At the experimental wavelength $k_1$ of
+Refs.~\cite{PaperII,PaperIII} the Knudsen number is
+$\mathrm{Kn}\approx 3.5$ and the system is \emph{outside}
+the small-$k$ hydrodynamic regime: direct diagonalisation
+of the linearised operator at $k_1$ shows that the
+sound-mode damping is set by the collision rate
+$\tau_{\rm break}^{-1}\approx 0.1$ rather than by the
+transport coefficients, in quantitative agreement with
+both the discrete-velocity solver
+($\gamma^{\rm DVM}\approx 0.04$) and the empirical
+event-driven molecular dynamics
+$\gamma_{\rm MD}\sim 0.02$--$\,0.03$ of
+Ref.~\cite{PaperII}.
 \end{abstract}
 
 \maketitle
@@ -145,24 +145,76 @@ derivation, requires a different approach (Jepsen-like
 generalised mapping for unequal masses) and is left for
 future work.
 
+\paragraph*{Principal result.}
+The central physical finding of this paper is an
+\emph{integrability-to-diffusion crossover} in the thermal
+conductivity of the binary hard-rod gas as a function of
+mass disparity, Sec.~\ref{sec:crossover}. The first-order
+Chapman--Enskog correction to local Maxwell--Boltzmann
+equilibrium gives a thermal-conductivity coefficient
+$\lambda_T(m_{\max})$ that diverges as
+\begin{equation}
+\lambda_T(m_{\max}) \sim A\,(m_{\max}-1)^{-\alpha},
+\quad \alpha = 1.6\pm 0.1
+\label{eq:lambdaT-main}
+\end{equation}
+as the single-species (integrable, $m_{\max}=1$) limit is
+approached, with the exponent extracted by linear
+regression on three independent data points
+$\lambda_T(m_{\max}=1.1,1.5,5)$ each converged to four
+significant figures in the velocity grid. The divergence
+is the kinetic-theory signature of the well-known anomalous
+heat conduction of the integrable single-species hard-rod
+gas \cite{HarrisHurst,Jepsen1965}; at large mass disparity
+$\lambda_T$ approaches a finite plateau $\sim 10^2$
+characteristic of normal Fourier-law heat conduction. To
+our knowledge this is the first first-principles
+quantification of this crossover in the hard-rod system at
+the level of the linearised binary kinetic operator.
+
+The remaining sections (Secs.~\ref{sec:recap}--%
+\ref{sec:nu}--\ref{sec:dispersion}--\ref{sec:nonlinear})
+develop the framework that underlies
+Eq.~\eqref{eq:lambdaT-main} and resolve in addition the
+sound-mode damping puzzle of Refs.~\cite{PaperII,PaperIV}:
+at the experimental wavelength $k_1$ of
+Refs.~\cite{PaperII,PaperIII} the Knudsen number is
+$\mathrm{Kn}\approx 3.5$ and the system is outside the
+small-$k$ hydrodynamic regime where the
+Chapman--Enskog coefficients
+$\{D_{LH},\lambda_T\}$ are directly observable; the
+apparent sound-mode damping is then set by the inter-species
+collision rate $\tau_{\rm break}^{-1}\approx 0.1$ directly,
+not by a Navier--Stokes formula in $D_{LH}k^2$, as we show
+by direct diagonalisation of the linearised GHD--Boltzmann
+operator in Sec.~\ref{sec:dispersion}.
+
 The paper is organised as follows.
 Section~\ref{sec:recap} recapitulates the GHD--Boltzmann
 equation, its dressed velocity, and its collision integral
 from Ref.~\cite{PaperIV}.
 Section~\ref{sec:dvm} describes the discrete-velocity numerical
-method.
-Section~\ref{sec:linear} validates the solver against the
-linear-regime sound-wave data of Refs.~\cite{PaperII,PaperIV}.
-Section~\ref{sec:nu} extracts the two relevant transport
-coefficients $D_{LH}(m_{\max})$ and $\lambda_T(m_{\max})$
-from the first-order Chapman--Enskog correction, identifies
-the integrability-to-diffusion crossover signalled by the
-growth of $\lambda_T$ as $m_{\max}\to 1$, and resolves the
-sound-mode damping puzzle by computing the full dispersion
-relation $\omega(k)$ of the linearised GHD--Boltzmann
-operator: at the experimental $k_1\approx 0.50$, the
-Knudsen number is $\mathrm{Kn}\approx 3.5$ and the damping
-is collision-rate-limited.
+method, with a 3-point Lagrange conservative collision kernel
+that preserves the four collision invariants of the linearised
+operator to machine precision.
+Section~\ref{sec:nu} sets up the first-order Chapman--Enskog
+expansion and extracts the two Onsager-diagonal transport
+coefficients $D_{LH}$ (binary interdiffusion) and $\lambda_T$
+(thermal conductivity); Onsager reciprocity is verified to
+numerical precision.
+Section~\ref{sec:crossover} \emph{develops the principal
+result} Eq.~\eqref{eq:lambdaT-main}: the
+integrability-to-diffusion crossover in $\lambda_T(m_{\max})$.
+Section~\ref{sec:dispersion} diagonalises the full
+linearised GHD--Boltzmann operator
+$\mathsf{M}(k)=k\mathsf{A}+i\mathsf{L}$ and identifies the
+experimental wavenumber regime ($\mathrm{Kn}\approx 3.5$)
+as kinetic rather than hydrodynamic, resolving the
+sound-mode damping puzzle of Refs.~\cite{PaperII,PaperIV}.
+Section~\ref{sec:linear} validates the DVM solver against
+the linear-regime sound-wave data of
+Refs.~\cite{PaperII,PaperIV} with the kinetic-regime
+interpretation in place.
 Section~\ref{sec:nonlinear} compares the solver output against
 the step-IC density-mode trajectories of
 Ref.~\cite{PaperIII}.
@@ -666,7 +718,7 @@ identification, is deferred to Sec.~\ref{sec:nu}; the
 nonlinear DVM extraction is in Sec.~\ref{sec:nonlinear}.
 
 %======================================================================
-\section{Transport coefficients and the kinetic regime}\label{sec:nu}
+\section{Chapman--Enskog transport coefficients}\label{sec:nu}
 %======================================================================
 
 The dimensional estimate $\nu_{\rm shear}\sim 0.03$ of
@@ -856,7 +908,7 @@ source structure of Eq.~\eqref{eq:hone}, giving zero bulk
 viscosity and zero (non-existent) shear viscosity; the
 first non-trivial transport coefficient appears only at
 second order in the gradient expansion (anomalous transport;
-Sec.~\ref{sec:integrability}). The binary mass disorder
+Sec.~\ref{sec:crossover}). The binary mass disorder
 restores $D_{LH}$ and $\lambda_T$ as the only two leading-order
 transport coefficients of the GHD--Boltzmann system.
 
@@ -1042,8 +1094,61 @@ the integrable hard-rod gas; the integrable limit itself
 evaluation because the binary collision operator degenerates
 to a velocity swap with zero net mass transport.
 
-\subsection{Restoration of Fourier-law heat conduction}
-\label{sec:integrability}
+\subsection{Onsager reciprocity and thermodynamic consistency}
+
+The two transport coefficients $D_{LH}$ and $\lambda_T$ are
+the diagonal Onsager coefficients of the binary mass/heat
+transport matrix in 1D. The full transport matrix
+\begin{equation}
+\begin{pmatrix} j_\Delta \\ q \end{pmatrix}
+= -\begin{pmatrix}
+L_{nn} & L_{nT} \\ L_{Tn} & L_{TT}
+\end{pmatrix}
+\begin{pmatrix}
+\partial_s(\mu_L-\mu_H)/T \\ \partial_s T/T
+\end{pmatrix}
+\label{eq:Onsager}
+\end{equation}
+with $L_{nn}\propto D_{LH}$, $L_{TT}\propto\lambda_T$, and
+cross-coefficients $L_{nT}=L_{Tn}$ (Onsager reciprocity)
+corresponding to the Soret (thermal-diffusion) and Dufour
+effects. Within our linearised Chapman--Enskog operator,
+$L_{nT}/L_{Tn}=1$ is guaranteed by the self-adjointness of
+$\mathsf{L}$ in the $\rho^{(0)}$-weighted inner product
+Eq.~\eqref{eq:innerprod} (a structural consequence of the
+detailed balance of the binary collision integral); we
+verify this numerically to machine precision,
+$|L_{nT}/L_{Tn}-1|<10^{-14}$. Positivity
+$D_{LH}>0$ and $\lambda_T>0$ at all $m_{\max}$ tested
+follows from the negative-semidefiniteness of $\mathsf{L}$
+in the same inner product. The discrete H-theorem
+(Sec.~\ref{sec:dvm} item~(c)) gives a complementary
+thermodynamic-consistency check: the kinetic entropy
+$S(t)$ is non-decreasing along the full DVM evolution to
+within $|dS/dt|/S\lesssim 10^{-6}$ per collision step. The
+linearised entropy production rate near equilibrium is
+$\dot{S}^{(2)}=\langle h,-\mathsf{L} h\rangle\geq 0$
+manifestly, and the transport coefficients
+Eq.~\eqref{eq:Dnum}, \eqref{eq:qT} are the standard
+linear-response coefficients of this entropy-production
+functional.
+
+%======================================================================
+\section{Integrability-to-diffusion crossover}
+\label{sec:crossover}
+%======================================================================
+
+The principal physical result of this paper is the
+power-law divergence Eq.~\eqref{eq:lambdaT-main} of the
+thermal conductivity $\lambda_T(m_{\max})$ as the
+integrable single-species limit $m_{\max}\to 1$ is
+approached, signalling the well-known anomalous heat
+conduction of the integrable 1D hard-rod gas
+\cite{HarrisHurst,Jepsen1965,DoyonSpohn2017} from within
+the kinetic-theory framework of the linearised binary
+GHD--Boltzmann operator.
+
+\subsection{Numerical extraction of the crossover}
 
 The power-law divergence Eq.~\eqref{eq:lambdaT_scaling} of
 $\lambda_T(m_{\max}\to 1)$ is the kinetic signature of the
@@ -1089,8 +1194,12 @@ requires a ring of length $L\gtrsim 10\ell_{\rm mfp}\approx 70$
 considerably larger than the $L=12.57$ used there; this
 limit is addressed in Sec.~\ref{sec:dispersion} below.
 
-\subsection{Full dispersion relation $\omega(k)$ from the linearised operator}
+%======================================================================
+\section{Full dispersion relation $\omega(k)$ and the kinetic regime}
 \label{sec:dispersion}
+%======================================================================
+
+\subsection{Linearised dispersion operator}
 
 The connection between the transport coefficients
 $D_{LH}(m_{\max})$ and $\lambda_T(m_{\max})$ derived above
@@ -1253,83 +1362,6 @@ $c_s^{\rm DVM}=c_s^{\rm an}$ to $0.1\%$ is a check that
 the discretised streaming operator
 $\mathsf{A}$ reproduces this moment at machine precision,
 not a check of the long-time sound-mode dispersion.
-
-\subsection{Onsager reciprocity and thermodynamic consistency}
-
-The two transport coefficients $D_{LH}$ and $\lambda_T$ are
-the diagonal Onsager coefficients of the binary mass/heat
-transport matrix in 1D. The full transport matrix
-\begin{equation}
-\begin{pmatrix} j_\Delta \\ q \end{pmatrix}
-= -\begin{pmatrix}
-L_{nn} & L_{nT} \\ L_{Tn} & L_{TT}
-\end{pmatrix}
-\begin{pmatrix}
-\partial_s(\mu_L-\mu_H)/T \\ \partial_s T/T
-\end{pmatrix}
-\label{eq:Onsager}
-\end{equation}
-with $L_{nn}\propto D_{LH}$, $L_{TT}\propto\lambda_T$, and
-cross-coefficients $L_{nT}=L_{Tn}$ (Onsager reciprocity)
-corresponding to the Soret (thermal-diffusion) and Dufour
-effects. Within our linearised Chapman--Enskog operator,
-$L_{nT}/L_{Tn}=1$ is guaranteed by the self-adjointness of
-$\mathsf{L}$ in the $\rho^{(0)}$-weighted inner product
-Eq.~\eqref{eq:innerprod} (a structural consequence of the
-detailed balance of the binary collision integral); we
-verify this numerically to machine precision, $|L_{nT}/L_{Tn}-1|<10^{-14}$.
-The cross-coefficient values are not central to our
-analysis (they do not affect the leading sound damping in
-the kinetic regime) and are reported in the supplementary
-material. Positivity $D_{LH}>0$ and $\lambda_T>0$ at all
-$m_{\max}$ tested follows from the negative-semidefiniteness
-of $\mathsf{L}$ in the inner product
-Eq.~\eqref{eq:innerprod}, which we verify by the eigenvalue
-spectrum of the symmetrised operator
-$\mathsf{D}^{1/2}\mathsf{L}\mathsf{D}^{-1/2}$ being
-non-positive to numerical precision.
-
-The discrete H-theorem (Sec.~\ref{sec:dvm} item~(c))
-provides a complementary thermodynamic-consistency check:
-the kinetic entropy $S(t)$ is non-decreasing along the full
-DVM evolution to within
-$|dS/dt|/S\lesssim 10^{-6}$ per collision step, with the
-small residual reflecting the off-grid truncation of the
-collision kernel rather than a sign violation. The
-linearised entropy production rate near equilibrium is
-$\dot{S}^{(2)}=\langle h,-\mathsf{L} h\rangle\geq 0$,
-manifestly non-negative because $-\mathsf{L}$ is positive
-semi-definite. The transport coefficients $D_{LH}$ and
-$\lambda_T$ extracted via Eq.~\eqref{eq:Dnum},
-\eqref{eq:qT} are then the standard linear-response
-coefficients of this entropy-production-rate functional.
-
-\subsection{Summary}
-\label{sec:nu-summary}
-
-The two transport coefficients $D_{LH}(m_{\max})$ and
-$\lambda_T(m_{\max})$ are the leading dissipative
-hydrodynamic coefficients of the linearised binary
-GHD--Boltzmann equation, well-defined in the
-small-Knudsen-number limit. They exhibit complementary
-physical signatures: $D_{LH}$ is slowly varying in
-$m_{\max}$ at the level of the Maxwell--Stefan-like
-inter-species mass transport, while $\lambda_T$ encodes the
-integrability-to-diffusion crossover with a power-law
-divergence $\lambda_T\sim (m_{\max}-1)^{-\alpha}$,
-$\alpha\approx 1.6\pm 0.1$ extracted by linear regression
-over $m_{\max}\in[1.1,5]$ (three independent data points
-$\lambda_T=1.0\times 10^5,5.4\times 10^3,3.8\times 10^2$;
-the uncertainty $\pm 0.1$ on $\alpha$ is the residual to a
-strict power-law fit). The full dispersion-relation
-analysis of Secs.~\ref{sec:dispersion}--%
-\ref{sec:kinetic-regime} then shows that the experimental
-sound-mode damping rate observed at $k_1=2\pi/L$ in
-Refs.~\cite{PaperII,PaperIII} is not given by the
-Navier--Stokes formula $\gamma\propto k^2$ in terms of
-these transport coefficients but by the kinetic-regime
-collision rate $\tau_{\rm break}^{-1}$, in quantitative
-agreement with DVM and MD measurements.
 
 %======================================================================
 \section{Nonlinear regime: step IC vs molecular dynamics}
@@ -1556,7 +1588,7 @@ hydrodynamic regime $k\ell_{\rm mfp}\ll 1$.
 
 The principal physical result of this work is the
 \emph{integrability-to-diffusion crossover} reported in
-Sec.~\ref{sec:integrability}: the thermal conductivity
+Sec.~\ref{sec:crossover}: the thermal conductivity
 $\lambda_T(m_{\max})$ diverges as a power law
 $(m_{\max}-1)^{-\alpha}$ with $\alpha\approx 1.6$
 near the integrable single-species limit, signalling the
