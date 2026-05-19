@@ -67,10 +67,22 @@ response gives a Fourier ratio
 $|\hat\rho_n|/|\hat\rho_1|=1/n$ that decays with $n$ rather
 than the constant ratio characteristic of a Burgers cascade.
 
-Vehicular traffic, by contrast, exhibits robust shock-like
-jam waves~\cite{Sugiyama2008}, well-described at the continuum
-level by Lighthill--Whitham--Richards
-theory~\cite{Lighthill1955} and at the car-following level by
+Vehicular traffic, by contrast, exhibits coherent
+backward-propagating jam waves~\cite{Sugiyama2008} that are
+sharply localised at the macroscopic scale and propagate
+without dispersing for tens of car lengths. These are not
+Rankine--Hugoniot shocks in the gas-dynamic sense
+(propagating discontinuities of an inviscid Euler system)
+but rather long-lived nonlinear coherent structures of the
+underlying driven dissipative car-following dynamics, with
+a sharp upstream front whose width is set by the
+reaction-time delay and a slow downstream relaxation. Both
+features --- the steep front and the inability of the
+elastic hard-rod gas to produce a comparable steepening
+event (Ref.~\cite{PaperIII}) --- motivate the construction
+below. The Lighthill--Whitham--Richards
+theory~\cite{Lighthill1955} provides the continuum-level
+caricature and at the car-following level by
 the Optimal Velocity Model
 \cite{Bando1995,Komatsu1995,Komatsu2003} or the Intelligent
 Driver Model~\cite{Treiber2000}. The missing ingredient
@@ -146,13 +158,21 @@ elastic limit $\epsilon=0$ recovers the dynamics of
 Ref.~\cite{PaperIII,PaperIV}; the fully inelastic limit
 $\epsilon=1$ corresponds to perfectly sticky contacts.
 
-\emph{(b) Reaction-time delay $\tau_r$.} The delay force
-$F_i^{\rm delay}$ encodes the driver-like response to a
-neighbour state $\tau_r$ in the past,
-$F_i^{\rm delay}=F[v_i(t),v_{i+1}(t-\tau_r),s_{i+1}(t-\tau_r)
--s_i(t)]$. This breaks instantaneous reversibility and is
-the canonical traffic-model ingredient
-\cite{Bando1995,Treiber2000}.
+\emph{(b) Reaction-time delay $\tau_r$.} For the hard-rod
+gas, where the only microscopic interaction is contact
+collision, the delay is implemented at the level of the
+collision rule rather than as a continuous force: the
+post-collision velocity update of rod $i$ at contact event
+$t_c$ takes effect only at time $t_c+\tau_r$, with $i$
+continuing on its pre-collision trajectory in the interval
+$(t_c,t_c+\tau_r)$ (the explicit numerical protocol is in
+Sec.~\ref{sec:numerical}). This is the hard-rod analogue
+of the reaction-time delay of the Optimal Velocity Model
+and the Intelligent Driver Model
+\cite{Bando1995,Treiber2000}; the symbolic
+$F_i^{\rm delay}$ in Eq.~\eqref{eq:micro2} stands for this
+deferred collision rule and breaks instantaneous
+reversibility.
 
 \emph{(c) Stochastic forcing $\xi_i$.} The Gaussian noise
 $\xi_i(t)$ models intrinsic driver heterogeneity and external
@@ -227,21 +247,34 @@ Eq.~\eqref{eq:stoch_burgers} to a purely viscous Burgers
 equation that does not develop shocks under the conditions
 of Ref.~\cite{PaperIII}.
 
-\subsection{Density-of-states evolution and KPZ universality}
+\subsection{Density-of-states evolution and the
+KPZ connection}
 
-Equation~\eqref{eq:stoch_burgers} is the velocity-field form
-of the Kardar--Parisi--Zhang (KPZ) equation~\cite{KPZ1986}
+Equation~\eqref{eq:stoch_burgers} has the formal structure
+of the velocity-field form of the
+Kardar--Parisi--Zhang (KPZ) equation~\cite{KPZ1986}
 $\partial_t h = \nu\,\partial_x^2 h + (\partial_x h)^2/2
-+ \sqrt{D}\,\eta$ with $u = -\partial_x h$. The KPZ universality
-class governs the long-wavelength fluctuations of $u$ in the
-mesoscopic regime, and predicts characteristic dynamic
-exponent $z=3/2$ and roughness exponent $\alpha=1/2$ for the
-height field~\cite{Hairer2013,QuastelSpohn2015}. The
-density-of-states function $f(x,v,t)$ of
-Eq.~\eqref{eq:fp} therefore evolves at the mesoscopic scale
-according to a stochastic dynamics in the KPZ universality
-class, whose roughening properties at $u\to$ const
-backgrounds we use as the diagnostic of shock onset
++ \sqrt{D}\,\eta$ with $u = -\partial_x h$, and the KPZ
+universality class governs the long-wavelength
+fluctuations of $u$ provided the driving noise is
+spatially white and short-range correlated in time. The
+explicit derivation of $\eta(x,t)$ from the underlying
+Langevin dynamics
+Eqs.~\eqref{eq:micro1}--\eqref{eq:micro2}
+shows that the externally injected component $\xi_i(t)$
+contributes a $\delta$-correlated noise consistent with
+the KPZ assumption, while the noise contribution from the
+deterministic inelastic collisions is correlated on the
+collision-time scale $\tau_{\rm break}$ and contributes a
+non-white component. The KPZ identification is therefore
+clean in the noise-dominated regime $D\gg D_\epsilon$
+where the external Langevin forcing dominates; in the
+opposite limit $D\ll D_\epsilon$ the effective noise
+inherits collisional correlations, and the long-wavelength
+universality class may deviate from KPZ. The roughening
+properties of Eq.~\eqref{eq:stoch_burgers} at
+$u\to$ const backgrounds — in either regime — provide a
+quantitative diagnostic of shock onset
 (Sec.~\ref{sec:onset}).
 
 \section{Macroscopic level: deterministic Burgers and the
@@ -348,28 +381,32 @@ so the coherent-flow lifetime is additively extended
 + O(\tau_r^2/\tau_{\rm break}),
 \label{eq:tcoh_tau}
 \end{equation}
-to leading order in $\tau_r/\tau_{\rm break}$. The
-$O(\tau_r^2)$ correction arises from the renormalisation of
-the collision frequency at finite delay and is neglected in
-the linear estimate below. Shock onset corresponds to
-$\tau_{\rm coh}(\tau_r)\geq t^*_{\rm shock}$; setting
+in an additive ansatz that neglects renormalisation of the
+collision frequency at finite delay. Shock onset corresponds
+to $\tau_{\rm coh}(\tau_r)\geq t^*_{\rm shock}$; setting
 equality and using
-$t^*_{\rm shock}=1/(k_1 u_0)\approx 1/(0.5\cdot 0.5)=4$
-and the measured
-$\tau_{\rm coh}(0)\approx 1.2$ of Ref.~\cite{PaperIII}
-gives the leading-order threshold
+$t^*_{\rm shock}=1/(k_1 u_0)\approx 1/(0.5\cdot 0.5)=4$ and
+the measured $\tau_{\rm coh}(0)\approx 1.2$ of
+Ref.~\cite{PaperIII} gives the estimate
 \begin{equation}
 \boxed{\;\tau_r^c \;\approx\; t^*_{\rm shock}
 - \tau_{\rm coh}(0) \;\approx\; 4 - 1.2 \;=\; 2.8,\;}
 \label{eq:tauc}
 \end{equation}
-the minimum reaction-time delay required for the Burgers
-cascade to appear at the parameters of
-Ref.~\cite{PaperIII}. The estimate is leading-order in
-$\tau_r/\tau_{\rm break}\approx 0.3$ at $\tau_r^c$, with the
-sub-leading correction of order $30\%$; a tighter
-numerical determination of $\tau_r^c$ is the principal
-target of the protocol of Sec.~\ref{sec:numerical}.
+the order-of-magnitude minimum reaction-time delay
+required for the Burgers cascade to appear at the
+parameters of Ref.~\cite{PaperIII}. We emphasise that
+Eq.~\eqref{eq:tauc} is not a small-parameter expansion: at
+$\tau_r^c=2.8$ and $\tau_{\rm break}\approx 9$ the ratio
+$\tau_r^c/\tau_{\rm break}\approx 0.3$ is $O(1)$, so the
+neglected renormalisation of the collision frequency
+contributes an $O(1)$ multiplicative correction to
+$\tau_r^c$. The boxed estimate should be read as a
+qualitative target near which the numerical sweep of
+Sec.~\ref{sec:numerical} is expected to locate the
+crossover, not as a precise prediction; a tight
+quantitative determination of $\tau_r^c$ is the principal
+target of the protocol below.
 
 \emph{Combined channel.} With both $\epsilon$ and $\tau_r$
 active, Eqs.~\eqref{eq:tcoh_eps}--\eqref{eq:tcoh_tau} compete,
@@ -429,27 +466,40 @@ Eq.~\eqref{eq:tauc}. The principal observable is the
 density-mode amplitude ratio
 $R_n(t)\equiv|\hat\rho_n(t)|/|\hat\rho_1(t)|$ at the first
 local maximum of $|\hat\rho_1|$, evaluated for $n=2,\ldots,7$.
-The diagnostic signature of shock onset is the transition
-of $R_n$ from the $1/n$ structure (linear-regime cascade,
-Ref.~\cite{PaperIV}, no Burgers shock) to a constant-$n$
-plateau $R_n\approx R_*$ characteristic of the
-inviscid-Burgers fixed point of a step IC. Equivalently,
-the cumulant
-$\kappa\equiv R_2 R_4 / R_1 R_3$ vanishes in the
-$1/n$ regime and approaches unity in the Burgers regime
-(triangle inequality for the inviscid-Burgers Fourier
-amplitudes).
+The diagnostic signature of shock onset is the
+\emph{appearance of even modes} of comparable magnitude to
+the odd modes. In the linear regime the step IC excites only
+odd-$n$ wavenumbers Fourier components ($\hat\rho_n=0$ for
+even $n$ at $t=0$) and the GHD--Boltzmann linearised
+dynamics preserves this parity to leading order, giving
+the $R_n\sim 1/n$ cascade restricted to odd $n$
+(Ref.~\cite{PaperIV} and Ref.~\cite{PaperV} Sec.~VIII for
+the explicit even-mode noise floor at $U_0=0.05$). The
+formation of a Burgers shock breaks this parity: at the
+shock face, the locally steep gradient mixes even and odd
+modes through the quadratic $u\,\partial_x u$ nonlinearity,
+yielding even-mode amplitudes that scale as
+$|\hat\rho_{2m}|/|\hat\rho_1|\sim (U_0/c_s)^m$ for the
+$m$-th even harmonic. A clean shock-onset diagnostic is
+therefore the \emph{even-to-odd ratio}
+$R^{\rm e/o}\equiv|\hat\rho_2|/|\hat\rho_3|$ at the first
+maximum of $|\hat\rho_1|$: in the GHD--Boltzmann
+no-shock regime $R^{\rm e/o}\ll 1$ at $U_0=0.5$
+(Ref.~\cite{PaperV} measures $R^{\rm e/o}\approx 0.14$ at
+$U_0=0.5$, i.e.\ even modes still suppressed by an order
+of magnitude), while in the Burgers-shock regime the
+nonlinear mixing pushes $R^{\rm e/o}\to O(1)$.
 
 \paragraph*{Expected result.}
 For $\tau_r<\tau_r^c$: phase mixing pre-empts shock
-formation, the linear-regime cascade $R_n\sim 1/n$ persists
-(consistent with Ref.~\cite{PaperIII}).
-For $\tau_r\approx\tau_r^c$: marginal onset, $R_n$ flattens
-with $n$ but the cascade is incomplete.
-For $\tau_r>\tau_r^c$: full Burgers cascade,
-$R_n\to R_*\approx 0.5$--$0.7$, indistinguishable from the
-inviscid-Burgers Fourier signature within the
-discretisation noise.
+formation, the even-to-odd ratio remains at the
+no-shock floor $R^{\rm e/o}\lesssim 0.15$
+(Ref.~\cite{PaperV}, Ref.~\cite{PaperIII}).
+For $\tau_r\approx\tau_r^c$: $R^{\rm e/o}$ rises as the
+quadratic mode-mixing channel opens but the cascade is
+incomplete.
+For $\tau_r>\tau_r^c$: $R^{\rm e/o}\to O(1)$, signalling
+the developed Burgers cascade.
 
 The quantitative match between the threshold extracted
 from the $R_n$ data and the analytical prediction
@@ -556,26 +606,34 @@ Eq.~\eqref{eq:inel_coll} in the standard Boltzmann form;
 note that for $\epsilon>0$ the Jacobian of
 $(v_i,v_j)\to(v_i',v_j')$ is $r=1-\epsilon$ (not unity), so
 \begin{multline}
-\mathcal{C}_{\rm coll}^{(\epsilon)}[f]
+\mathcal{C}_{\rm coll}^{(\epsilon),\alpha}[f_L,f_H]
 = \sigma\!\int dv'\,|v-v'|\\
-\times\left[\frac{1}{r^2}\,f(v_*)\,f(v'_*)
-            - f(v)\,f(v')\right],
+\times\left[\frac{1}{r^2}\,f_\alpha(v_*)\,f_\beta(v'_*)
+            - f_\alpha(v)\,f_\beta(v')\right],
 \label{eq:Cinel}
 \end{multline}
+with $\beta\neq\alpha$ as in Sec.~II of Ref.~\cite{PaperIV},
 with $(v_*,v'_*)$ the pre-collision pair that yields $(v,v')$
 after Eq.~\eqref{eq:inel_coll}. The $1/r^2$ factor is the
 standard Jacobian correction for inelastic kernels
 \cite{BrilliantovPoschel}. The discrete-velocity implementation
 of Eq.~\eqref{eq:Cinel} for $\epsilon>0$ requires the
 $3$-point Lagrange Bobylev--Palczewski--Schneider interpolation
-developed in Ref.~\cite{PaperV}, Sec.~III: with $r\neq 1$
-the post-collision velocities $v_i', v_j'$ are generically
-off-grid, and the bilinear $2$-point scheme that suffices
-in the elastic case breaks the discrete momentum and energy
-balance to $O(\Delta v^2)$ \emph{plus} an $O(\epsilon)$ error
-from the truncated Jacobian. The $3$-point Lagrange scheme
-preserves momentum and energy balance to machine precision
-for any $r\in[0,1]$.
+developed in Ref.~\cite{PaperV}, Sec.~III. With $r\neq 1$ the
+post-collision velocities $v_i', v_j'$ are generically off-grid;
+the bilinear $2$-point scheme suffices in the elastic case but
+introduces an $O(\Delta v^2)$ discretisation error on top of
+the physical $O(\epsilon)$ energy dissipation, contaminating
+the inelasticity-induced loss with grid noise. The $3$-point
+Lagrange scheme preserves \emph{mass} and \emph{momentum} to
+machine precision for any $r\in[0,1]$ (these are the
+collision invariants for elastic and inelastic
+binary kernels alike), while the physical kinetic-energy
+loss Eq.~\eqref{eq:dE} is reproduced cleanly without
+grid-noise contamination. The thermal energy is exactly
+conserved only for $r=1$; for $r<1$ the kinetic energy
+decreases monotonically at the discrete rate set by
+Eq.~\eqref{eq:dE}.
 
 \subsection*{A.2 Delay memory kernel}
 
@@ -668,17 +726,29 @@ $c_s\sim 1$, this gives $\nu_\tau\approx 0.1$.
 
 \subsection*{B.4 Noise enhancement $D_\epsilon$}
 
-A fluctuation--dissipation argument relates the inelastic
-dissipation rate to an enhanced noise: the bath maintaining
-the kinetic temperature must inject an energy flux equal to
-the inelastic loss, giving
+A steady-state energy-balance argument relates the
+inelastic dissipation rate to the noise required to
+maintain stationarity. The fluctuation--dissipation
+theorem in its equilibrium form does not apply to the
+inelastic dynamics~\cite{BrilliantovPoschel}, and the
+balance below should be read as the leading-order
+relation between the Langevin noise power injected by
+$\xi_i(t)$ and the inelastic energy loss rate, valid in
+the weakly-inelastic, weakly-driven regime where
+non-equilibrium corrections are subleading. Imposing this
+balance gives
 \begin{equation}
-D_\epsilon = \nu_\epsilon\,k_BT/\bar m,
+D_\epsilon \;\sim\; \nu_\epsilon\,k_BT/\bar m,
 \end{equation}
-so that $D_{\rm eff} = D + D_\epsilon$ grows linearly with
-$\epsilon$. In the noise-driven limit $D\gg D_\epsilon$, the
-stochastic Burgers equation Eq.~\eqref{eq:stoch_burgers} is
-in the standard KPZ regime~\cite{KPZ1986}.
+so that $D_{\rm eff} = D + D_\epsilon$ grows approximately
+linearly with $\epsilon$ at small $\epsilon$. In the
+noise-driven limit $D\gg D_\epsilon$, the stochastic
+Burgers equation Eq.~\eqref{eq:stoch_burgers} is in the
+standard KPZ regime~\cite{KPZ1986}; in the
+dissipation-dominated limit $D_\epsilon\gg D$, the
+effective noise inherits the collisional correlation time
+$\tau_{\rm break}$ as discussed in
+Sec.~\ref{sec:meso}.
 
 \begin{thebibliography}{99}
 
