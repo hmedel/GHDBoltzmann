@@ -172,19 +172,25 @@ $\epsilon=1$ corresponds to perfectly sticky contacts.
 
 \emph{(b) Reaction-time delay $\tau_r$.} For the hard-rod
 gas, where the only microscopic interaction is contact
-collision, the delay is implemented at the level of the
-collision rule rather than as a continuous force: the
-post-collision velocity update of rod $i$ at contact event
-$t_c$ takes effect only at time $t_c+\tau_r$, with $i$
-continuing on its pre-collision trajectory in the interval
-$(t_c,t_c+\tau_r)$ (the explicit numerical protocol is in
-Sec.~\ref{sec:numerical}). This is the hard-rod analogue
-of the reaction-time delay of the Optimal Velocity Model
-and the Intelligent Driver Model
-\cite{Bando1995,Treiber2000}; the symbolic
+collision, the delay is implemented as a contact-freeze
+modification of the collision rule: at the contact event
+$t_c$ both rods instantaneously adopt their shared
+arc-length velocity $v_{\rm min}=\min(v_i,v_{i+1})$ and
+remain in contact at this velocity through the interval
+$(t_c,t_c+\tau_r)$; the full elastic exchange
+Eq.~\eqref{eq:inel_coll}
+(at $\epsilon=0$, the elastic limit) is applied at
+$t_c+\tau_r$. This protocol preserves the cyclic-order
+invariant of the hard-rod algorithm (rods cannot pass
+through one another during the freeze), reduces to the
+standard instantaneous-swap dynamics in the $\tau_r\to 0$
+limit, and is the hard-rod analogue of the reaction-time
+delay of the Optimal Velocity Model and the Intelligent
+Driver Model \cite{Bando1995,Treiber2000}. The symbolic
 $F_i^{\rm delay}$ in Eq.~\eqref{eq:micro2} stands for this
-deferred collision rule and breaks instantaneous
-reversibility.
+contact-freeze rule and breaks instantaneous reversibility;
+the explicit numerical protocol is in
+Sec.~\ref{sec:numerical}.
 
 \emph{(c) Stochastic forcing $\xi_i$.} The Gaussian noise
 $\xi_i(t)$ models intrinsic driver heterogeneity and external
