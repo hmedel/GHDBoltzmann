@@ -168,9 +168,9 @@ heat conduction of the integrable single-species hard-rod
 gas \cite{HarrisHurst,Jepsen1965}; at large mass disparity
 $\lambda_T$ approaches a finite plateau $\sim 10^2$
 characteristic of normal Fourier-law heat conduction. To
-our knowledge this is the first first-principles
-quantification of this crossover in the hard-rod system at
-the level of the linearised binary kinetic operator.
+our knowledge this crossover has not previously been
+quantified from the linearised binary kinetic operator
+of the hard-rod system.
 
 The remaining sections (Secs.~\ref{sec:recap}--\ref{sec:nonlinear})
 develop the framework that underlies
@@ -1192,10 +1192,15 @@ finite, scaling with $(m_{\max}-1)^{-1.5}$ in the window
 $1.1\leq m_{\max}\leq 5$ (Eq.~\eqref{eq:lambdaT_scaling}).
 The exponent is robust to the velocity-grid choice
 (variation $<2\%$ across $N_v\in\{96,128,160,200\}$ and
-$V_{\max}\in\{6,8,10\}$). A first-principles derivation of
-$\alpha\approx 1.5$ from the perturbative structure of the
-binary collision operator around the integrable limit is
-deferred to future work.
+$V_{\max}\in\{6,8,10\}$); the quoted uncertainty
+$\alpha=1.5\pm 0.15$ reflects the envelope of slopes
+obtained by varying the fit window
+($m_{\max}\in[1.01,5]$ vs $[1.1,10]$) and the velocity
+grid, with the central value $1.53$ from the
+$[1.1,5]$ window at $N_v=160$. A first-principles
+derivation of $\alpha$ from the perturbative structure of
+the binary collision operator around the integrable limit
+is deferred to future work.
 
 At large mass disparity ($m_{\max}\gtrsim 10$) the binary
 mass disorder of Ref.~\cite{PaperIV} explicitly breaks the
@@ -1832,15 +1837,25 @@ $Q_{\rm MD}\sim 11$--$\,16$ reported in Ref.~\cite{PaperII}.
 
 \subsection{Limits of the present comparison}
 
-One systematic limit of the present DVM--MD comparison
-should be noted. The comparison against Ref.~\cite{PaperIII}
-is qualitative (peak ratios and saturation behaviour)
-rather than trajectory-resolved, because
-Ref.~\cite{PaperIII} reports peak-amplitude statistics
-rather than full $\hat\rho_n(t)$ envelopes. A
+Two systematic limits of the present DVM--MD comparison
+should be noted. First, the comparison against
+Ref.~\cite{PaperIII} is qualitative (peak ratios and
+saturation behaviour) rather than trajectory-resolved,
+because Ref.~\cite{PaperIII} reports peak-amplitude
+statistics rather than full $\hat\rho_n(t)$ envelopes; a
 trajectory-resolved comparison would require re-running
-the MD with matched output cadence and is left to a
-companion data release.
+the MD with matched output cadence. Second, the DVM
+damping rate $\gamma^{\rm DVM}\approx 0.04$ exceeds the
+dispersion-relation prediction
+$|\mathrm{Im}\,\omega(k_1)|\approx 0.02$ by a factor of
+two. This discrepancy is consistent with the non-eigenmode
+composition of the step IC: the continuum-prepared
+initial condition projects onto multiple discrete modes of
+$\mathsf{M}(k_1)$ whose collective dephasing rate exceeds
+the slowest individual mode's decay. A clean
+single-eigenmode comparison would require seeding the IC
+from the numerically computed eigenvector of
+$\mathsf{M}(k_1)$, which we leave to future work.
 
 %======================================================================
 \section{Discussion}\label{sec:discussion}
@@ -1868,10 +1883,12 @@ kinetic regime where the sound-mode damping is set by the
 inter-species collision rate $\tau_{\rm break}^{-1}$ rather
 than by the Navier--Stokes formula
 $\gamma\propto D_{LH}k^2$. The predicted apparent damping
-$|\mathrm{Im}\,\omega(k_1)|\approx 0.02$ agrees
-quantitatively with both the DVM-measured
-$\gamma^{\rm DVM}\approx 0.04$ (Sec.~\ref{sec:nonlinear})
-and the empirical
+$|\mathrm{Im}\,\omega(k_1)|\approx 0.02$ agrees to within
+a factor of two with the DVM-measured
+$\gamma^{\rm DVM}\approx 0.04$ (Sec.~\ref{sec:nonlinear},
+the residual factor reflecting the non-eigenmode
+composition of the step IC) and to order of magnitude with
+the empirical
 $\gamma_{\rm MD}\sim 0.02$--$\,0.03$ of Ref.~\cite{PaperII}.
 Direct experimental verification of the Chapman--Enskog
 transport coefficients would require a substantially larger
@@ -1906,10 +1923,9 @@ Ref.~\cite{PaperIII}.
 the linear-regime $1/n$ ratio of Ref.~\cite{PaperIV} at
 $U_0=0.05$ and the even-mode saturation of
 Ref.~\cite{PaperIII} at $U_0=0.5$ within the precision of
-the bilinear collision kernel; a quantitatively tight
-trajectory-resolved comparison awaits both the conservative-%
-kernel upgrade and the matched-cadence MD reproduction noted
-in Sec.~\ref{sec:nonlinear}.
+the 3-point Lagrange collision kernel; a quantitatively
+tight trajectory-resolved comparison awaits matched-cadence
+MD reproduction as noted in Sec.~\ref{sec:nonlinear}.
 
 The remaining item \emph{(iii)} --- the microscopic
 derivation of the dressed-velocity postulate
@@ -1947,11 +1963,12 @@ width, which is marginal for high-amplitude transients and
 should be improved by adaptive velocity gridding in a
 follow-up.
 
-\subsection{Connection to the P--V/P--VI sequence}
+\subsection{Connection to the companion papers}
 
-The numerical machinery developed here feeds directly into
-the traffic application of the companion proceedings paper
-\cite{PaperVI}: the GHD--Boltzmann framework with
+The present paper (the fifth in the
+series~\cite{PaperI,PaperII,PaperIII,PaperIV}) feeds
+directly into the traffic application of the companion
+proceedings paper~\cite{PaperVI}: the GHD--Boltzmann framework with
 conservative discrete-velocity simulation provides the
 kinetic foundation for the inelastic and delay-kernel
 extensions of the hard-rod gas required for traffic
