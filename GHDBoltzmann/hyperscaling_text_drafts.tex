@@ -1,0 +1,93 @@
+%% ============================================================
+%% OPTION A: Hyperscaling VERIFIED (collapse < 0.1 dex)
+%% Replace lines 1368-1382 of tonks_paper05_v1.tex with:
+%% ============================================================
+
+A definitive test of the hyperscaling
+Eqs.~\eqref{eq:hyperscaling}--\eqref{eq:hyperscaling-relation}
+is obtained by extending the time-resolved autocorrelator to
+large rings $L\in\{200, 300, 400\}$, where
+$\mathrm{Kn}=k_1\ell_{\rm mfp}\in\{0.22, 0.15, 0.11\}$
+enters the hydrodynamic regime and the heat-mode
+$\hat J_E(k_1, t)$ decays as a clean exponential
+(log-residual RMS $< 0.1$) without the mode-hybridisation
+oscillations that contaminate the $L\leq 100$ data. The
+resulting effective heat diffusivity
+$\kappa_{\rm eff}(L, m_{\max})=\gamma_{\rm heat}/k_1^2$
+is shown in Table~\ref{tab:largeL} for
+$m_{\max}\in\{1.5, 2, 3, 5, 10\}$. Under the hyperscaling
+rescaling $\kappa_{\rm eff}\,k^{\beta}$ vs
+$(m_{\max}-1)\,k^{-\zeta}$ with $\beta=1/3$ and
+$\zeta=\beta/\alpha\approx 0.22$, the data collapse onto a
+single curve with mean within-bin standard deviation
+$\langle\sigma_{\rm bin}\rangle < \text{XXX}$ dex across
+\text{XXX} bins spanning two decades in the scaling variable
+(Fig.~\ref{fig:hyperscaling-largeL}), confirming the
+hyperscaling relation $\alpha\zeta=\beta$ to within the
+precision of the present DVM solver.
+
+%% (would need to add Table tab:largeL and Fig fig:hyperscaling-largeL)
+
+
+%% ============================================================
+%% OPTION B: Still NOT verified (collapse > 0.2 dex or
+%%           fits still contaminated even at L=400)
+%% Replace lines 1368-1382 with:
+%% ============================================================
+
+We extended the time-resolved autocorrelator to large rings
+$L\in\{200, 300, 400\}$ where
+$\mathrm{Kn}=k_1\ell_{\rm mfp}\in\{0.22, 0.15, 0.11\}$.
+At $L=200$ the heat-current Fourier mode $\hat J_E(k_1, t)$
+shows improved but still non-monotonic decay
+(log-residual RMS $\sim\text{XXX}$), indicating
+residual mode coupling at $\mathrm{Kn}\approx 0.22$.
+At $L=400$ ($\mathrm{Kn}\approx 0.11$) the decay is
+cleaner but the resulting $\kappa_{\rm eff}$ values do not
+collapse under the hyperscaling rescaling: the within-bin
+standard deviation remains $\sim\text{XXX}$ dex, of the same
+order as the total spread. The obstruction is twofold:
+(i) even at $\mathrm{Kn}=0.11$ the composition mode
+($\gamma\sim D_{LH}k^2$) and the heat mode
+($\gamma\sim\kappa_T k^2$) have comparable decay rates
+at moderate $m_{\max}$ (since $D_{LH}\approx 4$ and
+$\kappa_T\sim 5$--$10$ at $m_{\max}\in[3,10]$), preventing
+clean isolation; and (ii) the asymptotic
+scaling regime may require $\mathrm{Kn}\lesssim 0.01$
+($L\gtrsim 4000$) to emerge cleanly. A definitive
+verification therefore awaits either substantially larger
+systems or a Mori--Zwanzig projection that isolates the
+heat-mode contribution explicitly. The hyperscaling
+postulate Eqs.~\eqref{eq:hyperscaling}--\eqref{eq:hyperscaling-relation}
+stands as the most natural matching of two independently
+established limits ($\lambda_T\sim L^\beta$ at $m_{\max}=1$
+and $\lambda_T\sim(m_{\max}-1)^{-\alpha}$ at fixed $L$)
+but is not directly verified by the present numerical tests.
+
+
+%% ============================================================
+%% OPTION C: Marginal (0.1-0.2 dex) — suggestive
+%% ============================================================
+
+We extended the time-resolved autocorrelator to large rings
+$L\in\{200, 300, 400\}$ where
+$\mathrm{Kn}=k_1\ell_{\rm mfp}\in\{0.22, 0.15, 0.11\}$
+enters the near-hydrodynamic regime. The heat-current mode
+$\hat J_E(k_1, t)$ shows substantially cleaner exponential
+decay at these system sizes (log-residual RMS $\sim\text{XXX}$,
+compared to $>0.5$ at $L\leq 100$). The effective heat
+diffusivity $\kappa_{\rm eff}=\gamma_{\rm heat}/k_1^2$
+extracted from the fits shows partial collapse under the
+hyperscaling rescaling $\kappa_{\rm eff}\,k^\beta$ vs
+$(m_{\max}-1)\,k^{-\zeta}$: the within-bin standard deviation
+is $\langle\sigma_{\rm bin}\rangle\approx\text{XXX}$ dex,
+reduced from $\sim 0.5$--$0.7$ dex at $L\leq 100$ but
+not yet below the $0.1$ dex threshold for a definitive
+collapse. The trend is consistent with the hyperscaling
+relation $\alpha\zeta=\beta$ and suggests that the
+asymptotic scaling regime is being approached but not yet
+fully reached at the present system sizes. A definitive
+verification would require either $L\gtrsim 1000$
+or a Mori--Zwanzig-projected current operator; the present
+data provide the first quantitative evidence in favour of the
+hyperscaling postulate beyond the two limiting cases.

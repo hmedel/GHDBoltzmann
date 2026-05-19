@@ -1365,20 +1365,44 @@ structure (odd in $v$, even in $s$), and the resulting
 multi-mode beating prevents a clean exponential
 $\gamma_{\rm heat}$ extraction.
 
+We extended the time-resolved autocorrelator to large rings
+$L\in\{200, 300, 400\}$ where
+$\mathrm{Kn}=k_1\ell_{\rm mfp}\in\{0.22, 0.15, 0.11\}$
+enters the near-hydrodynamic regime ($N_s$ up to $1600$,
+$T_{\rm obs}$ up to $243$; total compute $\sim 7$~h). The
+result is negative: the heat-current Fourier mode
+$\hat J_E(k_1, t)$ does not decay as a clean exponential
+at any of these system sizes. The log-residual RMS of the
+exponential fit exceeds $0.7$ in $14$ of the $15$ grid
+points, and the fitted $\gamma_{\rm heat}$ takes
+inconsistent signs across the $(L, m_{\max})$ grid
+(e.g.\ $\kappa_{\rm eff}=+103, -114, +27$ at
+$m_{\max}=1.5$ for $L=200, 300, 400$ respectively). The
+single point with acceptable fit quality
+($L=200$, $m_{\max}=5$, RMS$=0.12$,
+$\kappa_{\rm eff}\approx 1.8$) is isolated and does not
+constrain the scaling. The obstruction is twofold:
+(i)~even at $\mathrm{Kn}=0.11$ the composition mode
+($\gamma\sim D_{LH}k^2$ with $D_{LH}\approx 4$) and
+the heat mode
+($\gamma\sim\kappa_T k^2$ with
+$\kappa_T=\lambda_T/(\rho c_p)\sim 5$--$10$ at
+$m_{\max}\in[3,10]$) have comparable decay rates,
+preventing clean isolation of either; and (ii)~the
+asymptotic scaling regime where the two modes separate
+cleanly may require $\mathrm{Kn}\lesssim 0.01$
+($L\gtrsim 4000$), well beyond our current grid budget.
 A definitive verification of the hyperscaling
-Eq.~\eqref{eq:hyperscaling}--%
-\eqref{eq:hyperscaling-relation} therefore requires
-either (i) much larger rings $L\gtrsim 200$ where pure
-sound/heat-mode isolation becomes possible at $k_1$ (we
-expect this to be computationally accessible with the
-present DVM solver at $N_s\sim 800$, beyond our current
-sweep budget), or (ii) a Mori--Zwanzig-projected
-current operator that isolates the heat-mode contribution
-to $\hat J_E(k_1, t)$ by orthogonalising against the
-sound and streaming-mode subspaces explicitly. Either
-extension is left to future work; the hyperscaling
-postulate stands as the most natural matching of two known
-limits but is not directly verified by any of the three
+Eqs.~\eqref{eq:hyperscaling}--\eqref{eq:hyperscaling-relation}
+therefore awaits either substantially larger systems or a
+Mori--Zwanzig-projected current operator that isolates the
+heat-mode contribution to $\hat J_E(k_1, t)$ by
+orthogonalising against the composition and streaming-mode
+subspaces explicitly. The hyperscaling postulate stands as
+the most natural matching of two independently established
+limits ($\lambda_T\sim L^\beta$ at $m_{\max}=1$ and
+$\lambda_T\sim(m_{\max}-1)^{-\alpha}$ at fixed $L$) but
+is not directly verified by any of the four
 linear-response tests of the present paper.
 
 A further conceptual point. Our Chapman--Enskog
