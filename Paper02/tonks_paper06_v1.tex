@@ -503,16 +503,24 @@ dynamics at the parameters of Ref.~\cite{PaperIII}
 ($L=12.57$, $\sigma=0.00314$, $\rho^{\rm tot}=31.82$,
 $\eta=0.1$, $m_{\max}=5$, $T=1$), with step-velocity IC
 $\bar u(s,0)=U_0\,\mathrm{sgn}[\cos k_1 s]$ at $U_0=0.5$.
-The delay channel is implemented by replacing the
-instantaneous collision rule of Ref.~\cite{PaperIV} by a
-deferred rule in which the post-collision velocity of rod
-$i$ at contact event $t_c$ takes effect at time
-$t_c+\tau_r$, with $i$ continuing on its pre-collision
-trajectory in the interval $(t_c,t_c+\tau_r)$. This is the
-hard-rod analogue of the OVM reaction-time
-delay~\cite{Bando1995} compatible with event-driven
-integration. The inelastic channel is fixed at $\epsilon=0$
-to isolate the delay-only shock onset.
+The delay channel is implemented as a \emph{contact-freeze}
+modification of the elastic collision rule: at the contact
+event $t_c$, both rods instantaneously adopt their
+common arc-length velocity
+$v_{\rm min}=\min(v_i, v_j)$ and remain in contact at this
+shared velocity for the duration $\tau_r$; at
+$t_c+\tau_r$ the full elastic velocity exchange
+Eq.~(4) of Ref.~\cite{PaperIV} is applied. This protocol
+preserves the cyclic-order invariant of the hard-rod
+algorithm (rods cannot pass through one another during the
+freeze) and reduces to the standard event-driven dynamics
+in the $\tau_r\to 0$ limit. It is the natural hard-rod
+analogue of the OVM reaction-time delay~\cite{Bando1995}:
+the driver-like response (full velocity adjustment) is
+delayed by $\tau_r$, but the immediate collision constraint
+(no overlap) is enforced instantaneously. The inelastic
+channel is fixed at $\epsilon=0$ to isolate the delay-only
+shock onset.
 
 \paragraph*{Sweep and observables.} The protocol sweeps
 $\tau_r\in\{0, 1.0, 2.0, 2.5, 3.0, 3.5, 4.0\}$, bracketing
