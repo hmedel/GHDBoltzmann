@@ -424,15 +424,15 @@ regions (Fig.~\ref{fig:phase}):
 $\epsilon$): phase mixing pre-empts shock formation, the
 odd-mode $|\hat\rho_n|/|\hat\rho_1|=1/n$ cascade of
 Ref.~\cite{PaperIV} persists, even modes remain at the
-noise floor $R^{\rm e/o}\lesssim 0.15$ of Ref.~\cite{PaperV}.
+no-shock floor $R_2\lesssim 0.05$ of Ref.~\cite{PaperV}.
 \emph{(II) Marginal} ($\tau_r\approx\tau_r^c$):
 the quadratic mode-mixing channel opens and
-$R^{\rm e/o}$ rises monotonically with $\tau_r$.
+$R_2$ rises monotonically with $\tau_r$.
 \emph{(III) Burgers-dominated} ($\tau_r>\tau_r^c$):
 a coherent steep front develops with KPZ-class
 fluctuations of the noise term in
 Eq.~\eqref{eq:stoch_burgers}; the even-to-odd ratio
-saturates at $R^{\rm e/o}\sim O(1)$.
+saturates at $R_2\approx 0.5$.
 
 The threshold curve $\tau_r^c(\epsilon)$ slopes upward in
 the $(\epsilon,\tau_r)$ plane because $\epsilon>0$
@@ -466,10 +466,10 @@ quantitative prediction of this paper.
         {\footnotesize$\tau_r^c{=}2.8$};
   \node at (0.5,0.32) {\textbf{I: no shock}};
   \node[font=\footnotesize] at (0.5,0.05)
-        {(GHD-Boltzmann, $R^{\rm e/o}{\lesssim}0.15$)};
+        {(GHD-Boltzmann, $R_2{\lesssim}0.05$)};
   \node at (0.5,1.55) {\textbf{III: Burgers}};
   \node[font=\footnotesize] at (0.5,1.32)
-        {(steep front, $R^{\rm e/o}{\sim}O(1)$)};
+        {(steep front, $R_2{\approx}0.5$)};
   \node[font=\footnotesize,rotate=18] at (0.55,0.92)
         {II: marginal};
 \end{tikzpicture}
@@ -544,25 +544,28 @@ modes through the quadratic $u\,\partial_x u$ nonlinearity,
 yielding even-mode amplitudes that scale as
 $|\hat\rho_{2m}|/|\hat\rho_1|\sim (U_0/c_s)^m$ for the
 $m$-th even harmonic. A clean shock-onset diagnostic is
-therefore the \emph{even-to-odd ratio}
-$R^{\rm e/o}\equiv|\hat\rho_2|/|\hat\rho_3|$ at the first
-maximum of $|\hat\rho_1|$: in the GHD--Boltzmann
-no-shock regime $R^{\rm e/o}\ll 1$ at $U_0=0.5$
-(Ref.~\cite{PaperV} measures $R^{\rm e/o}\approx 0.14$ at
-$U_0=0.5$, i.e.\ even modes still suppressed by an order
-of magnitude), while in the Burgers-shock regime the
-nonlinear mixing pushes $R^{\rm e/o}\to O(1)$.
+therefore the \emph{relative even-mode amplitude}
+$R_2\equiv|\hat\rho_2|/|\hat\rho_1|$ at the first
+maximum of $|\hat\rho_1|$, in which the large fundamental
+$|\hat\rho_1|$ in the denominator suppresses statistical
+noise relative to denominators built from higher harmonics.
+In the GHD--Boltzmann no-shock regime
+Ref.~\cite{PaperV} (Table~VI) reports $R_2\approx 0.043$ at
+$U_0=0.5$, i.e.\ even modes suppressed by more than an order
+of magnitude relative to the fundamental. In the developed
+Burgers regime the inviscid-Burgers cascade
+$|\hat\rho_n|/|\hat\rho_1|\to 1/n$ (in suitable
+sawtooth-coordinate frames) gives $R_2\to 1/2$, a
+factor of ten above the no-shock floor.
 
 \paragraph*{Expected result.}
 For $\tau_r<\tau_r^c$: phase mixing pre-empts shock
-formation, the even-to-odd ratio remains at the
-no-shock floor $R^{\rm e/o}\lesssim 0.15$
-(Ref.~\cite{PaperV}, Ref.~\cite{PaperIII}).
-For $\tau_r\approx\tau_r^c$: $R^{\rm e/o}$ rises as the
-quadratic mode-mixing channel opens but the cascade is
-incomplete.
-For $\tau_r>\tau_r^c$: $R^{\rm e/o}\to O(1)$, signalling
-the developed Burgers cascade.
+formation, $R_2$ remains at the no-shock floor
+$R_2\lesssim 0.05$ (Ref.~\cite{PaperV}).
+For $\tau_r\approx\tau_r^c$: $R_2$ rises as the quadratic
+mode-mixing channel opens but the cascade is incomplete.
+For $\tau_r>\tau_r^c$: $R_2\to 0.5$, signalling the
+developed Burgers cascade.
 
 The quantitative match between the threshold extracted
 from the $R_n$ data and the analytical prediction
