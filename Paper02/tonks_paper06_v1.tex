@@ -16,6 +16,8 @@
 \usepackage{hyperref}
 \usepackage{physics}
 \usepackage{mathtools}
+\usepackage{tikz}
+\usetikzlibrary{patterns,decorations.pathmorphing}
 
 \begin{document}
 
@@ -417,23 +419,76 @@ to compensate for the inelastic suppression.
 \subsection{Qualitative phase diagram}
 
 The expected $(\epsilon,\tau_r)$ phase diagram has three
-regions:
-\emph{(I) No-shock subsonic} ($\tau_r<\tau_r^c$, any
+regions (Fig.~\ref{fig:phase}):
+\emph{(I) No-shock} ($\tau_r<\tau_r^c$, any
 $\epsilon$): phase mixing pre-empts shock formation, the
-$|\hat\rho_n|/|\hat\rho_1|=1/n$ ratio of Ref.~\cite{PaperIV}
-persists, the system is in the GHD-Boltzmann regime.
-\emph{(II) Marginal} ($\tau_r\approx\tau_r^c$, $\epsilon\ll
-1$): the shock cascade onsets, the ratio
-$|\hat\rho_n|/|\hat\rho_1|$ transitions from $1/n$ toward
-constant in $n$.
-\emph{(III) Burgers-dominated} ($\tau_r>\tau_r^c$, any
-$\epsilon$): coherent shock develops with KPZ-class
+odd-mode $|\hat\rho_n|/|\hat\rho_1|=1/n$ cascade of
+Ref.~\cite{PaperIV} persists, even modes remain at the
+noise floor $R^{\rm e/o}\lesssim 0.15$ of Ref.~\cite{PaperV}.
+\emph{(II) Marginal} ($\tau_r\approx\tau_r^c$):
+the quadratic mode-mixing channel opens and
+$R^{\rm e/o}$ rises monotonically with $\tau_r$.
+\emph{(III) Burgers-dominated} ($\tau_r>\tau_r^c$):
+a coherent steep front develops with KPZ-class
 fluctuations of the noise term in
-Eq.~\eqref{eq:stoch_burgers}; the
-$|\hat\rho_n|/|\hat\rho_1|\sim 1$ Burgers cascade emerges.
+Eq.~\eqref{eq:stoch_burgers}; the even-to-odd ratio
+saturates at $R^{\rm e/o}\sim O(1)$.
 
-The transition at $\tau_r^c\approx 2.8$ is the principal
+The threshold curve $\tau_r^c(\epsilon)$ slopes upward in
+the $(\epsilon,\tau_r)$ plane because $\epsilon>0$
+shortens $\tau_{\rm coh}$ and therefore demands a larger
+$\tau_r$ to compensate
+(Eqs.~\eqref{eq:tcoh_eps}--\eqref{eq:tcoh_tau}). The
+transition at $\tau_r^c(0)\approx 2.8$ is the principal
 quantitative prediction of this paper.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=4.5cm, y=2.2cm]
+  \draw[->,>=stealth] (0,0) -- (1.05,0)
+        node[below right=-2pt]{$\epsilon$};
+  \draw[->,>=stealth] (0,0) -- (0,1.8)
+        node[above left=-2pt]{$\tau_r$};
+  \foreach \x/\xl in {0/0, 0.5/0.5, 1.0/1.0}
+    \draw (\x,0) -- (\x,-0.03) node[below]{\small$\xl$};
+  \foreach \y/\yl in {0/0, 0.5/2, 1.0/4, 1.5/6}
+    \draw (0,\y) -- (-0.015,\y) node[left]{\small$\yl$};
+
+  \fill[blue!8] (0,0) -- (0,0.7) .. controls (0.4,0.85) and
+        (0.7,1.05) .. (1.0,1.30) -- (1.0,0) -- cycle;
+  \fill[red!10] (0,0.7) .. controls (0.4,0.85) and
+        (0.7,1.05) .. (1.0,1.30) -- (1.0,1.8) -- (0,1.8) -- cycle;
+  \draw[thick,dashed,red!70!black] (0,0.7) .. controls
+        (0.4,0.85) and (0.7,1.05) .. (1.0,1.30);
+  \draw[dotted,gray] (0,0.7) -- (1.0,0.7);
+  \fill[black] (0,0.7) circle (1.2pt)
+        node[left,xshift=-2pt]
+        {\footnotesize$\tau_r^c{=}2.8$};
+  \node at (0.5,0.32) {\textbf{I: no shock}};
+  \node[font=\footnotesize] at (0.5,0.05)
+        {(GHD-Boltzmann, $R^{\rm e/o}{\lesssim}0.15$)};
+  \node at (0.5,1.55) {\textbf{III: Burgers}};
+  \node[font=\footnotesize] at (0.5,1.32)
+        {(steep front, $R^{\rm e/o}{\sim}O(1)$)};
+  \node[font=\footnotesize,rotate=18] at (0.55,0.92)
+        {II: marginal};
+\end{tikzpicture}
+\caption{Qualitative $(\epsilon,\tau_r)$ phase diagram for
+shock onset in the mass-disordered hard-rod gas with
+inelasticity $\epsilon$ and reaction-time delay $\tau_r$,
+at the parameters of Ref.~\cite{PaperIII} ($U_0=0.5$,
+$m_{\max}=5$, step IC). The dashed curve is the
+qualitative threshold $\tau_r^c(\epsilon)$ from
+Eqs.~\eqref{eq:tcoh_eps}--\eqref{eq:tcoh_tau}; the
+elastic-limit value $\tau_r^c(0)\approx 2.8$ is from
+Eq.~\eqref{eq:tauc}. Region~I is the no-shock GHD--Boltzmann
+regime of Refs.~\cite{PaperIII,PaperIV,PaperV}; region~III
+is the developed-Burgers regime characteristic of traffic
+jam waves~\cite{Sugiyama2008,Bando1995}. The numerical
+sweep of Sec.~\ref{sec:numerical} traces the
+$\epsilon=0$ axis to locate $\tau_r^c(0)$ quantitatively.}
+\label{fig:phase}
+\end{figure}
 
 \section{Numerical test of the shock-onset threshold}
 \label{sec:numerical}
@@ -774,23 +829,29 @@ in preparation (2026).
 
 \bibitem{HubnerDoyon2024}
 F.~H\"ubner, B.~Doyon,
-arXiv:2406.18322 (2024).
+arXiv:2406.18322 (2024),
+\url{https://arxiv.org/abs/2406.18322}.
 
 \bibitem{Sugiyama2008}
-Y.~Sugiyama et al.,
-New J.~Phys.\ \textbf{10}, 033001 (2008).
+Y.~Sugiyama, M.~Fukui, M.~Kikuchi, K.~Hasebe, A.~Nakayama,
+K.~Nishinari, S.~Tadaki, S.~Yukawa,
+New J.~Phys.\ \textbf{10}, 033001 (2008),
+doi:10.1088/1367-2630/10/3/033001.
 
 \bibitem{Lighthill1955}
 M.~J.~Lighthill, G.~B.~Whitham,
-Proc.~Roy.~Soc.~A \textbf{229}, 317 (1955).
+Proc.~Roy.~Soc.~A \textbf{229}, 317 (1955),
+doi:10.1098/rspa.1955.0089.
 
 \bibitem{Bando1995}
 M.~Bando, K.~Hasebe, A.~Nakayama, A.~Shibata, Y.~Sugiyama,
-Phys.~Rev.~E \textbf{51}, 1035 (1995).
+Phys.~Rev.~E \textbf{51}, 1035 (1995),
+doi:10.1103/PhysRevE.51.1035.
 
 \bibitem{Komatsu1995}
-T.~Komatsu, S.-i.~Sasa,
-Phys.~Rev.~E \textbf{52}, 5574 (1995).
+T.~S.~Komatsu, S.-i.~Sasa,
+Phys.~Rev.~E \textbf{52}, 5574 (1995),
+doi:10.1103/PhysRevE.52.5574.
 
 \bibitem{Komatsu2003}
 T.~Komatsu, T.~Nagatani,
@@ -798,7 +859,8 @@ Physica~A \textbf{332}, 449 (2003).
 
 \bibitem{Treiber2000}
 M.~Treiber, A.~Hennecke, D.~Helbing,
-Phys.~Rev.~E \textbf{62}, 1805 (2000).
+Phys.~Rev.~E \textbf{62}, 1805 (2000),
+doi:10.1103/PhysRevE.62.1805.
 
 \bibitem{BrilliantovPoschel}
 N.~V.~Brilliantov, T.~P\"oschel,
@@ -806,8 +868,9 @@ N.~V.~Brilliantov, T.~P\"oschel,
 Oxford University Press (2004).
 
 \bibitem{KPZ1986}
-M.~Kardar, G.~Parisi, Y.~C.~Zhang,
-Phys.~Rev.~Lett.\ \textbf{56}, 889 (1986).
+M.~Kardar, G.~Parisi, Y.-C.~Zhang,
+Phys.~Rev.~Lett.\ \textbf{56}, 889 (1986),
+doi:10.1103/PhysRevLett.56.889.
 
 \bibitem{Hairer2013}
 M.~Hairer,
@@ -828,7 +891,8 @@ SIAM J.~Appl.~Math.\ \textbf{59}, 983 (1999).
 
 \bibitem{Helbing2001}
 D.~Helbing,
-Rev.~Mod.~Phys.\ \textbf{73}, 1067 (2001).
+Rev.~Mod.~Phys.\ \textbf{73}, 1067 (2001),
+doi:10.1103/RevModPhys.73.1067.
 
 \bibitem{Nagatani1999}
 T.~Nagatani,
@@ -836,11 +900,13 @@ Physica~A \textbf{264}, 581 (1999).
 
 \bibitem{DurninDoyon2021}
 J.~Durnin, M.~J.~Bhaseen, B.~Doyon,
-arXiv:2103.11997 (2021).
+arXiv:2103.11997 (2021),
+\url{https://arxiv.org/abs/2103.11997}.
 
 \bibitem{WeakBreaking2023}
 A.~Bastianello, A.~De~Luca, B.~Doyon, J.~De~Nardis,
-arXiv:2302.12804 (2023).
+arXiv:2302.12804 (2023),
+\url{https://arxiv.org/abs/2302.12804}.
 
 \end{thebibliography}
 
