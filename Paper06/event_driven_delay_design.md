@@ -163,10 +163,23 @@ analytical estimate τ_r^c ≈ 2.8 in Paper VI Sec V was based on a
 heuristic that does not distinguish A vs B; the numerical
 threshold from Model B may differ.
 
-### Next steps (separate session)
+### Model B implemented (2026-05-19)
 
-1. Refactor `run_p6_delay_sweep.jl` to Model B
-2. Verify TAU_R=0 still matches P3 baseline (Model B reduces to
-   P3 when τ_r = 0 since v_min collision rule + zero delay = swap)
-3. Test TAU_R = 1, 2, 3, 4 and compare R^{e/o} signature
-4. Update Paper VI Sec V if τ_r^c shifts substantially
+`run_p6_delay_sweep.jl` refactored to Model B contact-freeze:
+- At collision: both rods adopt v_min = min(v_i, v_j) immediately
+- pair_frozen[i] flag prevents re-collision during freeze interval
+- Release event processes all simultaneous releases (both particles
+  of a pair), unfreezes pairs, recomputes all collision times
+- Cascade handling: if rod k collides into frozen rod k+1, the
+  new collision resets v_pending and t_release for both; the
+  earlier partner's release proceeds independently
+- Diagnostic changed to R_2 = |ρ̂_2|/|ρ̂_1| per paper Sec VI
+- τ_r = 0 path unchanged (instantaneous elastic swap = P3 baseline)
+
+### Next steps
+
+1. Transfer to xolotl and verify TAU_R=0 matches P3 baseline
+2. Run single-seed sanity checks at TAU_R = 1, 3 before full sweep
+3. Full sweep: 7 τ_r values × 200 seeds
+4. Extract R_2(τ_r) crossover → compare to τ_r^c ≈ 2.8
+5. Update Paper VI Sec V/VI if τ_r^c shifts substantially
