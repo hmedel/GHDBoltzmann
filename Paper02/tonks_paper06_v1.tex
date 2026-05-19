@@ -583,7 +583,7 @@ For $\tau_r>\tau_r^c$: $R_2\to 0.5$, signalling the
 developed Burgers cascade.
 
 The quantitative match between the threshold extracted
-from the $R_n$ data and the analytical prediction
+from the $R_2(\tau_r)$ data and the analytical prediction
 Eq.~\eqref{eq:tauc} is the falsifiable claim of the
 present construction. The implementation and a complete
 report of the sweep are deferred to a companion data
@@ -600,9 +600,9 @@ PrigogineHerman1971} and its modern Klar--Wegener and
 Helbing-type extensions~\cite{Klar1996,Helbing2001}. The
 present work differs in starting from a controlled
 microscopic substrate (the integrable hard-rod gas of
-Refs.~\cite{PaperI,PaperII,PaperIII}) rather than from a
-phenomenological Boltzmann-type ansatz on the desired-velocity
-distribution.
+Refs.~\cite{PaperI,PaperII,PaperIII,PaperIV,PaperV}) rather
+than from a phenomenological Boltzmann-type ansatz on the
+desired-velocity distribution.
 
 \emph{Reductive-perturbation derivations of Burgers from
 car-following.} Komatsu and Sasa~\cite{Komatsu1995},
@@ -630,15 +630,16 @@ identifies the natural mesoscopic object connecting the
 integrable hard-rod baseline with the shock-dominated
 continuum. The KPZ-class long-wavelength fluctuations
 encoded in $f(x,v,t)$ are accessible both numerically (via
-direct Langevin integration of
-Eqs.~\eqref{eq:micro1}--\eqref{eq:micro2}) and analytically
-via the well-developed KPZ machinery
+event-driven simulation of
+Eqs.~\eqref{eq:micro1}--\eqref{eq:micro2} with the
+contact-freeze collision rule of Sec.~\ref{sec:numerical})
+and analytically via the well-developed KPZ machinery
 \cite{Hairer2013,QuastelSpohn2015}.
 The principal open computational task is the direct
-numerical determination of the threshold $\epsilon_c(\tau_r,
-D)$ from event-driven simulations of the microscopic dynamics,
-and its comparison against the analytical prediction
-Eq.~\eqref{eq:tauc}.
+numerical determination of the threshold
+$\tau_r^c(\epsilon, D)$ from the sweep of
+Sec.~\ref{sec:numerical}, and its comparison against the
+analytical prediction Eq.~\eqref{eq:tauc}.
 
 For vehicular-traffic applications, the result implies that
 shock-like jam waves emerge only when at least one of the
