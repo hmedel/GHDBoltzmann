@@ -242,15 +242,20 @@ The effective viscosity $\nu_{\rm eff}$ and noise intensity
 $D_{\rm eff}$ are determined by the microscopic parameters:
 \begin{align}
 \nu_{\rm eff}(\epsilon,\tau_r)
-  &= \nu_0 + \nu_\epsilon\,\epsilon + \nu_\tau\,\tau_r
+  &= \nu_0 + \nu_\epsilon(\epsilon) + \nu_\tau(\tau_r)
      + O(\epsilon^2,\tau_r^2,\epsilon\tau_r),
      \label{eq:nu_eff}\\
 D_{\rm eff}(\epsilon,D)
-  &= D + D_\epsilon\,\epsilon
+  &= D + D_\epsilon(\epsilon)
      + O(\epsilon^2),
      \label{eq:D_eff}
 \end{align}
-with explicit prefactors derived in Appendix~B. The elastic limit $\epsilon=\tau_r=0$ gives $\nu_0$ equal
+with $\nu_\epsilon(\epsilon)$, $\nu_\tau(\tau_r)$, and
+$D_\epsilon(\epsilon)$ each vanishing at zero argument
+and given explicitly to leading order in
+Appendix~\ref{app:prefactors} (the parameter dependence is
+absorbed into each prefactor). The elastic limit
+$\epsilon=\tau_r=0$ gives $\nu_0$ equal
 to the apparent sound-mode diffusivity
 $\tau_{\rm break}^{-1}/k_1^2$ derived from the full
 dispersion-relation analysis of Ref.~\cite{PaperV},
