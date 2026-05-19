@@ -35,20 +35,27 @@ hydrodynamics}
 Companion paper~\cite{PaperIII} showed that the classical
 one-dimensional hard-rod gas, even with binary mass disorder,
 does not develop Burgers shocks at any time accessible to
-event-driven dynamics, and companion paper~\cite{PaperIV} traced
-this to the absence of dissipative or non-Markovian channels in
-the GHD--Boltzmann equation. Vehicular traffic, by contrast,
-exhibits robust shock-like jam waves. We construct a minimal
-three-level hierarchy --- microscopic stochastic Langevin
-dynamics with reaction-time delay and inelastic restitution,
-mesoscopic stochastic Burgers equation for the coarse-grained
-velocity field, and macroscopic deterministic Burgers equation
-in the noise-averaged limit --- and identify the parametric
-threshold at which the coherent shock signature emerges. The
-mesoscopic stochastic Burgers equation provides the natural
-bridge between integrable hard-rod phenomenology
-(Refs.~\cite{PaperI,PaperII,PaperIII,PaperIV}) and the
-shock-dominated regime relevant for traffic flow.
+event-driven dynamics, and companion papers
+\cite{PaperIV,PaperV} traced this to the absence of
+dissipative or non-Markovian channels in the GHD--Boltzmann
+equation. Vehicular traffic, by contrast, exhibits coherent
+backward-propagating jam waves with sharp upstream fronts.
+We construct a minimal three-level hierarchy --- microscopic
+stochastic Langevin dynamics with reaction-time delay and
+inelastic restitution, mesoscopic stochastic Burgers
+equation for the coarse-grained velocity field, and
+macroscopic deterministic Burgers equation in the
+noise-averaged limit --- and identify the parametric
+threshold at which the coherent shock signature emerges. A
+leading-order timescale-matching argument predicts a delay
+threshold $\tau_r^c\approx 2.8$ (in the natural time units
+of Ref.~\cite{PaperIII}, where $\tau_{\rm break}\approx 9$),
+with the inelastic channel $\epsilon>0$ \emph{suppressing}
+rather than enhancing shock formation. The mesoscopic stochastic Burgers
+equation provides the natural bridge between integrable
+hard-rod phenomenology
+(Refs.~\cite{PaperI,PaperII,PaperIII,PaperIV,PaperV}) and
+the shock-dominated regime relevant for traffic flow.
 \end{abstract}
 
 \maketitle
@@ -126,9 +133,12 @@ of the dissipation and delay channels;
 equation as the natural mesoscopic object linking the
 integrable hard-rod baseline with the shock-dominated
 continuum;
-\emph{(iii)} a parametric threshold for shock onset that
-provides a quantitative target for car-following experimental
-realisations~\cite{Sugiyama2008}.
+\emph{(iii)} a parametric threshold
+$\tau_r^c\approx 2.8$ for delay-induced shock onset that
+provides a falsifiable target for both event-driven
+hard-rod simulation with the contact-freeze collision rule
+of Sec.~\ref{sec:numerical} and for car-following empirical
+jam-wave observations~\cite{Sugiyama2008}.
 
 \section{Microscopic level: Langevin dynamics with delay
 and dissipation}\label{sec:micro}
