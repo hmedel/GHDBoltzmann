@@ -891,6 +891,34 @@ ballistic~\cite{DurninDoyon2021}---the decorrelation rate
 may be slower, potentially restoring the conditions for the
 continuum threshold to operate.
 
+\paragraph*{Decorrelation timescale and diagnostic choice.}
+The gap--gap autocorrelation
+$C_g(\tau)=\langle g_i(t)\,g_i(t+\tau)\rangle$ decays on the
+collision timescale $\tau_{\rm coll}\approx 0.03$: after
+$n\sim\tau_r/\tau_{\rm coll}\sim 10^2$ independent elastic
+scatterings, the delayed gap $g_i(t-\tau_r)$ retains no
+memory of the current configuration. The effective
+decorrelation rate $\sigma_{\rm dec}\sim\tau_{\rm coll}^{-1}
+\approx 30$ thus exceeds the Burgers steepening rate
+$t_{\rm shock}^{*\,-1}\approx 0.25$ by two orders of
+magnitude, confirming that collisional scrambling pre-empts
+nonlinear steepening. A direct measurement of $C_g(\tau)$
+from the simulation trajectories would provide a quantitative
+test of this estimate and is left to future work.
+
+Additionally, the ratio diagnostic
+$R_2=|\hat\rho_2|/|\hat\rho_1|$ amplifies statistical
+noise when $|\hat\rho_1|$ passes through a minimum: the
+$|\hat\rho_1|_{\rm pk}$ denominator varies by a factor of
+two across the $\tau_r$ grid in the resonance scan,
+inflating $R_2$ fluctuations. The absolute even-mode
+amplitude $|\hat\rho_2|$ is immune to this ratio
+sensitivity; inspection of the raw $|\hat\rho_2|_{\rm pk}$
+values (Figs.~\ref{fig:R2}--\ref{fig:resonance}) confirms
+that the even-mode amplitude itself remains at or below
+the thermal noise floor for all $\tau_r$, reinforcing the
+null result independently of the choice of diagnostic.
+
 \paragraph*{Traffic implications.}
 For vehicular-traffic applications, the result sharpens
 the role of integrability breaking. Real traffic is
@@ -945,12 +973,13 @@ v_j' &= \frac{(1+r)\,m_i}{m_i+m_j}\,v_i
 \label{eq:inel_coll}
 \end{align}
 The kinetic energy dissipated per collision is
-\begin{equation}
-\Delta E_{\rm coll} = \frac{1}{2}\,
+\begin{align}
+\Delta E_{\rm coll} &= \tfrac{1}{2}\,
 \frac{m_i m_j}{m_i+m_j}\,(1-r^2)\,(v_i-v_j)^2
-= \mu\,\epsilon(2-\epsilon)\,\tfrac12(v_i-v_j)^2,
+\notag\\
+&= \mu\,\epsilon(2-\epsilon)\,\tfrac12(v_i-v_j)^2,
 \label{eq:dE}
-\end{equation}
+\end{align}
 with reduced mass $\mu = m_i m_j/(m_i+m_j)$. The elastic
 limit $r=1$ (i.e.\ $\epsilon=0$) recovers $\Delta E=0$ and the
 collision rule of Ref.~\cite{PaperIV}; the fully inelastic
