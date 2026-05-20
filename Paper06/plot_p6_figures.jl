@@ -30,7 +30,7 @@ const scan2_R2 = Dict(
 
 # Resonance scan (100 seeds, with σ₂)
 const res_τr = [0.0, 2.0, 3.0, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 8.0, 11.0]
-const τ_sound = 12.57
+const τ_sound = 11.3  # L/c_s with c_s = v_th/(1-η) ≈ 1.11
 
 # α = 0.10
 const res_R2_010 = [0.2822, 0.2692, 0.1525, 0.2893, 0.2585, 0.0894,

@@ -189,12 +189,12 @@ $\epsilon=1$ corresponds to perfectly sticky contacts.
 implemented in two ways, both tested in
 Sec.~\ref{sec:numerical}: a \emph{post-collisional}
 contact-freeze rule, in which both rods adopt
-$v_{\rm min}=\min(v_i,v_{i+1})$ at the contact event $t_c$
+$v_{\rm min}=\min(v_i,v_j)$ at the contact event $t_c$
 and remain in contact until the elastic exchange is applied
 at $t_c+\tau_r$; and an \emph{anticipatory} OVM-type force
 $dv_i/dt=\alpha[V_{\rm opt}(g_i(t-\tau_r))-v_i]$, in which
 each rod adjusts its velocity based on the gap sensed
-$\tau_r$ in the past, with elastic hard-core collisions as
+$\tau_r$ time units in the past, with elastic hard-core collisions as
 a safety-net constraint. Both reduce to the standard
 instantaneous-swap dynamics for $\tau_r\to 0$ and preserve
 the cyclic-order invariant. The symbolic
@@ -746,7 +746,7 @@ theory.
 \paragraph*{Resonance test.}
 A dedicated scan at $\alpha\in\{0.10, 0.12\}$ with fine
 $\tau_r$ resolution around
-$\tau_{\rm sound}/2\approx 6.3$ (12 values of $\tau_r$ from
+$\tau_{\rm sound}/2\approx 5.7$ (12 values of $\tau_r$ from
 0 to 11, 100 realisations each) was performed to test
 whether the non-monotonic elevations of $R_2$ at
 $\alpha=0.12$ reflect a parametric resonance at half the
@@ -776,8 +776,8 @@ amplifying fluctuations in the ratio.
   the expected resonance location. No peak is observed at
   $\tau_r/\tau_{\rm sound}=1/2$ for either coupling. The
   $\alpha=0.12$ data shows large non-monotonic excursions
-  (e.g., a deep trough at $\tau_r/\tau_{\rm sound}\approx 0.52$
-  between elevated values at $0.48$ and $0.64$), inconsistent
+  (e.g., a deep trough at $\tau_r/\tau_{\rm sound}\approx 0.58$
+  between elevated values at $0.53$ and $0.71$), inconsistent
   with a smooth resonance structure.}
 \label{fig:resonance}
 \end{figure}
