@@ -176,10 +176,44 @@ threshold from Model B may differ.
 - Diagnostic changed to R_2 = |ρ̂_2|/|ρ̂_1| per paper Sec VI
 - τ_r = 0 path unchanged (instantaneous elastic swap = P3 baseline)
 
-### Next steps
+### Model B result: NULL (2026-05-19)
 
-1. Transfer to xolotl and verify TAU_R=0 matches P3 baseline
-2. Run single-seed sanity checks at TAU_R = 1, 3 before full sweep
-3. Full sweep: 7 τ_r values × 200 seeds
-4. Extract R_2(τ_r) crossover → compare to τ_r^c ≈ 2.8
-5. Update Paper VI Sec V/VI if τ_r^c shifts substantially
+Full sweep on xolotl: 7 τ_r values × 200 seeds, T_MAX=135.
+R_2 stays at no-shock floor (0.02–0.05) for every τ_r.
+Time-resolved analysis shows delay *shortens* τ_coh (opposite
+of the continuum prediction). The v_min clamp dissipates
+coherent kinetic energy at each collision.
+
+## OVM-HR model (anticipatory delay)
+
+Pivoted to an OVM-like model where delay is anticipatory:
+dv_i/dt = α[V_opt(g_i(t−τ_r)) − v_i], with V_opt(g) = v_free·tanh(g/g_c).
+Hard-core elastic collisions as safety net.
+
+Scripts: `run_p6_ovm_scan.jl`, `run_p6_ovm_scan2.jl`, `run_p6_ovm_resonance.jl`
+
+### OVM scan 1 (2026-05-19)
+α ∈ {0.1, 0.3, 0.5, 1.0}, g_c ∈ {g_mean/2, g_mean, 2·g_mean}, 20 seeds.
+- α ≥ 0.3: R_2 > 0.5 at τ_r = 0 (OVM alone generates shocks)
+- α = 0.1: R_2 ≈ 0.21, no τ_r dependence except marginal signal at τ_r = 4
+
+### OVM scan 2 (2026-05-19)
+α ∈ {0.05, 0.08, 0.12, 0.15}, g_c = g_mean, 30 seeds, τ_r ∈ {0,1,2,3,4,6,8}.
+- α = 0.15: R_2 > 0.5 at τ_r = 0 (too strong)
+- α ≤ 0.08: no significant τ_r dependence
+- α = 0.12: non-monotonic R_2(τ_r), no clean threshold
+
+### Resonance scan (2026-05-19)
+α ∈ {0.10, 0.12}, fine τ_r grid around τ_sound/2 ≈ 6.3, 100 seeds.
+- α = 0.10: R_2 fluctuates within ±1σ of floor, no τ_r dependence
+- α = 0.12: elevated R_2 but non-monotonic, no peak at τ_sound/2
+- No parametric resonance confirmed
+
+## Final conclusion
+
+**Scenario B confirmed**: the integrable hard-rod gas shields against
+delay-induced shock formation. The O(10²) elastic collisions during
+the delay interval decorrelate gap information, preventing the additive
+extension of τ_coh predicted by the continuum theory.
+
+Paper VI Secs V–VII rewritten accordingly (commit dcb3672, e07030e).
