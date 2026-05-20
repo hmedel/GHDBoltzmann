@@ -45,17 +45,21 @@ stochastic Langevin dynamics with reaction-time delay and
 inelastic restitution, mesoscopic stochastic Burgers
 equation for the coarse-grained velocity field, and
 macroscopic deterministic Burgers equation in the
-noise-averaged limit --- and identify the parametric
-threshold at which the coherent shock signature emerges. A
-leading-order timescale-matching argument predicts a delay
+noise-averaged limit --- and identify a parametric delay
 threshold $\tau_r^c\approx 2.8$ (in the natural time units
-of Ref.~\cite{PaperIII}, where $\tau_{\rm break}\approx 9$),
-with the inelastic channel $\epsilon>0$ \emph{suppressing}
-rather than enhancing shock formation. The mesoscopic stochastic Burgers
-equation provides the natural bridge between integrable
-hard-rod phenomenology
-(Refs.~\cite{PaperI,PaperII,PaperIII,PaperIV,PaperV}) and
-the shock-dominated regime relevant for traffic flow.
+of Ref.~\cite{PaperIII}, where $\tau_{\rm break}\approx 9$)
+for the onset of the Burgers cascade, with the inelastic
+channel $\epsilon>0$ \emph{suppressing} rather than enhancing
+shock formation. Direct numerical tests with two
+microscopic delay implementations --- a post-collisional
+contact-freeze and an anticipatory optimal-velocity-model
+force --- show that this continuum threshold is \emph{not
+realised}: the $O(10^2)$ elastic collisions occurring during
+the delay interval decorrelate the delayed information,
+and the integrable hard-rod substrate shields the system
+against shock formation. The tension between the continuum
+prediction and the microscopic null result identifies
+integrability as the obstacle to delay-induced shock onset.
 \end{abstract}
 
 \maketitle
@@ -91,9 +95,9 @@ elastic hard-rod gas to produce a comparable steepening
 event (Ref.~\cite{PaperIII}) --- motivate the construction
 below. The Lighthill--Whitham--Richards
 theory~\cite{Lighthill1955} provides the continuum-level
-caricature and at the car-following level by
+caricature, while the car-following level is captured by
 the Optimal Velocity Model
-\cite{Bando1995,Komatsu1995,Komatsu2003} or the Intelligent
+\cite{Bando1995,Komatsu1995,Komatsu2003} and the Intelligent
 Driver Model~\cite{Treiber2000}. The missing ingredient
 relative to the hard-rod gas is identified by inspection:
 elastic two-body collisions are not the right microscopic
@@ -176,26 +180,22 @@ elastic limit $\epsilon=0$ recovers the dynamics of
 Ref.~\cite{PaperIII,PaperIV}; the fully inelastic limit
 $\epsilon=1$ corresponds to perfectly sticky contacts.
 
-\emph{(b) Reaction-time delay $\tau_r$.} For the hard-rod
-gas, where the only microscopic interaction is contact
-collision, the delay is implemented as a contact-freeze
-modification of the collision rule: at the contact event
-$t_c$ both rods instantaneously adopt their shared
-arc-length velocity $v_{\rm min}=\min(v_i,v_{i+1})$ and
-remain in contact at this velocity through the interval
-$(t_c,t_c+\tau_r)$; the full elastic exchange
-Eq.~\eqref{eq:inel_coll}
-(at $\epsilon=0$, the elastic limit) is applied at
-$t_c+\tau_r$. This protocol preserves the cyclic-order
-invariant of the hard-rod algorithm (rods cannot pass
-through one another during the freeze), reduces to the
-standard instantaneous-swap dynamics in the $\tau_r\to 0$
-limit, and is the hard-rod analogue of the reaction-time
-delay of the Optimal Velocity Model and the Intelligent
-Driver Model \cite{Bando1995,Treiber2000}. The symbolic
-$F_i^{\rm delay}$ in Eq.~\eqref{eq:micro2} stands for this
-contact-freeze rule and breaks instantaneous reversibility;
-the explicit numerical protocol is in
+\emph{(b) Reaction-time delay $\tau_r$.} The delay can be
+implemented in two ways, both tested in
+Sec.~\ref{sec:numerical}: a \emph{post-collisional}
+contact-freeze rule, in which both rods adopt
+$v_{\rm min}=\min(v_i,v_{i+1})$ at the contact event $t_c$
+and remain in contact until the elastic exchange is applied
+at $t_c+\tau_r$; and an \emph{anticipatory} OVM-type force
+$dv_i/dt=\alpha[V_{\rm opt}(g_i(t-\tau_r))-v_i]$, in which
+each rod adjusts its velocity based on the gap sensed
+$\tau_r$ in the past, with elastic hard-core collisions as
+a safety-net constraint. Both reduce to the standard
+instantaneous-swap dynamics for $\tau_r\to 0$ and preserve
+the cyclic-order invariant. The symbolic
+$F_i^{\rm delay}$ in Eq.~\eqref{eq:micro2} stands for
+either implementation and breaks instantaneous
+reversibility; the explicit protocols are in
 Sec.~\ref{sec:numerical}.
 
 \emph{(c) Stochastic forcing $\xi_i$.} The Gaussian noise
@@ -354,12 +354,16 @@ kinetic energy and thus \emph{shortens} $\tau_{\rm coh}$,
 suppressing shocks --- consistent with the granular-gas
 phenomenology of inelastic clustering rather than shock
 sharpening~\cite{BrilliantovPoschel};
-\emph{(b)} reaction-time delay $\tau_r>0$ \emph{sustains}
-coherent flow against thermalisation (drivers do not respond
-instantaneously to a passing wave) and thus \emph{lengthens}
-$\tau_{\rm coh}$, promoting shocks --- consistent with
-empirical jam-wave formation in delayed car-following
-models~\cite{Bando1995,Treiber2000,Komatsu1995}.
+\emph{(b)} reaction-time delay $\tau_r>0$ is predicted by
+the continuum theory to \emph{sustain} coherent flow against
+thermalisation (the dissipative response is suspended during
+the delay) and thus \emph{lengthen} $\tau_{\rm coh}$,
+promoting shocks --- consistent with empirical jam-wave
+formation in delayed car-following
+models~\cite{Bando1995,Treiber2000,Komatsu1995}. Whether
+this mechanism operates at the microscopic level depends on
+the scale-separation hypothesis tested in
+Sec.~\ref{sec:numerical}.
 
 The two channels therefore have \emph{opposite} effects, and
 the physically relevant control parameter for shock onset is
@@ -1008,8 +1012,13 @@ hydrodynamic level adds
 \label{eq:nu_tau}
 \end{equation}
 in close analogy to the OVM kinetic
-derivation~\cite{Komatsu1995}. For $\tau_r\sim 0.1$ and
-$c_s\sim 1$, this gives $\nu_\tau\approx 0.1$.
+derivation~\cite{Komatsu1995}. For example, at $c_s\approx 1$
+and $\tau_r=2.8$ (the predicted threshold), this gives
+$\nu_\tau\approx 2.8$, an order of magnitude larger than
+$\nu_0\approx 0.4$. The perturbative expansion
+$O(\tau_r^2/\tau_{\rm break})$ in Eq.~\eqref{eq:tcoh_tau}
+is therefore only marginally controlled at $\tau_r^c$, as
+noted in Sec.~\ref{sec:onset}.
 
 \subsection*{B.4 Noise enhancement $D_\epsilon$}
 
