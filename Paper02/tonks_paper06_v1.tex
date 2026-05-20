@@ -592,6 +592,25 @@ binary masses $m_L=1$, $m_H=5$, thermal energy $T=1$, and
 step-velocity IC
 $\bar u(s,0)=U_0\,\mathrm{sgn}[\cos k_1 s]$ at $U_0=0.5$.
 The inelastic channel is fixed at $\epsilon=0$ throughout.
+Table~\ref{tab:scans} summarises the numerical campaigns.
+
+\begin{table}[htbp]
+\caption{Summary of numerical scans. All use $N=400$,
+  $\eta=0.10$, $T_{\rm sim}=135\approx 12\,\tau_{\rm sound}$,
+  step IC at $U_0=0.5$.}
+\label{tab:scans}
+\centering
+\begin{tabular}{lcccc}
+\hline\hline
+Scan & Model & $\alpha$ & Seeds & $\tau_r$ grid \\
+\hline
+B    & contact-freeze & --- & 200 & 0--4 (7 pts) \\
+OVM\,1 & OVM-HR & 0.1--1.0 & 20  & 0--4 (5 pts) \\
+OVM\,2 & OVM-HR & 0.05--0.15 & 30  & 0--8 (7 pts) \\
+Res. & OVM-HR & 0.10, 0.12 & 100 & 0--11 (12 pts) \\
+\hline\hline
+\end{tabular}
+\end{table}
 
 \paragraph*{Observable.}
 The principal diagnostic is the even-mode amplitude ratio
@@ -1159,21 +1178,13 @@ M.~Kardar, G.~Parisi, Y.-C.~Zhang,
 Phys.~Rev.~Lett.\ \textbf{56}, 889 (1986),
 doi:10.1103/PhysRevLett.56.889.
 
-\bibitem{Hairer2013}
-M.~Hairer,
-Ann.~Math.\ \textbf{178}, 559 (2013).
-
-\bibitem{QuastelSpohn2015}
-J.~Quastel, H.~Spohn,
-J.~Stat.~Phys.\ \textbf{160}, 965 (2015).
-
 \bibitem{PrigogineHerman1971}
 I.~Prigogine, R.~Herman,
 \emph{Kinetic Theory of Vehicular Traffic},
 Elsevier (1971).
 
 \bibitem{Klar1996}
-A.~Klar, R.~Wegener,
+A.~Klar and R.~Wegener,
 SIAM J.~Appl.~Math.\ \textbf{59}, 983 (1999).
 
 \bibitem{Helbing2001}

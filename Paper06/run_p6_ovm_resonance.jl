@@ -126,7 +126,7 @@ function main()
     L = build_arc_length_map(curve).L
     a_rod = ETA * L / NN
     g_mean = L / NN - a_rod
-    τ_sound = L / sqrt(KT)  # approximate sound crossing time
+    τ_sound = L / (sqrt(KT) / (1 - ETA))  # L/c_s, c_s = v_th/(1-η)
     @printf("L=%.4f  a_rod=%.6f  g_mean=%.5f  τ_sound≈%.2f  seeds=%d\n\n",
             L, a_rod, g_mean, τ_sound, N_SEEDS)
 
