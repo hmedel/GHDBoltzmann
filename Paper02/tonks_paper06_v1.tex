@@ -119,26 +119,32 @@ The macroscopic level (Sec.~\ref{sec:macro}) is the
 deterministic Burgers equation obtained in the noise-averaged
 limit. The shock-onset criterion (Sec.~\ref{sec:onset}) is
 formulated in this hierarchy and yields a parametric threshold
-curve in the $(\epsilon, \tau_r)$ plane. Section
-\ref{sec:discussion} relates the construction to standard
-car-following models and to the GHD--Boltzmann framework of
-Ref.~\cite{PaperIV}.
+curve in the $(\epsilon, \tau_r)$ plane.
+Section~\ref{sec:numerical} tests this prediction
+numerically and identifies its failure mechanism.
+Section~\ref{sec:discussion} relates the construction to
+standard car-following models and to the GHD--Boltzmann
+framework of Ref.~\cite{PaperIV}.
 
 The three contributions are:
 \emph{(i)} a microscopic-to-continuum hierarchy that
-quantitatively explains the absence of shocks in elastic
-hard-rod gas (Refs.~\cite{PaperIII,PaperIV}) by their absence
+quantitatively explains the absence of shocks in the elastic
+hard-rod gas (Refs.~\cite{PaperIII,PaperIV}) by the absence
 of the dissipation and delay channels;
 \emph{(ii)} the identification of the stochastic Burgers
 equation as the natural mesoscopic object linking the
 integrable hard-rod baseline with the shock-dominated
-continuum;
-\emph{(iii)} a parametric threshold
-$\tau_r^c\approx 2.8$ for delay-induced shock onset that
-provides a falsifiable target for both event-driven
-hard-rod simulation with the contact-freeze collision rule
-of Sec.~\ref{sec:numerical} and for car-following empirical
-jam-wave observations~\cite{Sugiyama2008}.
+continuum, yielding a parametric threshold
+$\tau_r^c\approx 2.8$ for delay-induced shock onset
+(Eq.~\eqref{eq:tauc});
+\emph{(iii)} a direct numerical test
+(Sec.~\ref{sec:numerical}) showing that this continuum
+prediction is \emph{not} realised at the microscopic level:
+the integrable hard-rod collision rule decorrelates the
+delayed information faster than the nonlinear steepening can
+act, shielding the system from Burgers-shock formation
+regardless of the delay magnitude or its implementation
+(post-collisional or anticipatory).
 
 \section{Microscopic level: Langevin dynamics with delay
 and dissipation}\label{sec:micro}
@@ -405,7 +411,30 @@ so the coherent-flow lifetime is additively extended
 \label{eq:tcoh_tau}
 \end{equation}
 in an additive ansatz that neglects renormalisation of the
-collision frequency at finite delay. Shock onset corresponds
+collision frequency at finite delay.
+
+The additive ansatz~\eqref{eq:tcoh_tau} contains an implicit
+\emph{scale-separation hypothesis}: the delay $\tau_r$ is
+assumed to act on the macroscopic coherent-flow field (whose
+natural timescale is the sound-crossing time
+$\tau_{\rm sound}=L/c_s\approx 11$), while the microscopic
+collision time $\tau_{\rm coll}\sim g_{\rm mean}/v_{\rm th}
+\approx 0.03$ merely sets the rate of the dissipative
+background. The three scales satisfy
+\begin{equation}
+\tau_{\rm coll} \;\ll\; \tau_r^c \;\ll\; \tau_{\rm sound},
+\label{eq:scale_sep}
+\end{equation}
+so a rod at finite delay experiences
+$O(\tau_r/\tau_{\rm coll})\sim 10^2$ elastic collisions
+during the delay interval. Whether these collisions
+decorrelate the delayed information (invalidating the
+additive ansatz) or leave the macroscopic envelope intact
+(validating it) is a question that cannot be settled within
+the continuum theory; we return to this point
+in the numerical test of Sec.~\ref{sec:numerical}.
+
+Shock onset corresponds
 to $\tau_{\rm coh}(\tau_r)\geq t^*_{\rm shock}$; setting
 equality and using
 $t^*_{\rm shock}=1/(k_1 u_0)\approx 1/(0.5\cdot 0.5)=4$ and
@@ -418,7 +447,10 @@ Ref.~\cite{PaperIII} gives the estimate
 \end{equation}
 the order-of-magnitude minimum reaction-time delay
 required for the Burgers cascade to appear at the
-parameters of Ref.~\cite{PaperIII}. We emphasise that
+parameters of Ref.~\cite{PaperIII},
+\emph{contingent on the scale-separation
+hypothesis}~\eqref{eq:scale_sep}.
+We emphasise that
 Eq.~\eqref{eq:tauc} is not a small-parameter expansion: at
 $\tau_r^c=2.8$ and $\tau_{\rm break}\approx 9$ the ratio
 $\tau_r^c/\tau_{\rm break}\approx 0.3$ is $O(1)$, so the
@@ -480,7 +512,10 @@ shortens $\tau_{\rm coh}$ and therefore demands a larger
 $\tau_r$ to restore the threshold ordering
 $\tau_{\rm coh}\geq t^*_{\rm shock}$. The elastic-axis
 intercept $\tau_r^c(0)\approx 2.8$ is the principal
-quantitative prediction of this paper.
+quantitative prediction of the continuum theory; as noted
+above, its validity at the microscopic level depends on the
+scale-separation hypothesis~\eqref{eq:scale_sep} and is
+tested numerically in Sec.~\ref{sec:numerical}.
 
 \begin{figure}[htbp]
 \centering
@@ -513,8 +548,10 @@ quantitative prediction of this paper.
   \node[font=\footnotesize,rotate=18] at (0.55,0.92)
         {II: marginal};
 \end{tikzpicture}
-\caption{Qualitative $(\epsilon,\tau_r)$ phase diagram for
-shock onset in the mass-disordered hard-rod gas with
+\caption{Qualitative $(\epsilon,\tau_r)$ phase diagram
+predicted by the continuum theory of
+Secs.~\ref{sec:macro}--\ref{sec:onset} for the
+mass-disordered hard-rod gas with
 inelasticity $\epsilon$ and reaction-time delay $\tau_r$,
 at the parameters of Ref.~\cite{PaperIII} ($U_0=0.5$,
 $m_{\max}=5$, step IC). The dashed curve is the qualitative threshold
@@ -527,95 +564,189 @@ $d\tau_r^c/d\epsilon|_{0}\approx 0.25$
 exaggerated for clarity. Region~I is the no-shock GHD--Boltzmann
 regime of Refs.~\cite{PaperIII,PaperIV,PaperV}; region~III
 is the developed-Burgers regime characteristic of traffic
-jam waves~\cite{Sugiyama2008,Bando1995}. The numerical
-sweep of Sec.~\ref{sec:numerical} traces the
-$\epsilon=0$ axis to locate $\tau_r^c(0)$ quantitatively.}
+jam waves~\cite{Sugiyama2008,Bando1995}. Whether the
+microscopic dynamics realises this diagram depends on the
+scale-separation hypothesis~\eqref{eq:scale_sep}; the
+numerical tests of Sec.~\ref{sec:numerical} address this
+question along the $\epsilon=0$ axis.}
 \label{fig:phase}
 \end{figure}
 
 \section{Numerical test of the shock-onset threshold}
 \label{sec:numerical}
 
-A direct numerical test of Eq.~\eqref{eq:tauc} requires an
-event-driven hard-rod integrator augmented with a
-reaction-time delay; we summarise here the planned protocol
-and the quantitative signature to be measured.
-
-\paragraph*{Protocol.} Event-driven mass-disordered hard-rod
-dynamics at the parameters of Ref.~\cite{PaperIII}
-($L=12.57$, $\sigma=0.00314$, $\rho^{\rm tot}=31.82$,
-$\eta=0.1$, $m_{\max}=5$, $T=1$), with step-velocity IC
+All simulations use mass-disordered hard-rod dynamics at the
+parameters of Ref.~\cite{PaperIII}: $N=400$ rods on a ring
+of circumference $L=12.57$, rod length
+$\sigma=0.00314$, packing fraction $\eta=0.1$, equimolar
+binary masses $m_L=1$, $m_H=5$, thermal energy $T=1$, and
+step-velocity IC
 $\bar u(s,0)=U_0\,\mathrm{sgn}[\cos k_1 s]$ at $U_0=0.5$.
-The delay channel is implemented as a \emph{contact-freeze}
-modification of the elastic collision rule: at the contact
-event $t_c$, both rods instantaneously adopt their
-common arc-length velocity
+The inelastic channel is fixed at $\epsilon=0$ throughout.
+
+\paragraph*{Observable.}
+The principal diagnostic is the even-mode amplitude ratio
+$R_2(t)\equiv|\hat\rho_2(t)|/|\hat\rho_1(t)|$ evaluated at
+the first local maximum of $|\hat\rho_1|$. The step IC
+excites only odd Fourier components at $t=0$, and the
+linearised GHD--Boltzmann dynamics preserves this parity to
+leading order~\cite{PaperIV,PaperV}; in the no-shock regime
+Ref.~\cite{PaperV} (Table~VI) reports $R_2\approx 0.043$ at
+$U_0=0.5$. Formation of a Burgers shock breaks this parity
+through the quadratic $u\,\partial_x u$ nonlinearity,
+yielding $R_2\to 1/2$ in the developed-cascade
+limit~\cite{PaperIV}. A monotonic rise of $R_2(\tau_r)$ from
+the no-shock floor to $O(0.5)$ would confirm Scenario~A;
+absence of such a rise confirms Scenario~B.
+
+\subsection{Model~B: post-collisional contact-freeze}
+\label{sec:modelB}
+
+The first implementation tested was a \emph{contact-freeze}
+modification of the event-driven elastic collision rule.
+At collision event $t_c$, both rods instantaneously adopt
 $v_{\rm min}=\min(v_i, v_j)$ and remain in contact at this
 shared velocity for the duration $\tau_r$; at
 $t_c+\tau_r$ the full elastic velocity exchange
-Eq.~(4) of Ref.~\cite{PaperIV} is applied. This protocol
-preserves the cyclic-order invariant of the hard-rod
-algorithm (rods cannot pass through one another during the
-freeze) and reduces to the standard event-driven dynamics
-in the $\tau_r\to 0$ limit. It is the natural hard-rod
-analogue of the OVM reaction-time delay~\cite{Bando1995}:
-the driver-like response (full velocity adjustment) is
-delayed by $\tau_r$, but the immediate collision constraint
-(no overlap) is enforced instantaneously. The inelastic
-channel is fixed at $\epsilon=0$ to isolate the delay-only
-shock onset.
+Eq.~(4) of Ref.~\cite{PaperIV} is applied. The protocol
+preserves the cyclic-order invariant (rods cannot pass
+through one another during the freeze) and reduces to the
+standard elastic dynamics for $\tau_r\to 0$.
 
-\paragraph*{Sweep and observables.} The protocol sweeps
-$\tau_r\in\{0, 1.0, 2.0, 2.5, 3.0, 3.5, 4.0\}$, bracketing
-the analytical threshold $\tau_r^c\approx 2.8$ of
-Eq.~\eqref{eq:tauc}. The principal observable is the
-density-mode amplitude ratio
-$R_n(t)\equiv|\hat\rho_n(t)|/|\hat\rho_1(t)|$ at the first
-local maximum of $|\hat\rho_1|$, evaluated for $n=2,\ldots,7$.
-The diagnostic signature of shock onset is the
-\emph{appearance of even modes} of comparable magnitude to
-the odd modes. In the linear regime the step IC excites only
-odd-$n$ wavenumbers Fourier components ($\hat\rho_n=0$ for
-even $n$ at $t=0$) and the GHD--Boltzmann linearised
-dynamics preserves this parity to leading order, giving
-the $R_n\sim 1/n$ cascade restricted to odd $n$
-(Ref.~\cite{PaperIV} and Ref.~\cite{PaperV} Sec.~VIII for
-the explicit even-mode noise floor at $U_0=0.05$). The
-formation of a Burgers shock breaks this parity: at the
-shock face, the locally steep gradient mixes even and odd
-modes through the quadratic $u\,\partial_x u$ nonlinearity,
-yielding even-mode amplitudes that scale as
-$|\hat\rho_{2m}|/|\hat\rho_1|\sim (U_0/c_s)^m$ for the
-$m$-th even harmonic. A clean shock-onset diagnostic is
-therefore the \emph{relative even-mode amplitude}
-$R_2\equiv|\hat\rho_2|/|\hat\rho_1|$ at the first
-maximum of $|\hat\rho_1|$, in which the large fundamental
-$|\hat\rho_1|$ in the denominator suppresses statistical
-noise relative to denominators built from higher harmonics.
-In the GHD--Boltzmann no-shock regime
-Ref.~\cite{PaperV} (Table~VI) reports $R_2\approx 0.043$ at
-$U_0=0.5$, i.e.\ even modes suppressed by more than an order
-of magnitude relative to the fundamental. In the developed
-Burgers regime the inviscid-Burgers cascade
-$|\hat\rho_n|/|\hat\rho_1|\to 1/n$ (in suitable
-sawtooth-coordinate frames) gives $R_2\to 1/2$, a
-factor of ten above the no-shock floor.
+\paragraph*{Result.}
+A sweep of $\tau_r\in\{0, 1, 2, 2.5, 3, 3.5, 4\}$ at 200
+realisations per value and $T_{\rm sim}=135\approx 12\,
+\tau_{\rm sound}$ yields $R_2$ at the no-shock floor
+($R_2\approx 0.02$--$0.05$) for \emph{every} $\tau_r$.
+Time-resolved mode analysis shows that $|\hat\rho_1(t)|$
+peaks \emph{earlier} with increasing $\tau_r$, indicating
+that the $v_{\rm min}$ clamp actively \emph{shortens}
+$\tau_{\rm coh}$---the opposite of the additive extension
+assumed in Eq.~\eqref{eq:tcoh_tau}.
 
-\paragraph*{Expected result.}
-For $\tau_r<\tau_r^c$: phase mixing pre-empts shock
-formation, $R_2$ remains at the no-shock floor
-$R_2\lesssim 0.05$ (Ref.~\cite{PaperV}).
-For $\tau_r\approx\tau_r^c$: $R_2$ rises as the quadratic
-mode-mixing channel opens but the cascade is incomplete.
-For $\tau_r>\tau_r^c$: $R_2\to 0.5$, signalling the
-developed Burgers cascade.
+\paragraph*{Diagnosis.}
+The failure has a clear physical origin: the instantaneous
+$v_{\rm min}$ clamp at each collision dissipates coherent
+kinetic energy by forcing both rods to the slower velocity.
+During the freeze interval, the pair travels at $v_{\rm min}$
+while neighbouring rods continue at their pre-collision
+velocities, disrupting the coherent wave envelope. The delay
+in the contact-freeze model is \emph{post-collisional}: it
+acts after the hard-core constraint has fired. The continuum
+theory of Sec.~\ref{sec:onset}, by contrast, envisions a
+delay that suspends the \emph{dissipative response} while
+leaving the coherent propagation intact---an
+\emph{anticipatory} delay, closer in spirit to the
+OVM reaction time of Bando et~al.~\cite{Bando1995}, in which
+drivers adjust their velocity based on information sensed
+$\tau_r$ in the past. This distinction motivates the second
+model below.
 
-The quantitative match between the threshold extracted
-from the $R_2(\tau_r)$ data and the analytical prediction
-Eq.~\eqref{eq:tauc} is the falsifiable claim of the
-present construction. The implementation and a complete
-report of the sweep are deferred to a companion data
-release.
+\subsection{OVM-HR: anticipatory delay with hard-core
+  collisions}\label{sec:ovm}
+
+The OVM-HR (Optimal Velocity Model with Hard-Rod constraint)
+model implements the delay as an \emph{anticipatory}
+velocity-adaptation force: each rod $i$ adjusts its velocity
+toward a desired velocity set by the gap $g_i$ sensed
+$\tau_r$ in the past,
+\begin{equation}
+\frac{dv_i}{dt} = \alpha\bigl[V_{\rm opt}\bigl(g_i(t-\tau_r)
+\bigr) - v_i(t)\bigr],
+\label{eq:ovm}
+\end{equation}
+with $V_{\rm opt}(g)=v_{\rm free}\tanh(g/g_c)$, coupling
+strength $\alpha$, free-flow velocity $v_{\rm free}=1$, and
+characteristic gap $g_c$. Elastic hard-core
+collisions---identical to the standard event-driven rule at
+$\epsilon=0$---act as a safety-net constraint when rods
+overlap despite the OVM force. The model is integrated with a
+symplectic split-step scheme at $\Delta t=5\times 10^{-4}$
+and up to three overlap-correction passes per step. Delayed
+gaps are stored in a circular buffer of depth
+$\lceil\tau_r/\Delta t\rceil$.
+
+At $\tau_r=0$ and $\alpha\to 0$ the OVM-HR reduces to the
+elastic hard-rod gas of Refs.~\cite{PaperIII,PaperIV}; at
+$\alpha>0$ it interpolates continuously between the
+integrable hard-rod gas and the traffic-like OVM
+regime~\cite{Bando1995}.
+
+\paragraph*{Coupling-strength scan.}
+The coupling $\alpha$ controls how strongly the OVM force
+perturbs the integrable baseline. A preliminary scan over
+$\alpha\in\{0.1, 0.3, 0.5, 1.0\}$ at $g_c\in\{g_{\rm
+mean}/2,\, g_{\rm mean},\, 2g_{\rm mean}\}$ with
+$g_{\rm mean}=L/N-\sigma\approx 0.028$ and
+$\tau_r\in\{0, 1, 2, 3, 4\}$ (20 realisations each,
+$T_{\rm sim}=135$) reveals two regimes:
+\begin{itemize}
+\item $\alpha\geq 0.3$: $R_2\gtrsim 0.5$ already at
+  $\tau_r=0$---the OVM force alone generates even modes,
+  independent of the delay. This regime is outside the
+  near-integrable domain relevant to the continuum theory.
+\item $\alpha=0.1$: $R_2\approx 0.21$ at $\tau_r=0$ (no-shock
+  floor), with a suggestive elevation to $R_2\approx 0.35$ at
+  $\tau_r=4$ for $g_c=g_{\rm mean}$. The effect is marginal
+  within the 20-seed noise.
+\end{itemize}
+A refined scan at
+$\alpha\in\{0.05, 0.08, 0.12, 0.15\}$ with 30 realisations
+and $\tau_r\in\{0, 1, 2, 3, 4, 6, 8\}$ sharpens the picture:
+$\alpha=0.15$ produces $R_2>0.5$ at $\tau_r=0$ (too strong);
+$\alpha\leq 0.08$ shows no statistically significant $\tau_r$
+dependence; $\alpha=0.12$ shows elevated $R_2$ at $\tau_r=6$
+and $\tau_r=8$ but with non-monotonic $\tau_r$ dependence
+inconsistent with the smooth threshold of Scenario~A.
+
+\paragraph*{Absence of a monotonic threshold.}
+Across the full parameter space explored, no monotonic
+$R_2(\tau_r)$ crossover is observed. The data are consistent
+with Scenario~B: the $O(10^2)$ elastic collisions occurring
+during the delay interval decorrelate the gap information
+stored in the circular buffer, preventing the additive
+extension of $\tau_{\rm coh}$ predicted by the continuum
+theory.
+
+\paragraph*{Resonance test.}
+A dedicated scan at $\alpha\in\{0.10, 0.12\}$ with fine
+$\tau_r$ resolution around
+$\tau_{\rm sound}/2\approx 6.3$ (12 values of $\tau_r$ from
+0 to 11, 100 realisations each) was performed to test
+whether the non-monotonic elevations of $R_2$ at
+$\alpha=0.12$ reflect a parametric resonance at half the
+acoustic period. The result is negative:
+at $\alpha=0.10$, $R_2$ fluctuates within $\pm 1\sigma$ of
+the no-shock floor ($R_2\approx 0.15$--$0.29$,
+$\sigma_2\approx 0.035$) with no $\tau_r$ dependence.
+At $\alpha=0.12$, $R_2$ is generally elevated above the
+$\tau_r=0$ baseline ($R_2(0)\approx 0.18$) but the
+variations are non-monotonic and show no peak at
+$\tau_r/\tau_{\rm sound}=1/2$; the largest values
+($R_2\approx 0.50$ at $\tau_r=6$ and $0.52$ at $\tau_r=8$)
+are separated by a deep trough ($R_2\approx 0.16$ at
+$\tau_r=6.5$), inconsistent with a smooth resonance
+structure. Much of the scatter traces to the sensitivity of
+the diagnostic $R_2\equiv|\hat\rho_2|/|\hat\rho_1|$ to the
+location of the $|\hat\rho_1|$ peak: $|\hat\rho_1|_{\rm pk}$
+itself varies by a factor of two across the $\tau_r$ grid,
+amplifying fluctuations in the ratio.
+
+\paragraph*{Summary.}
+Neither the post-collisional delay (Model~B) nor the
+anticipatory delay (OVM-HR) produces a monotonic
+$R_2(\tau_r)$ crossover at any coupling strength $\alpha$.
+The numerical evidence supports Scenario~B:
+the $O(\tau_r/\tau_{\rm coll})\sim 10^2$ elastic collisions
+occurring during the delay interval decorrelate the
+microscopic gap information, preventing the macroscopic
+coherent-flow lifetime $\tau_{\rm coh}$ from extending
+additively as assumed in Eq.~\eqref{eq:tcoh_tau}. The
+integrable hard-rod substrate acts as a \emph{shield} against
+delay-induced shock formation: its rapid collisional
+thermalisation destroys the delayed correlations before the
+nonlinear steepening mechanism of the Burgers equation can
+operate.
 
 \section{Discussion}\label{sec:discussion}
 
@@ -653,31 +784,75 @@ considered here is structurally distinct.
 
 \subsection{Implications and open work}
 
-The stochastic Burgers equation Eq.~\eqref{eq:stoch_burgers}
-identifies the natural mesoscopic object connecting the
-integrable hard-rod baseline with the shock-dominated
-continuum. The KPZ-class long-wavelength fluctuations
-encoded in $f(x,v,t)$ are accessible both numerically (via
-event-driven simulation of
-Eqs.~\eqref{eq:micro1}--\eqref{eq:micro2} with the
-contact-freeze collision rule of Sec.~\ref{sec:numerical})
-and analytically via the well-developed KPZ machinery
-\cite{Hairer2013,QuastelSpohn2015}.
-The principal open computational task is the direct
-numerical determination of the threshold
-$\tau_r^c(\epsilon, D)$ from the sweep of
-Sec.~\ref{sec:numerical}, and its comparison against the
-analytical prediction Eq.~\eqref{eq:tauc}.
+The central finding of this paper is a tension between
+two levels of description: the continuum stochastic Burgers
+equation Eq.~\eqref{eq:stoch_burgers} predicts a clean
+shock-onset threshold $\tau_r^c\approx 2.8$
+(Eq.~\eqref{eq:tauc}), but the microscopic hard-rod dynamics
+does not realise it.
 
-For vehicular-traffic applications, the result implies that
-coherent jam waves with sharp upstream fronts emerge only
-when at least one of the three channels --- inelasticity,
-reaction-time delay, or external driver noise --- is
-sufficiently strong, and the delay channel is the dominant
-shock-promoting ingredient (Sec.~\ref{sec:macro}). An
-elastic, instantaneous, deterministic car-following model
-cannot reproduce the empirical phenomenology of jam-wave
-formation documented in Ref.~\cite{Sugiyama2008}.
+\paragraph*{Why the continuum prediction fails microscopically.}
+The additive ansatz
+$\tau_{\rm coh}(\tau_r)\approx\tau_{\rm coh}(0)+\tau_r$
+(Eq.~\eqref{eq:tcoh_tau}) assumes that the delay suspends
+the dissipative response while leaving the coherent
+wave envelope intact. This is valid when the delay acts on
+the coarse-grained velocity field, whose correlation time is
+$\tau_{\rm sound}\approx 11$. At the microscopic level,
+however, a rod experiences
+$O(\tau_r/\tau_{\rm coll})\sim 10^2$ elastic collisions
+during the delay interval
+(Eq.~\eqref{eq:scale_sep}). These collisions continuously
+redistribute momentum among neighbouring rods, decorrelating
+the gap information stored in the delay buffer. The delayed
+gap $g_i(t-\tau_r)$ bears no systematic relation to the
+current dynamical state, and the OVM
+force~\eqref{eq:ovm} acts as effectively random noise rather
+than as a coherent wave-steepening mechanism.
+
+The integrable structure of the hard-rod gas is the root
+cause: the exact soliton-like scattering of the elastic
+collision rule preserves the full set of GHD conservation
+laws~\cite{PaperIV}, and these conserved quantities absorb
+the perturbation from the delayed OVM force without
+generating the irreversible steepening that would produce a
+Burgers shock. In non-integrable particle systems---where
+collisions are diffusive rather than
+ballistic~\cite{DurninDoyon2021}---the decorrelation rate
+may be slower, potentially restoring the conditions for the
+continuum threshold to operate.
+
+\paragraph*{Traffic implications.}
+For vehicular-traffic applications, the result sharpens
+the role of integrability breaking. Real traffic is
+strongly non-integrable: lane changes, heterogeneous
+desired speeds, and multi-body anticipation break all
+conservation laws of the hard-rod gas. The OVM
+delay mechanism of Bando et~al.~\cite{Bando1995} produces
+jam waves precisely because the underlying
+single-lane dynamics is already dissipative and
+non-integrable. The present work shows that
+\emph{transplanting} the same delay mechanism onto an
+integrable substrate is insufficient: the substrate must
+first lose its integrability for the delay channel to
+become effective.
+
+\paragraph*{Open directions.}
+Three extensions would clarify the boundary between
+integrable shielding and shock formation:
+(i)~activating the inelastic channel ($\epsilon>0$) to
+break integrability before introducing delay, testing
+whether the combined $(\epsilon,\tau_r)$ threshold of
+Fig.~\ref{fig:phase} emerges once the elastic conservation
+laws are removed;
+(ii)~increasing the OVM coupling $\alpha$ into the
+non-integrable regime ($\alpha\gtrsim 0.3$) and measuring
+whether the $\tau_r$ dependence of $R_2$ becomes monotonic
+once the baseline is already shock-prone;
+(iii)~replacing the hard-rod elastic collision with a
+soft-core repulsion (e.g.\ Lennard-Jones or WCA), which is
+diffusive rather than ballistic and may decorrelate more
+slowly than the integrable hard-rod scattering.
 
 \begin{acknowledgments}
 This work was supported by Tecnol\'ogico de Monterrey.
