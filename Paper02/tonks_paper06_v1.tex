@@ -620,8 +620,11 @@ standard elastic dynamics for $\tau_r\to 0$.
 \paragraph*{Result.}
 A sweep of $\tau_r\in\{0, 1, 2, 2.5, 3, 3.5, 4\}$ at 200
 realisations per value and $T_{\rm sim}=135\approx 12\,
-\tau_{\rm sound}$ yields $R_2$ at the no-shock floor
-($R_2\approx 0.02$--$0.05$) for \emph{every} $\tau_r$.
+\tau_{\rm sound}$ yields $R_2\approx 0.16$ at
+$\tau_r=0$ (the integrable baseline) and
+$R_2\approx 0.02$--$0.05$ for every $\tau_r>0$
+(Fig.~\ref{fig:R2}a)---the delay \emph{suppresses}
+even-mode generation below the elastic baseline.
 Time-resolved mode analysis shows that $|\hat\rho_1(t)|$
 peaks \emph{earlier} with increasing $\tau_r$, indicating
 that the $v_{\rm min}$ clamp actively \emph{shortens}
@@ -704,13 +707,32 @@ and $\tau_r=8$ but with non-monotonic $\tau_r$ dependence
 inconsistent with the smooth threshold of Scenario~A.
 
 \paragraph*{Absence of a monotonic threshold.}
-Across the full parameter space explored, no monotonic
+Across the full parameter space explored
+(Fig.~\ref{fig:R2}b), no monotonic
 $R_2(\tau_r)$ crossover is observed. The data are consistent
 with Scenario~B: the $O(10^2)$ elastic collisions occurring
 during the delay interval decorrelate the gap information
 stored in the circular buffer, preventing the additive
 extension of $\tau_{\rm coh}$ predicted by the continuum
 theory.
+
+\begin{figure}[htbp]
+\includegraphics[width=\columnwidth]{figures/fig_p6_R2_all.pdf}
+\caption{Even-mode ratio $R_2\equiv|\hat\rho_2|/|\hat\rho_1|$
+  evaluated at the first peak of $|\hat\rho_1|$ versus delay
+  $\tau_r$. (a)~Model~B (contact-freeze, 200 realisations):
+  $R_2\approx 0.16$ at $\tau_r=0$ (integrable baseline) drops
+  to $R_2\approx 0.02$--$0.05$ for all $\tau_r>0$, well below
+  the predicted threshold $\tau_r^c\approx 2.8$ (red dash-dot).
+  Error bars show $\pm 1\sigma$.
+  (b)~OVM-HR model (30 realisations) at four coupling strengths
+  $\alpha$: no monotonic crossover is observed at any $\alpha$.
+  The $\alpha=0.15$ curve (dashed) already exceeds $R_2=0.5$ at
+  $\tau_r=0$, while $\alpha\leq 0.08$ remains near the floor.
+  The intermediate value $\alpha=0.12$ shows large but
+  non-monotonic fluctuations.}
+\label{fig:R2}
+\end{figure}
 
 \paragraph*{Resonance test.}
 A dedicated scan at $\alpha\in\{0.10, 0.12\}$ with fine
@@ -719,7 +741,7 @@ $\tau_{\rm sound}/2\approx 6.3$ (12 values of $\tau_r$ from
 0 to 11, 100 realisations each) was performed to test
 whether the non-monotonic elevations of $R_2$ at
 $\alpha=0.12$ reflect a parametric resonance at half the
-acoustic period. The result is negative:
+acoustic period (Fig.~\ref{fig:resonance}). The result is negative:
 at $\alpha=0.10$, $R_2$ fluctuates within $\pm 1\sigma$ of
 the no-shock floor ($R_2\approx 0.15$--$0.29$,
 $\sigma_2\approx 0.035$) with no $\tau_r$ dependence.
@@ -735,6 +757,21 @@ the diagnostic $R_2\equiv|\hat\rho_2|/|\hat\rho_1|$ to the
 location of the $|\hat\rho_1|$ peak: $|\hat\rho_1|_{\rm pk}$
 itself varies by a factor of two across the $\tau_r$ grid,
 amplifying fluctuations in the ratio.
+
+\begin{figure}[htbp]
+\includegraphics[width=\columnwidth]{figures/fig_p6_resonance.pdf}
+\caption{Resonance test: $R_2$ versus $\tau_r/\tau_{\rm sound}$
+  for $\alpha=0.10$ and $\alpha=0.12$ (100 realisations each).
+  Error bars show $\pm 1\sigma$ from the ensemble variance.
+  The red dash-dot line marks $\tau_r=\tau_{\rm sound}/2$,
+  the expected resonance location. No peak is observed at
+  $\tau_r/\tau_{\rm sound}=1/2$ for either coupling. The
+  $\alpha=0.12$ data shows large non-monotonic excursions
+  (e.g., a deep trough at $\tau_r/\tau_{\rm sound}\approx 0.52$
+  between elevated values at $0.48$ and $0.64$), inconsistent
+  with a smooth resonance structure.}
+\label{fig:resonance}
+\end{figure}
 
 \paragraph*{Summary.}
 Neither the post-collisional delay (Model~B) nor the
