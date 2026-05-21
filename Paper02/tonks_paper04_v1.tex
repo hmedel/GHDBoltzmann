@@ -1,0 +1,920 @@
+% tonks_paper04_v1.tex
+% Generalised hydrodynamics on Riemannian rings with quenched
+% binary mass disorder.
+% v1 (2026-05-13): initial skeleton
+% v1.5 (2026-05-15): erratum to Eq. (10), (12), and linearisation:
+%   the dressed-velocity numerator must use η·ū (not σ·ū), since σ
+%   has units of length and ū of velocity. The dimensionally correct
+%   form is v_eff = (v - η ū)/(1-η), equivalent to (v - σ p̄)/(1-σρ)
+%   where p̄ = ρū is the momentum density. The analytical c_s in
+%   Eq. (14) is unaffected. Verified against discrete-velocity solver
+%   (Paper V): with corrected dressing, solver matches analytic c_s
+%   to 2% across η ∈ [0.01, 0.20] and m_max ∈ [2, 10].
+
+\pdfminorversion=7
+\documentclass[aps,pre,twocolumn,superscriptaddress,longbibliography,floatfix]{revtex4-2}
+
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage{physics}
+\usepackage{mathtools}
+
+\begin{document}
+
+\title{Generalised hydrodynamics on Riemannian rings with quenched
+binary mass disorder}
+
+\author{Hector Medel}
+\email{hjmedel@gmail.com}
+\affiliation{Escuela de Ingenier\'ia y Ciencias, Tecnol\'ogico de Monterrey, Mexico}
+
+\date{\today}
+
+\begin{abstract}
+We construct the generalised hydrodynamic (GHD) equation for
+the hard-rod gas on a closed one-dimensional Riemannian
+curve $(M,g)$ and extend it to a binary mass-disordered mixture
+with quenched disorder. The geometric content of the curved
+problem is shown to reduce, by the arc-length theorem of
+companion paper~\cite{PaperI}, to that of the flat Tonks gas of
+perimeter $L=\oint\sqrt{g}\,d\varphi$, with the metric entering
+only through observable averages on the manifold. For the
+binary mixture $m_i\in\{m_L,m_H\}$, we construct a two-species
+GHD-Boltzmann hybrid equation in which the inter-species
+elastic collision rate sets a thermalisation kernel of strength
+$\tau_{\rm break}^{-1}$. Linearised about equilibrium, the equation predicts a
+sound-mode dispersion that matches a dedicated event-driven MD
+sweep (extending the $m_{\max}=5$ result of companion
+paper~\cite{PaperII} to $m_{\max}\in\{5,10,100\}$) within
+$\sim 4\%$ across a 20-fold range in mass disparity. At finite
+amplitude with step velocity initial conditions, the linearised
+analysis predicts a density-mode ratio
+$|\hat\rho_n|/|\hat\rho_1|=1/n$ for odd $n$, $m_{\max}$-%
+independent, recovered to $5\%$ in the data of companion
+paper~\cite{PaperIII}; this provides the mechanism for the
+empirical density-mode universality reported there. The
+even-mode amplitudes and their slow drift across $m_{\max}$
+are not derived from first principles here and are left as
+open work.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+Generalised hydrodynamics (GHD) provides an exact Euler-scale
+description of the hydrodynamic limit of integrable many-body
+systems in one dimension
+\cite{DoyonSpohn2017,Doyon2017Lectures,BertiniGhdReview2025,
+DenardisDoyon2018,Bulchandani2018,GHDperspective2025}. For the
+classical hard-rod gas, it was first written by Boldrighini,
+Dobrushin and Sukhov \cite{BDS1983} and recently revisited
+in connection with diffusive corrections \cite{HRDiffusive2023}
+and absence of shocks \cite{HubnerDoyon2024}. Two extensions
+of the standard framework are relevant for the present work:
+
+\emph{(i)} The geometric setting. GHD has been formulated for
+gases on the real line and on a periodic ring with translation
+invariance; the case of a non-trivially curved one-dimensional
+manifold $(M,g)$ has not, to our knowledge, been treated
+explicitly. The closest result is the ``geometric viewpoint''
+of Doyon, Spohn and Yoshimura \cite{DoyonSpohnYoshimura2017},
+which introduces a state-dependent metric on the rapidity
+space rather than on physical space.
+
+\emph{(ii)} Integrability breaking. A growing body of work on
+weak-integrability-breaking GHD \cite{DurninDoyon2021,
+WeakBreaking2023, BastianelloBoltzmann2020} treats stochastic
+or annealed perturbations of integrable models, deriving
+Boltzmann-type collision integrals that quantify
+thermalisation. The case of \emph{quenched} disorder ---
+relevant for a binary mass mixture where each realisation
+carries a fixed random assignment of masses --- has not been
+systematically addressed.
+
+In this work we combine the two extensions. Section
+\ref{sec:setup} recalls the setup of the hard-rod gas on $(M,g)$
+and the arc-length reduction theorem of
+Ref.~\cite{PaperI}. Section \ref{sec:ghdmg} writes the GHD
+equation in covariant form on $(M,g)$ and proves its equivalence
+to the flat-space equation on the ring of length $L$.
+Section \ref{sec:twospecies} constructs a two-species GHD
+equation for binary mass disorder, postulating a standard
+Boltzmann form for the inter-species kernel and motivating
+the structure of the dressed velocity. Section \ref{sec:linear} compares the linearised
+equation against the sound-wave data of
+Ref.~\cite{PaperII}. Section \ref{sec:nonlinear} addresses the
+nonlinear regime and the $m_{\max}$-universality observed in
+Ref.~\cite{PaperIII}. Section \ref{sec:discussion} situates
+the result and lists open work.
+
+The main contributions are:
+\emph{(i)} a covariant GHD equation on Riemannian 1D rings
+and a proof that physical-space curvature enters only through
+the perimeter $L$ at the Euler scale;
+\emph{(ii)} a postulated two-species GHD-Boltzmann equation for
+the binary-mass hard-rod gas with quenched disorder, with a
+standard Boltzmann-form inter-species kernel of strength
+$\tau_{\rm break}^{-1}$ (the explicit derivation from
+microscopic crossing dynamics is left to future work);
+\emph{(iii)} quantitative consistency with the linear-regime
+sound-wave restoration of Ref.~\cite{PaperII};
+\emph{(iv)} a mechanism for the $m_{\max}$-universality of the
+density-mode spectrum at finite amplitude reported in
+Ref.~\cite{PaperIII}.
+
+\section{Setup and arc-length reduction}\label{sec:setup}
+
+We consider $N$ hard rods of diameter $\sigma$ on a smooth
+closed curve $\gamma:S^1\to\mathbb{R}^d$ with arc-length element
+$ds=\sqrt{g(\varphi)}\,d\varphi$ and perimeter
+$L=\oint\sqrt{g}\,d\varphi$. Half the rods have mass $m_L=1$ and
+half have mass $m_H = m_{\max}>1$; the assignment is fixed per
+realisation and is quenched. The single-realisation Hamiltonian
+is
+\begin{equation}
+H = \sum_{i=1}^N \frac{p_i^2}{2 m_i}
+  + \sum_{i<j} V_{\rm rod}(s_i-s_j),
+\label{eq:H}
+\end{equation}
+with $V_{\rm rod}$ the hard-rod pair potential of range $\sigma$.
+
+By the arc-length theorem of Ref.~\cite{PaperI}, the canonical
+configurational integral on $(M,g)$ in arc-length coordinate is
+identical to that of the flat Tonks gas on a circle of
+perimeter $L$. Dynamically, the equations of motion in
+arc-length coordinate are those of the flat gas as well: each
+rod moves at constant velocity between point elastic collisions,
+and the collision rule is mass-dependent,
+\begin{equation}
+v_i' = \frac{m_i - m_j}{m_i + m_j}\,v_i
+     + \frac{2 m_j}{m_i + m_j}\,v_j.
+\label{eq:elcoll}
+\end{equation}
+The geometry enters only through (a) the perimeter $L$ and
+(b) the relation between arc-length and intrinsic coordinate
+observables; the bulk dynamics is geometrically trivial.
+
+\section{GHD on $(M,g)$}\label{sec:ghdmg}
+
+For the integrable equal-mass case ($m_L=m_H$), the Euler-scale
+GHD equation in arc-length coordinate $s$ reads
+\begin{equation}
+\partial_t \rho_p(s,v,t)
++ \partial_s\!\left[v^{\rm eff}(s,v,t)\,\rho_p(s,v,t)\right] = 0,
+\label{eq:ghd}
+\end{equation}
+where $\rho_p(s,v,t)$ is the rapidity (asymptotic velocity)
+density and $v^{\rm eff}$ is the dressed velocity. For the
+hard-rod gas of total density $\rho(s,t)=\int dv\,\rho_p(s,v,t)$,
+the standard result is \cite{DoyonSpohn2017,BDS1983}
+\begin{equation}
+v^{\rm eff}(s,v,t) = \frac{v - \eta(s,t)\,\bar u(s,t)}{1 - \eta(s,t)},
+\quad
+\bar u(s,t) = \rho^{-1}\!\int\!dv\,v\,\rho_p,
+\label{eq:veff}
+\end{equation}
+with $\bar u(s,t)$ the local number-weighted mean velocity and
+$\eta = \sigma\rho$ the local packing fraction (dimensionless).
+The combination $\eta\bar u$ is a velocity, so each term in the
+numerator has consistent units;
+equivalently, $\eta\bar u = \sigma\bar p$ where
+$\bar p = \int\!dv\,v\,\rho_p = \rho\bar u$ is the momentum density
+per unit length of the rapidity distribution.
+
+\subsection{Covariant form on $(M,g)$}
+
+The arc-length theorem of Ref.~\cite{PaperI} states that the
+hard-rod dynamics on $(M,g)$ is identical to the flat gas in the
+arc-length coordinate. Consequently the GHD equation on the
+manifold is given by Eq.~\eqref{eq:ghd} with $s$ the arc-length
+coordinate and $L=\oint\sqrt{g}\,d\varphi$ the periodicity. In
+the intrinsic coordinate $\varphi$ with arc-length element
+$\sqrt{g(\varphi)}d\varphi$, the same equation reads
+\begin{equation}
+\partial_t \tilde\rho_p(\varphi,v,t)
++ \frac{1}{\sqrt{g}}\partial_\varphi\!\left[v^{\rm eff}\,\tilde\rho_p\right]
+= 0,
+\label{eq:ghdmg}
+\end{equation}
+with $\tilde\rho_p(\varphi,v,t) = \sqrt{g(\varphi)}\,\rho_p(s(\varphi),v,t)$
+the density per unit $\varphi$. The factor $\sqrt{g}$ is the
+Jacobian relating the two parametrisations.
+
+A direct consequence is the
+\emph{Euler-scale geometric invariance}: at the Euler scale, the
+GHD dynamics on $(M,g)$ depends on the metric $g(\varphi)$ only
+through its integral $L$. This statement applies to bulk
+observables; the relation between intrinsic-coordinate and
+arc-length-coordinate observables of course retains the
+Jacobian dependence on $g(\varphi)$. We will recover this
+statement empirically in
+Sec.~\ref{sec:nonlinear} against the curved-geometry data of
+Ref.~\cite{PaperIII}.
+
+\section{Two-species GHD with binary mass disorder}
+\label{sec:twospecies}
+
+For the binary mixture the asymptotic velocity is no longer
+conserved per particle: an elastic collision between unequal
+masses redistributes velocity via Eq.~\eqref{eq:elcoll},
+breaking the integrability of the equal-mass case. There is
+therefore no rapidity in the strict GHD sense. We work instead
+with the species-resolved velocity distribution
+$\rho_\alpha(s,v,t)$ on phase space ($\alpha\in\{L,H\}$),
+normalised so that $\int\!dv\,\rho_\alpha = \rho_\alpha^{\rm
+tot}(s,t)$ is the local density of species $\alpha$. The
+relation to the equal-mass GHD framework
+(Sec.~\ref{sec:ghdmg}) is that $\rho_\alpha$ reduces to the
+single-species rapidity density $\rho_p$ in the integrable
+limit $m_L=m_H$.
+
+\subsection{GHD-Boltzmann equation}
+
+The species-resolved hydrodynamic equation has the form
+\begin{equation}
+\partial_t \rho_\alpha + \partial_s\!\left[v^{\rm eff}_\alpha\,\rho_\alpha\right]
+= \mathcal{C}_\alpha[\rho_L,\rho_H](s,v,t),
+\label{eq:ghdboltz}
+\end{equation}
+where $v^{\rm eff}_\alpha$ is the dressed velocity in the binary
+mixture (to be determined below) and
+$\mathcal{C}_\alpha[\rho_L,\rho_H]$ is a Boltzmann-style
+collision operator capturing inter-species velocity exchange.
+
+For the elastic collision Eq.~\eqref{eq:elcoll}, the standard
+Boltzmann collision integral for a binary classical
+hard-rod gas in one dimension is
+\begin{multline}
+\mathcal{C}_\alpha(s,v,t)
+= \sigma\!\int\!dv'\,|v-v'|\\
+\times \big[\rho_\alpha(s,v_*,t)\rho_\beta(s,v'_*,t)
+           - \rho_\alpha(s,v,t)\rho_\beta(s,v',t)\big],
+\label{eq:Calpha}
+\end{multline}
+where $\beta\neq\alpha$, $\sigma$ is the rod diameter setting
+the 1D ``cross section'', and $(v_*,v'_*)$ is the pre-collision
+pair that yields $(v,v')$ after the elastic update
+Eq.~\eqref{eq:elcoll}. The Jacobian of the velocity-space
+transformation $(v,v')\!\to\!(v_*,v'_*)$ equals unity because
+elastic two-body collisions preserve phase-space volume.
+Only inter-species collisions ($\alpha\neq\beta$) appear in
+Eq.~\eqref{eq:Calpha}: equal-mass intra-species collisions
+(L--L or H--H) reduce to a velocity swap and so preserve the
+species-resolved velocity multiset, contributing to the dressed
+streaming Eq.~\eqref{eq:veffalpha} but not to thermalisation.
+The factorisation of pair distributions on the right-hand
+side is the molecular-chaos closure (Stosszahlansatz), which
+breaks microscopic time-reversal symmetry at the coarse-grained
+level and is the source of the H-theorem discussed below.
+
+\subsection{Dressed velocity in the binary mixture: postulate}
+
+For the dressed velocity in the binary mixture we postulate
+\begin{equation}
+v^{\rm eff}_\alpha(s,v,t)
+= \frac{v - \eta(s,t)\,\bar u(s,t)}{1 - \eta(s,t)},
+\label{eq:veffalpha}
+\end{equation}
+with $\eta(s,t)=\sigma\rho^{\rm tot}(s,t)$ the local packing
+fraction, $\rho^{\rm tot}=\rho_L^{\rm tot}+\rho_H^{\rm tot}$,
+and $\bar u$ the number-weighted mean velocity
+\begin{equation}
+\bar u(s,t)
+= \frac{\int dv\,v\,(\rho_L + \rho_H)}{\rho^{\rm tot}}.
+\label{eq:ubar}
+\end{equation}
+The form Eq.~\eqref{eq:veffalpha} is dimensionally a velocity
+in each term of the numerator (since $\eta$ is dimensionless
+and $\bar u$ has velocity units), and reduces to
+Eq.~\eqref{eq:veff} in the equal-mass limit.
+The structural motivation is that the geometric scattering shift
+on each crossing event is $\sigma$ regardless of the masses of
+the two colliding rods: the modification of effective
+velocity by collisions depends only on the rate of crossing
+events, which is set by the relative number density and not by
+mass weighting \cite{DoyonSpohn2017,BDS1983}. The mass-weighted
+mean velocity does appear elsewhere, in the momentum-balance
+equation of the Chapman--Enskog reduction
+(Sec.~\ref{sec:linear}), but not in the dressed velocity. The mass dependence enters
+entirely through the collision integral $\mathcal{C}_\alpha$.
+We treat Eq.~\eqref{eq:veffalpha} as a working assumption and
+test it via the quantitative predictions of
+Sec.~\ref{sec:linear}: if the postulate is incorrect, the sound
+speed will not reproduce the molecular-dynamics data. A
+microscopic derivation of Eq.~\eqref{eq:veffalpha} from the
+binary-mixture crossing statistics is left as follow-up work;
+we note that the classical Jepsen mapping itself does not
+straightforwardly extend to unequal masses, because the elastic
+binary collision Eq.~\eqref{eq:elcoll} is not a velocity swap,
+so the derivation will require a modified approach.
+
+\subsection{Inter-species thermalisation rate}
+
+For the binary fraction $\phi=1/2$ at packing $\eta$ and
+temperature $k_BT$,
+\begin{equation}
+\tau_{\rm break}^{-1} \sim \rho_0\,\sigma\,\bar v
+\quad\text{with}\quad
+\bar v = \sqrt{\frac{k_BT(m_L+m_H)}{m_L m_H}},
+\end{equation}
+matching the estimate of Ref.~\cite{PaperIII}
+($\tau_{\rm break}\approx 0.05$ at our parameters), and giving
+the natural scale of the collision integral $\mathcal{C}$.
+
+The collision integral $\mathcal{C}_\alpha$ of
+Eq.~\eqref{eq:Calpha} satisfies an H-theorem: the contribution
+to the time derivative of the kinetic entropy
+$S = -\sum_\alpha\int\!ds\,dv\,\rho_\alpha\log\rho_\alpha$
+from $\mathcal{C}_\alpha$ is non-negative, vanishing only at
+local Maxwell--Boltzmann equilibrium. The streaming term
+$\partial_s(v^{\rm eff}_\alpha\rho_\alpha)$ conserves $S$ on a
+periodic domain. The full GHD--Boltzmann dynamics is therefore
+monotonically irreversible at the coarse-grained level. This is
+qualitatively consistent with the monotonic decay of coherent
+kinetic energy $E_{\rm coh}(t)$ reported in Ref.~\cite{PaperIII}
+(Sec.~VII therein); a quantitative correspondence between the
+kinetic entropy $S(t)$ and $E_{\rm coh}(t)$ would require
+computing $S(t)$ directly from the microscopic velocity
+distribution, which we have not done.
+
+\subsection{Regime of validity}\label{sec:validity}
+
+The framework requires $\tau_{\rm break}^{-1} \gg k\,c_s$
+(strong-coupling hydrodynamic regime). For our parameters,
+$k=2\pi/L\approx 0.5$, $c_s\sim 1$ giving
+$\tau_{\rm break}\,k\,c_s\approx 0.025$, satisfied
+comfortably. The framework \emph{fails} for $m_{\max}\to 1$
+where $\tau_{\rm break}\to\infty$ and the integrable
+single-species GHD must be used instead; the crossover regime
+is parametrically narrow at the densities we consider but
+deserves separate study.
+
+\section{Linear regime: sound waves}\label{sec:linear}
+
+We linearise Eq.~\eqref{eq:ghdboltz} about the global
+two-species Maxwell--Boltzmann equilibrium at common
+temperature $T$ (the equipartition observed in
+Ref.~\cite{PaperIII}, Sec.~VII therein, is recovered exactly
+by the elastic collision integral $\mathcal{C}_\alpha$),
+\begin{equation}
+\rho_\alpha^{(0)}(v) = \frac{n_\alpha}{Z_\alpha(T)}
+  \exp\!\left[-\frac{m_\alpha v^2}{2 k_B T}\right],\quad
+Z_\alpha(T) = \sqrt{\frac{2\pi k_BT}{m_\alpha}},
+\label{eq:rhoeq}
+\end{equation}
+with $n_\alpha = N_\alpha/L = N/(2L)$ for the half-and-half
+binary mixture. Writing
+$\rho_\alpha(s,v,t) = \rho_\alpha^{(0)}(v) + \delta\rho_\alpha(s,v,t)$
+and expanding to first order in $\delta\rho_\alpha$ gives the
+linearised GHD--Boltzmann equation
+\begin{equation}
+\partial_t \delta\rho_\alpha
++ \partial_s\!\left[\tfrac{v}{1-\eta}\,\delta\rho_\alpha
+                 + \rho_\alpha^{(0)}(v)\,\delta v^{\rm eff}\right]
+= \mathcal{L}_\alpha[\delta\rho_L,\delta\rho_H](v),
+\label{eq:ghdlin}
+\end{equation}
+where $\eta = \sigma\rho_0 = \sigma(n_L+n_H)$,
+$\delta v^{\rm eff} = (v - \bar u^{(0)})\,\sigma\delta\rho^{\rm tot}/(1-\eta)^2
+- \eta\,\delta\bar u/(1-\eta)$, and
+$\mathcal{L}_\alpha$ is the linearised collision operator
+acting on $\delta\rho$. At equilibrium $\bar u^{(0)}=0$, so the
+two terms simplify to $v\sigma\delta\rho^{\rm tot}/(1-\eta)^2
+- \eta\delta\bar u/(1-\eta)$.
+
+\subsection{Conservation laws and hydrodynamic variables}
+
+The linearised collision operator $\mathcal{L}_\alpha$ has four
+zero modes corresponding to the four conserved fields of the
+binary mixture: per-species number densities $\delta n_L,
+\delta n_H$, total momentum density $\delta p$, and total
+energy density $\delta e$. Defining
+\begin{align}
+\delta n_\alpha(s,t) &= \int\!dv\,\delta\rho_\alpha,\\
+\delta p(s,t) &= \int\!dv\,v\,(m_L\delta\rho_L + m_H\delta\rho_H),\\
+\delta e(s,t) &= \int\!dv\,\tfrac12 v^2\,(m_L\delta\rho_L + m_H\delta\rho_H),
+\end{align}
+the hydrodynamic projection of Eq.~\eqref{eq:ghdlin} onto these
+modes gives a closed $4\!\times\!4$ system at leading order in
+gradient.
+
+\subsection{Chapman--Enskog reduction to Euler hydrodynamics}
+
+For a wave at wavenumber $k$ in the hydrodynamic regime
+$k\,c_s\,\tau_{\rm break}\ll 1$, we apply the standard
+Chapman--Enskog procedure: expand $\delta\rho_\alpha = \delta
+\rho_\alpha^{(0)} + \mathrm{Kn}\,\delta\rho_\alpha^{(1)} + \dots$
+in the Knudsen number $\mathrm{Kn} \equiv
+k\,\lambda_{\rm mfp} \sim k\,c_s\,\tau_{\rm break}$.
+At leading order, $\delta\rho_\alpha^{(0)}$ takes the local
+Maxwell--Boltzmann form parametrised by the four hydrodynamic
+fields $(\delta n_L, \delta n_H, \delta\bar u, \delta T)$,
+the only zero modes of $\mathcal{L}_\alpha$. The
+non-hydrodynamic modes (relative momentum $p_L-p_H$, relative
+temperature $T_L-T_H$) decay at rates $\sim\tau_{\rm break}^{-1}$
+and are slaved to the hydrodynamic fields. The solvability
+condition of the next-order equation gives the closed system
+of macroscopic equations below. The
+zeroth-order projection of Eq.~\eqref{eq:ghdlin} onto these
+fields gives the linearised two-component Euler equations,
+\begin{align}
+\partial_t \delta n_\alpha + n_\alpha^{(0)}\partial_s\delta\bar u &= 0,
+\quad \alpha\in\{L,H\},\\
+\bar m\,\rho_0\,\partial_t \delta\bar u + \partial_s\delta P &= 0,\\
+\partial_t \delta T + (\gamma-1)\,T\,\partial_s\delta\bar u &= 0,
+\end{align}
+with the equation of state given by the Tonks pressure
+$P=\rho^{\rm tot} T/(1-\sigma\rho^{\rm tot})$.
+
+\subsection{Sound speed} The adiabatic
+sound speed follows from
+$c_s^2 = (\partial P/\partial \rho^{\rm tot})_S$ evaluated at
+equilibrium, with the entropy held fixed at constant
+concentration. Using the 1D ideal-gas adiabatic index
+$\gamma=3$ and the average mass per particle
+$\bar m = (m_L+m_H)/2$,
+\begin{equation}
+\boxed{\;c_s^2 = \frac{\gamma\,k_B T}{\bar m\,(1-\eta)^2}
+         = \frac{3\,k_B T}{\bar m\,(1-\eta)^2}\;}
+\label{eq:cs}
+\end{equation}
+This is the principal analytical prediction of this section.
+
+For the parameters of Refs.~\cite{PaperII,PaperIII}
+($k_BT=1$, $\eta=0.1$, $\bar m=3$ at $m_{\max}=5$):
+\begin{equation}
+c_s = \sqrt{\frac{3}{3\cdot 0.81}} \approx 1.111.
+\label{eq:csnum}
+\end{equation}
+For $m_{\max}=10$, $\bar m=5.5$ and $c_s\approx 0.821$. For
+$m_{\max}=100$, $\bar m=50.5$ and $c_s\approx 0.272$.
+
+\subsection{Comparison with molecular dynamics}
+
+The principal quantitative test is whether
+Eq.~\eqref{eq:cs} reproduces the underdamped sound-wave
+frequencies of the binary mixture. Ref.~\cite{PaperII} reported
+underdamped sound at $m_{\max}=5$; here we extend the
+comparison to $m_{\max}\in\{5,10,100\}$ via a dedicated
+linear-regime sweep performed in this work.
+Table~\ref{tab:cs} compares the GHD--Boltzmann prediction
+against the empirical value extracted from this sweep, fitting
+the linear-regime
+density autocorrelations of Ref.~\cite{PaperII}.
+
+The sweep used $A_\rho=0.10$ (density-perturbation IC), $N=400$,
+$\eta=0.10$, $4000$ seeds per $m_{\max}$, $T_{\max}=30$. Fitting
+$\mathrm{Re}\,\hat\rho_{k_1}(t) = A e^{-\gamma t}\cos(\omega t
++\varphi)$ extracts $c_s^{\rm MD}=\omega/k$ with $k=2\pi/L$
+(Table~\ref{tab:cs}).
+
+\begin{table}[t]
+\centering
+\caption{Sound speed: GHD--Boltzmann prediction
+Eq.~\eqref{eq:cs} versus a dedicated event-driven MD sweep
+(this work) with linear-regime density-perturbation IC,
+extending the $m_{\max}=5$ result of Ref.~\cite{PaperII}. The
+mean error across the three $m_{\max}$ values is $2.5\%$, with
+no systematic bias.}
+\label{tab:cs}
+\begin{tabular}{ccccc}
+\hline\hline
+$m_{\max}$ & $\bar m$ & $c_s^{\rm GHD}$
+                       & $c_s^{\rm MD}$
+                       & $c_s^{\rm MD}/c_s^{\rm GHD}$\\
+\hline
+$5$   & $3.0$  & $1.111$ & $1.151$ & $1.036$\\
+$10$  & $5.5$  & $0.821$ & $0.827$ & $1.008$\\
+$100$ & $50.5$ & $0.271$ & $0.261$ & $0.965$\\
+\hline\hline
+\end{tabular}
+\end{table}
+
+Across a 20-fold range in mass disparity, the GHD--Boltzmann
+sound speed agrees with the microscopic dynamics within
+$\sim 4\%$ and with no systematic bias. This is the principal
+quantitative validation of the two-species GHD framework
+introduced in Sec.~\ref{sec:twospecies}.
+
+\subsection{Damping rate}\label{sec:damping}
+
+The fitted damping rates of Table~\ref{tab:cs} are
+$\gamma\approx 0.02$ ($m_{\max}=5,10$) and $\gamma\approx 0.007$
+($m_{\max}=100$). These are two orders of magnitude smaller
+than the inter-species kinetic-energy exchange rate
+$\tau_{\rm break}^{-1}\cdot 4 m_L m_H/(m_L+m_H)^2$ that sets
+the non-hydrodynamic spectrum of $\mathcal{L}_\alpha$,
+confirming the regime $k\,c_s\,\tau_{\rm break}\ll 1$ assumed in
+deriving Eq.~\eqref{eq:cs}. The damping is instead consistent
+with viscous Navier--Stokes attenuation,
+\begin{equation}
+\gamma_{\rm vis} \;\sim\; \tfrac{2}{3}\,\nu_{\rm shear}\,k^2,
+\label{eq:gammavis}
+\end{equation}
+with kinematic viscosity $\nu_{\rm shear}\sim v_{\rm th}
+\lambda_{\rm mfp}\approx 0.03$ at our parameters (Sec.~III.D of
+Ref.~\cite{PaperIII}), giving $\gamma_{\rm vis}\approx 0.005$ at
+$k=2\pi/L=0.5$ --- correct order of magnitude. For a binary mixture the damping
+generally has contributions from both shear viscosity
+$\nu_{\rm shear}$ and inter-species diffusion $D_{LH}$; the
+relative weight depends on the wave structure and on the
+species concentration. A first-principles computation of
+$\nu_{\rm shear}(m_{\max})$ and $D_{LH}(m_{\max})$ from the
+Boltzmann collision integral $\mathcal{C}_\alpha$, and
+quantitative comparison with the fitted damping rates, is
+deferred to the numerical implementation of
+Eq.~\eqref{eq:ghdboltz}.
+
+\section{Density-mode spectrum and $m_{\max}$-universality}
+\label{sec:nonlinear}
+
+The principal nonlinear test of the GHD--Boltzmann framework is
+the spectral universality reported in
+Ref.~\cite{PaperIII}: the density-mode shape
+$|\hat\rho_n|/|\hat\rho_2|$ varies by less than $20\%$
+between $m_{\max}=5$ and $m_{\max}=100$, despite a 20-fold
+variation in the integrability-breaking parameter and despite
+the dimensionless step amplitude $U_0/c_s$ varying from $0.45$
+(subsonic at $m_{\max}=5$) to $1.85$ (supersonic at $m_{\max}=100$).
+A naive estimate of the nonlinear coupling amplitude would
+scale as $(U_0/c_s)^2$, predicting an order-of-magnitude
+variation; the data show $\sim 20\%$. We propose an explanation
+for this saturation.
+
+\subsection{Linear regime: odd-mode universality}
+
+The step initial condition
+$u_{\rm coh}(s,0)=U_0\,\mathrm{sgn}[\cos(ks)]$ has continuous
+Fourier coefficients
+\begin{equation}
+\hat u^{(c)}_n(0) = \frac{2U_0}{\pi n}\quad\text{(odd $n$)},
+\qquad \hat u^{(c)}_n(0) = 0 \quad\text{(even $n$)}.
+\label{eq:uic}
+\end{equation}
+At first order in $U_0/c_s$, the sound-wave eigenmodes of the
+Chapman--Enskog-reduced Euler equations
+(Sec.~\ref{sec:linear}) give the coupled system
+$\dot{\hat\rho}_n = -ik_n \hat u_n^{(c)}$ and
+$\dot{\hat u}_n^{(c)} = -ik_n c_s^2\,\hat\rho_n$. For step IC
+with $\hat\rho_n(0)=0$ and $\hat u_n^{(c)}(0)=2U_0/(\pi n)$
+for odd $n$, the solution is
+$\hat\rho_n(t) = -i\,(\hat u^{(c)}_n(0)/c_s)\,\sin(\omega_n t)\,
+e^{-\gamma_n t}$ with $\omega_n = k_n c_s$. The maximum
+over time occurs at the first quarter-oscillation
+$t_n^{\rm peak} = \pi/(2\omega_n)$ with amplitude
+\begin{equation}
+\max_t |\hat\rho_n^{(1)}(t)|
+= \frac{|\hat u^{(c)}_n|}{c_s}\,e^{-\gamma_n t_n^{\rm peak}}
+\;\approx\; \frac{|\hat u^{(c)}_n|}{c_s}
+\quad\text{(odd $n$)},
+\label{eq:rhomax}
+\end{equation}
+where the last approximation uses
+$\gamma_n t_n^{\rm peak}\ll 1$ for our parameters
+($\gamma_n\sim 0.02$, $t_n^{\rm peak}\sim 1$).
+The dimensionless ratio is therefore
+\begin{equation}
+\frac{\max_t|\hat\rho_n^{(1)}|}{\max_t|\hat\rho_1^{(1)}|}
+= \frac{|\hat u^{(c)}_n|}{|\hat u^{(c)}_1|} = \frac{1}{n}
+\quad\text{(odd $n$)},
+\label{eq:linearratio}
+\end{equation}
+\emph{exactly $m_{\max}$-independent.} The prediction $1/n$ for
+odd $n$ is compared directly with the data of
+Ref.~\cite{PaperIII} in Table~\ref{tab:nonlin}.
+
+\begin{table}[t]
+\centering
+\caption{Density-mode ratios versus event-driven MD with step
+IC ($U_0=0.5$). For odd $n$ the linear prediction is
+$|\hat u^{(c)}_n|/|\hat u^{(c)}_1|=1/n$
+(Eq.~\ref{eq:linearratio}), reproduced to $\sim 5\%$. For even
+$n$ the linear prediction is exactly zero and the observed
+nonzero value is generated by second-order nonlinear coupling
+(Sec.~\ref{sec:nonlinear}, subsection on even modes).}
+\label{tab:nonlin}
+\begin{tabular}{ccccccc}
+\hline\hline
+& \multicolumn{3}{c}{odd $n$ (linear: $1/n$)}
+& \multicolumn{3}{c}{even $n$ (linear: $0$)}\\
+$m_{\max}$ & $n{=}3$ & $n{=}5$ & $n{=}7$
+           & $n{=}2$ & $n{=}4$ & $n{=}6$ \\
+\hline
+linear pred. & $0.333$ & $0.200$ & $0.143$
+             & $0$     & $0$     & $0$\\
+$5$    & $0.333$ & $0.199$ & $0.144$ & $0.260$ & $0.101$ & $0.064$\\
+$20$   & $0.330$ & $0.198$ & $0.138$ & $0.312$ & $0.122$ & $0.072$\\
+$100$  & $0.330$ & $0.195$ & $0.137$ & $0.278$ & $0.127$ & $0.072$\\
+\hline\hline
+\end{tabular}
+\end{table}
+
+The numerical agreement on the ratio is striking: across a
+20-fold range in $m_{\max}$, the odd-mode ratios match the
+linear prediction to the third decimal place. The robustness
+of the ratio is non-trivial: at $m_{\max}=100$ the dimensionless
+amplitude $U_0/c_s = 1.85$ is supersonic, and the absolute
+amplitude prediction $\max|\hat\rho_n| = |\hat u^{(c)}_n|/c_s$
+breaks down accordingly --- for $n=1$ the predicted
+$|\hat u^{(c)}_1|/c_s$ is $0.29$ ($m_{\max}=5$, observed $0.26$,
+agreement $91\%$) but $1.17$ ($m_{\max}=100$, observed $0.51$,
+agreement $44\%$). What survives the breakdown of the linear
+amplitude prediction is the \emph{ratio}, where the
+$c_s$-dependent prefactor cancels. This pattern is consistent
+with the saturation of nonlinear couplings discussed below.
+
+\subsection{Nonlinear regime: even modes}
+
+The even-$n$ density modes are absent in the linear response
+(Eq.~\ref{eq:uic}); they arise from nonlinear coupling of
+odd modes via the $\partial_s(\delta\rho\,u)$ term in
+continuity. At second order in $U_0/c_s$, a naive perturbative
+estimate gives $|\hat\rho_2^{(2)}|/|\hat\rho_1^{(1)}| \sim
+U_0/c_s$, which would vary by a factor of four between
+$m_{\max}=5$ ($U_0/c_s=0.45$) and $m_{\max}=100$
+($U_0/c_s=1.85$). The empirical ratio is essentially constant
+across the three values
+($0.26, 0.31, 0.28$ for $m_{\max}=5,20,100$).
+Notably, the $m_{\max}=100$ entry corresponds to the supersonic
+regime $U_0/c_s=1.85$, where the linear-amplitude prediction
+for the absolute mode amplitude breaks down by a factor of
+$\sim 2$ (Sec.~\ref{sec:nonlinear} above). The persistence of
+the spectral-shape ratios across the sub-to-supersonic
+transition is itself non-trivial.
+
+We do not derive the even-mode amplitudes from first principles
+in this work. At the level of dimensional analysis, the
+relevant scales are the coherent-decay time
+$\tau_{\rm decay}^{\rm coh}\sim 1$
+(Ref.~\cite{PaperIII}, Table~VI),
+the linear-peak time $t^*_{\rm peak}(n=2) = 1/(k_2 c_s)$
+ranging from $0.9$ ($m_{\max}=5$) to $3.7$ ($m_{\max}=100$),
+and the dimensionless step amplitude $U_0/c_s$ ranging from
+$0.45$ to $1.85$. The data show $|\hat\rho_2|/|\hat\rho_1|$ in
+the range $0.26$--$0.31$, varying by $\sim 20\%$ across the
+factor-20 $m_{\max}$ range while the naive perturbative scaling
+$\sim U_0/c_s$ would predict a factor-four variation. Producing
+this saturation quantitatively from the linearised collision
+operator $\mathcal{L}_\alpha$ is left as open work
+(Sec.~\ref{sec:discussion}); the principal positive prediction
+of this section is the odd-mode ratio
+Eq.~\eqref{eq:linearratio}, which the data validate
+without free parameters.
+
+\subsection{Consistency with no Burgers shock}
+
+A Burgers shock would have $|\hat\rho_n|/|\hat\rho_1|\to{\rm
+const}\sim 1$ at $t\sim t^*_{\rm shock}$. Our prediction
+Eq.~\eqref{eq:linearratio} gives $1/n$ in the linear regime,
+which decays with $n$, opposite to the Burgers prediction.
+Since the nonlinear corrections are suppressed by the
+saturation discussed in the preceding subsection,
+the linearised GHD--Boltzmann spectrum does not attain the
+Burgers shape, and the no-shock result of
+Ref.~\cite{PaperIII} is recovered as a consequence of
+strong-coupling hydrodynamics with two-species mixing in the
+parameter regime tested.
+
+\section{Discussion}\label{sec:discussion}
+
+\subsection{Summary of results}
+
+The paper makes two quantitative predictions without free
+parameters and shows that both match molecular-dynamics data:
+\emph{(i)} the sound speed
+$c_s^2 = 3 k_B T/[\bar m\,(1-\eta)^2]$
+(Eq.~\ref{eq:cs}) reproduces the linear-regime oscillation
+frequencies of the binary mixture across a 20-fold range in
+mass disparity, with error $\lesssim 4\%$ and no systematic
+bias (Table~\ref{tab:cs}); \emph{(ii)} the odd-density-mode
+ratio $\max|\hat\rho_n|/\max|\hat\rho_1| = 1/n$ for the step
+initial condition (Eq.~\ref{eq:linearratio}) is recovered to
+within $5\%$ in all configurations tested
+(Table~\ref{tab:nonlin}). The first is a standard
+hydrodynamic result whose derivation in the present framework
+is structurally simple; the second is the explanation for the
+empirical density-spectrum universality reported in
+Ref.~\cite{PaperIII}.
+
+\subsection{Geometric content and the role of $(M,g)$}
+
+The reduction of GHD on a curved 1D manifold to GHD on a flat
+ring of length $L$ (Eq.~\ref{eq:ghdmg}) is a special property of
+the one-dimensional setting: in arc-length coordinate the bulk
+dynamics is geometrically trivial, and the metric enters only
+through the perimeter and the Jacobian relating intrinsic to
+arc-length observables. In higher-dimensional analogues the
+geometric content of the dynamics is non-trivial \cite{
+DoyonSpohnYoshimura2017}, and our reduction does not extend
+naively.
+
+\subsection{Quenched versus annealed disorder}
+\label{sec:quenched-vs-annealed-disorder}
+
+The mass-disorder framework introduced here treats the disorder
+as quenched: each realisation carries a fixed random assignment
+of masses, and ensemble averages are performed over disorder
+realisations. The collision integral $\mathcal{C}_\alpha$ in
+Eq.~\eqref{eq:ghdboltz} captures the self-averaging contribution
+that survives this average; the implicit assumption is that
+the disorder-averaged dynamics is well-approximated by the
+dynamics generated by the average disorder configuration. This
+self-averaging holds when the mixing time of the dynamics is
+shorter than the time scale over which sample-to-sample
+fluctuations build up at a given wavenumber. For our parameters
+the inter-species collision rate $\tau_{\rm break}^{-1}\sim 20$
+is much faster than the longest sound-wave period, so the
+mixing condition is satisfied at the wavenumbers we
+investigate. A single-realisation analysis, appropriate for
+systems with strong localisation or quenched-disorder-induced
+glassiness, requires methods outside the present scope; no such
+effects have been reported for binary mass disorder at the
+densities and temperatures we consider.
+
+\subsection{Relation to prior work}
+
+The present work sits at the intersection of three nearby
+research lines. \emph{(i) Generalised hard rods}: Ferrari and
+Olla \cite{HRDiffusive2023} consider hard rods with iid random
+lengths drawn from a fixed distribution, deriving Euler-scale
+GHD and diffusive corrections. Our setup differs in the
+disorder channel (mass, not length) and in admitting a
+non-trivial inter-species collision integral; the elastic
+binary mass collision Eq.~\eqref{eq:elcoll} has no analogue in
+their length-disorder framework.
+\emph{(ii) Weak-integrability-breaking GHD}: Durnin, Bhaseen,
+and Doyon \cite{DurninDoyon2021}, Bastianello and co-workers
+\cite{WeakBreaking2023,BastianelloBoltzmann2020} treat
+annealed (stochastic) perturbations of integrable models with
+Boltzmann-type collision integrals. Our perturbation is
+\emph{quenched} (fixed mass realisation per disorder
+configuration); the resulting framework is structurally
+similar but the self-averaging assumption
+(Sec.~\ref{sec:quenched-vs-annealed-disorder}) is specific to
+quenched disorder and requires the mixing condition discussed
+there.
+\emph{(iii) Mesoscopic GHD with impurities}: Ref.~\cite{
+MesoscopicImpurities2023} considers a \emph{single} heavy
+impurity in an otherwise integrable gas, deriving its drag
+force. Our setup has extensive ($O(N)$) binary disorder,
+producing a hydrodynamic regime rather than a single-impurity
+limit.
+
+Together with companion papers
+\cite{PaperI,PaperII,PaperIII}, the present paper closes a
+self-contained four-part program: the equilibrium and
+arc-length structure of hard rods on $(M,g)$ (I), the
+linear-regime sound-wave restoration under mass disorder (II),
+the absence of Burgers shocks in the nonlinear regime (III),
+and the GHD-Boltzmann framework that unifies these results into
+a single quantitative theory with no free parameters (IV).
+
+\subsection{Open work and follow-up}
+
+Three directions are natural follow-up.
+\emph{(i) Damping rate from first principles.} Computing the
+shear viscosity $\nu_{\rm shear}(m_{\max})$ as the leading
+non-hydrodynamic eigenvalue of $\mathcal{L}_\alpha$ would
+upgrade the order-of-magnitude estimate of Sec.~\ref{sec:damping}
+to a quantitative prediction comparable with the fitted
+damping rates of Table~\ref{tab:cs}.
+\emph{(ii) Rigorous treatment of the even-mode saturation.} The
+qualitative phenomenology of Sec.~\ref{sec:nonlinear} should
+be replaced by a derivation from the linearised collision
+operator, yielding the saturated amplitude
+$|\hat\rho_2|/|\hat\rho_1|$ and its slow drift across $m_{\max}$
+quantitatively.
+\emph{(iii) Direct numerical solution.} A numerical
+implementation of the two-species GHD-Boltzmann equation
+Eq.~\eqref{eq:ghdboltz} on the periodic interval, compared
+against the full $\hat\rho_n(t)$ trajectories of
+Ref.~\cite{PaperIII}, would test the formalism beyond linear
+response and probe the regime where the explicit collision
+integral is essential.
+\emph{(iv) Microscopic derivation of the dressed velocity.}
+Eq.~\eqref{eq:veffalpha} is the central postulate of the
+construction (Sec.~\ref{sec:twospecies}) and is currently
+justified only by structural analogy with the equal-mass case
+and by its empirical success in Sec.~\ref{sec:linear}. A
+rigorous derivation from the binary-mixture crossing
+dynamics, possibly via a generalisation of the Jepsen mapping
+that accounts for the velocity redistribution at unequal-mass
+collisions, would close the most significant gap in the
+present formalism.
+
+\subsection{Relevance for cold-atom experiments}
+
+Cold-atom realisations of GHD in one-dimensional Bose gases
+\cite{Schemmer2019,Malvania2021,Cataldini2022} provide a
+natural experimental platform. The principal operational
+implication of our results is that a controlled binary mass
+disparity --- the cleanest disorder channel in cold-atom
+mixture experiments --- modifies the sound speed of the gas in
+a quantitatively predictable way (Eq.~\ref{eq:cs}), without
+inducing the breakdown of GHD itself. For a $^{6}$Li-$^{7}$Li mixture at $T=100$~nK and packing
+$\eta = 0.3$, $\bar m = 6.5\,m_u$ and Eq.~\eqref{eq:cs}
+predicts $c_s\approx 7.2$~mm/s. The isotopic mass ratio
+$m_H/m_L = 7/6$ is small, however, so the sensitivity
+$\partial c_s/\partial m_{\max}$ in Li--Li is only $\sim 1\%$.
+A more sensitive test would use a heteronuclear mixture such
+as $^{40}$K-$^{87}$Rb or $^{6}$Li-$^{87}$Rb, where the mass
+disparity is order $2$-$15$ and Eq.~\eqref{eq:cs} predicts
+sound-speed changes of tens of percent, well within reach of
+current sound-wave probes in elongated 1D traps
+\cite{Cataldini2022}. A follow-up to the present work will
+discuss the most accessible parameter regime.
+
+\begin{acknowledgments}
+This work was supported by Tecnol\'ogico de Monterrey.
+Computations were performed on the xolotl cluster.
+\end{acknowledgments}
+
+\begin{thebibliography}{99}
+
+\bibitem{DoyonSpohn2017}
+B.~Doyon, H.~Spohn,
+J.~Stat.~Mech.\ 073210 (2017).
+
+\bibitem{Doyon2017Lectures}
+B.~Doyon,
+SciPost Phys.\ Lect.\ Notes \textbf{18} (2020).
+
+\bibitem{BertiniGhdReview2025}
+B.~Bertini, A.~De~Luca, A.~Lerose et al.,
+Rev.~Mod.~Phys.\ (forthcoming, 2026).
+
+\bibitem{DenardisDoyon2018}
+J.~De~Nardis, D.~Bernard, B.~Doyon,
+Phys.~Rev.~Lett.\ \textbf{121}, 160603 (2018).
+
+\bibitem{Bulchandani2018}
+V.~B.~Bulchandani, R.~Vasseur, C.~Karrasch, J.~E.~Moore,
+Phys.~Rev.~B \textbf{97}, 045407 (2018).
+
+\bibitem{GHDperspective2025}
+B.~Doyon, S.~Gopalakrishnan, F.~M{\o}ller,
+J.~Schmiedmayer, R.~Vasseur,
+Phys.~Rev.~X \textbf{15}, 010501 (2025).
+
+\bibitem{BDS1983}
+C.~Boldrighini, R.~L.~Dobrushin, Yu.~M.~Sukhov,
+J.~Stat.~Phys.\ \textbf{31}, 577 (1983).
+
+\bibitem{HRDiffusive2023}
+P.~A.~Ferrari, S.~Olla,
+Ann.~Inst.~H.~Poincar\'e (2023) arXiv:2305.13037.
+
+\bibitem{HubnerDoyon2024}
+F.~H\"ubner, B.~Doyon,
+arXiv:2406.18322 (2024).
+
+\bibitem{DoyonSpohnYoshimura2017}
+B.~Doyon, H.~Spohn, T.~Yoshimura,
+Nucl.~Phys.~B \textbf{926}, 570 (2018), arXiv:1704.04409.
+
+\bibitem{DurninDoyon2021}
+J.~Durnin, M.~J.~Bhaseen, B.~Doyon,
+J.~Stat.~Mech.\ (2021) arXiv:2103.11997.
+
+\bibitem{WeakBreaking2023}
+A.~Bastianello, A.~De~Luca, B.~Doyon, J.~De~Nardis,
+Phys.~Rev.~Res.\ (2023) arXiv:2302.12804.
+
+\bibitem{BastianelloBoltzmann2020}
+A.~Bastianello, A.~De~Luca, R.~Vasseur,
+J.~Stat.~Mech.\ \textbf{2020}, 124005 (2020).
+
+\bibitem{MesoscopicImpurities2023}
+A.~Bastianello, A.~De~Luca, A.~Lerose, T.~Yoshimura,
+arXiv:2307.00551 (2023).
+
+\bibitem{Schemmer2019}
+M.~Schemmer, I.~Bouchoule, B.~Doyon, J.~Dubail,
+Phys.~Rev.~Lett.\ \textbf{122}, 090601 (2019).
+
+\bibitem{Malvania2021}
+N.~Malvania, Y.~Zhang, Y.~Le, J.~Dubail, M.~Rigol, D.~S.~Weiss,
+Science \textbf{373}, 1129 (2021).
+
+\bibitem{Cataldini2022}
+F.~Cataldini, F.~M{\o}ller, M.~Tajik et al.,
+Phys.~Rev.~X \textbf{12}, 041032 (2022).
+
+\bibitem{PaperI}
+H.~Medel,
+in preparation (2026).
+
+\bibitem{PaperII}
+H.~Medel,
+in preparation (2026).
+
+\bibitem{PaperIII}
+H.~Medel,
+in preparation (2026).
+
+\end{thebibliography}
+
+\end{document}

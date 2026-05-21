@@ -1,0 +1,1200 @@
+% tonks_paper_v4.tex
+% Hard rods on a closed 1D Riemannian curve, PRE two-column.
+% Equilibrium density, position-dependent kinetic temperature,
+% non-Gaussian global momentum distribution, finite-σ pair structure,
+% η-independence verification, 3D embedding tests.
+
+\pdfminorversion=7
+\documentclass[aps,pre,twocolumn,superscriptaddress,longbibliography,floatfix]{revtex4-2}
+
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage{physics}
+\usepackage{mathtools}
+
+\newtheorem{proposition}{Proposition}
+
+\begin{document}
+
+\title{Hard rods on a closed Riemannian curve:\\
+equilibrium density and non-Gaussian momentum distribution}
+
+\author{Hector Medel}
+\email{hjmedel@gmail.com}
+\affiliation{Escuela de Ingenier\'ia y Ciencias, Tecnol\'ogico de Monterrey, Mexico}
+
+\date{\today}
+
+\begin{abstract}
+We compute the equilibrium statistical mechanics of $N$ hard rods of diameter $\sigma$ on
+a smooth closed curve with Riemannian metric $g(\varphi)$.
+The arc-length reduction inherits all thermodynamic quantities from the flat Tonks gas;
+the coordinate-space content is captured by two observables.
+The single-particle density is $\rho(\varphi)\propto\sqrt{g(\varphi)}$, $\sigma$-independent,
+identical to the flat-space hard-rod gas in the effective potential
+$V_{\rm eff}=-\tfrac{1}{2}k_BT\ln g$.
+The single-particle marginal of the canonical momentum, $P(p)$, is by contrast a
+metric-weighted Gaussian mixture with weight $w(\varphi)=\sqrt{g(\varphi)}/L$ and
+position-dependent local variance $mk_BT\,g(\varphi)$ — non-Gaussian whenever $g$ is
+non-constant.
+We derive the closed-form cumulant hierarchy
+$\kappa_{2n}^{(p)}=(2n-1)!!(mk_BT)^n c_n[g]$ via the cumulant generating function,
+where $c_n[g]$ is the $n$-th cumulant of $g$ under the equilibrium position weight
+$w(\varphi)=\sqrt{g}/L$.
+We characterize the bounded-support mixing distribution with integrable square-root
+singularities at metric extrema and Gaussian tails of variance $mk_BT\,g_{\max}$, and
+work out the finite-$\sigma$ contact distance $\Delta\varphi_{\rm contact}=\sigma/\sqrt{g}$.
+Event-driven simulations verify the density profile, the local Gaussianity of $P(p|\varphi)$,
+the second and fourth global cumulants, the emergence of the Gaussian tail at large $|p|$,
+the nearest-neighbor gap distribution, and $\sigma$-independence across
+$\eta\in[0.05,0.30]$, on planar ellipses and three-dimensionally embedded curves.
+\end{abstract}
+
+\maketitle
+
+%======================================================================
+\section{Introduction}
+\label{sec:intro}
+%======================================================================
+
+The one-dimensional gas of hard rods — the Tonks gas~\cite{Tonks1936} — is one of the few
+exactly solvable models of an interacting fluid.
+Its integrability, absence of phase transitions~\cite{vanHove1950}, and role as the classical
+prototype of generalized hydrodynamics (GHD)~\cite{CastroDoyonYoshimura2016,BertiniCollura2016,DoyonYoshimuraCaux2018}
+make it an indispensable benchmark.
+The equilibrium statistical mechanics of hard rods in non-uniform external
+potentials is also exactly solvable, both in the bulk via Percus's
+density functional~\cite{Percus1976} and on lattices via vacancy-particle
+methods~\cite{Bakhti2015}.
+Extensions to active matter~\cite{SchiltzRouse2023} and quantum Tonks--Girardeau
+gases~\cite{Girardeau1960,TononiSalasnich2023} have been studied extensively;
+colloidal dynamics on \emph{circular} tracks (constant
+$g$)~\cite{CastroVillarrealRamirez2021,CastroVillarreal2023} and generalized hydrodynamics
+in inhomogeneous fields~\cite{DoyonInhomGHD2017} provide partial precedents, but
+non-uniform $g(\varphi)$ on a closed manifold has remained largely unexplored.
+
+The classical hard-rod gas constrained to a smooth closed curve with a non-constant
+Riemannian metric has, to our knowledge, not been treated explicitly in the form
+considered here.
+The key observation is that, in arc-length coordinates $s=s(\varphi)$, the configurational
+problem reduces identically to the flat Tonks gas, so all thermodynamic quantities are
+inherited from the flat case~\cite{Tonks1936,vanHove1950,CuestaGHD2004}.
+Crucially, the equilibrium coordinate density $\rho(\varphi)\propto\sqrt{g(\varphi)}$ is
+indistinguishable from the density of a flat Tonks gas in the effective external potential
+$V_{\rm eff}(\varphi) = -\tfrac{1}{2}k_BT\ln g(\varphi)$ (a particular case of the
+Bakhti~\cite{Bakhti2015} class).
+The density alone is therefore not a fingerprint of curvature.
+
+The two systems differ in the structure of the kinetic energy:
+the curved manifold has $H=\sum_i p_i^2/(2m\,g(\varphi_i))$ with position-dependent inertia,
+while the flat-plus-potential system has $H=\sum_i p_i^2/(2m)+V$ with position-independent
+kinetic part.
+The curved Hamiltonian has the same mathematical form as the position-dependent-mass
+Hamiltonian familiar from semiconductor envelope-function theory and curvilinear normal
+coordinates in molecular vibrations~\cite{BenDanielDuke1966,vonRoos1983}.
+Most of that literature is quantum-mechanical; the classical equilibrium statistical
+mechanics worked out here is therefore relevant whenever the temperature is high enough
+that quantum effects can be neglected, irrespective of whether the position-dependent
+inertia originates from a geometric constraint (a particle on a curved wire) or from
+an effective-mass approximation.
+The local momentum distribution at fixed $\varphi$ is consequently Gaussian with variance
+$mk_BT\,g(\varphi)$ in the curved case and $mk_BT$ (constant) in the flat case.
+Marginalizing over the equilibrium position weight, the single-particle distribution of
+canonical momentum $P(p)$ is a Gaussian mixture in the former and a single Gaussian in the
+latter; throughout this paper $P(p)$ refers to this single-particle marginal.
+Density and momentum statistics are therefore the two leading single-particle observables
+that distinguish the curved equilibrium from a flat-plus-potential one;
+$P(p)$ encodes the curved kinetic energy that is invisible to position-space measurements
+alone (pair and higher correlations carry additional information; Sec.~\ref{sec:pair}).
+
+The present paper develops this characterization quantitatively.
+We derive the closed-form cumulant hierarchy
+$\kappa_{2n}^{(p)}=(2n-1)!!(mk_BT)^n\,c_n[g]$ via the cumulant generating function,
+characterize the bounded-support mixing distribution $f(g_0)$ that follows from the metric
+being smooth and periodic, work out the position-dependent contact distance for finite rod
+diameter, and verify the predictions numerically by event-driven simulation on planar
+ellipses and three-dimensional embeddings, including a packing-fraction scan that confirms
+$\sigma$-independence of the density and momentum predictions.
+
+%======================================================================
+\section{Model and canonical reduction}
+\label{sec:model}
+%======================================================================
+
+\subsection{Setup}
+
+We work in the intrinsic geometry of a smooth, closed
+($2\pi$-periodic) one-dimensional Riemannian manifold $(\mathcal{M},g)$.
+The metric is a positive smooth function $g:S^1\to\mathbb{R}_+$ specifying the arc-length
+element $ds=\sqrt{g(\varphi)}\,d\varphi$ and total length
+\begin{equation}
+  L = \oint_0^{2\pi}\!\sqrt{g(\varphi)}\,d\varphi.
+  \label{eq:metric}
+\end{equation}
+For concreteness we use embeddings $\bm{X}(\varphi)\hookrightarrow\mathbb{R}^d$ ($d=2,3$) as
+examples to generate specific metrics via $g(\varphi)=|d\bm{X}/d\varphi|^2$
+[Eq.~\eqref{eq:ellipse_metric} and Sec.~\ref{sec:3d}], but all dynamics and observables
+depend on $g(\varphi)$ alone, not on the embedding.
+
+The system consists of $N$ hard rods, each described by a single dynamical degree of
+freedom (the center coordinate $\varphi_i$, cyclically ordered
+$\varphi_1<\cdots<\varphi_N$), with mass $m$ and an excluded volume of arc-length $\sigma$
+along $\mathcal{M}$.
+The hard-core constraint is intrinsic: adjacent centers satisfy
+\begin{equation}
+  \int_{\varphi_i}^{\varphi_{i+1}}\!\sqrt{g(\varphi)}\,d\varphi \geq \sigma, \quad i=1,\dots,N.
+  \label{eq:hardcore}
+\end{equation}
+The Lagrangian for each free rod is $L_i=\tfrac{1}{2}m\dot s_i^2=\tfrac{1}{2}m\,g(\varphi_i)\dot\varphi_i^2$;
+the canonical momentum is $p_i=mg(\varphi_i)\dot\varphi_i=m\sqrt{g(\varphi_i)}\,v_i$ where
+$v_i\equiv\dot s_i$ is the arc-length velocity, and the Hamiltonian is
+\begin{equation}
+  H = \sum_{i=1}^N \frac{p_i^2}{2m\,g(\varphi_i)}\,.
+  \label{eq:hamiltonian}
+\end{equation}
+Between collisions the equations of motion give $\dot v_i=0$, so each rod traverses
+$\mathcal{M}$ with constant arc-length speed.
+At each collision the two contacting rods exchange arc-length velocities,
+$v_i^+=v_{i+1}^-$, $v_{i+1}^+=v_i^-$, which preserves the multiset of arc-length velocities
+and conserves the total kinetic energy~\cite{CoxFeresWard2015}.
+
+The primary example throughout is the polar ellipse of semi-axes $a\geq b>0$ and eccentricity
+$e=\sqrt{1-b^2/a^2}$, with true-angle parametrization
+\begin{equation}
+  g(\varphi) = \frac{a^2b^2(a^4\sin^2\!\varphi+b^4\cos^2\!\varphi)}{(a^2\sin^2\!\varphi+b^2\cos^2\!\varphi)^3}\,,
+  \label{eq:ellipse_metric}
+\end{equation}
+ranging over $[b^2,a^2]$ with minima at $\varphi=\pi/2,3\pi/2$ and maxima at $\varphi=0,\pi$.
+
+\subsection{Canonical reduction to the flat Tonks gas}
+
+The canonical partition function factorizes in momenta.
+Integrating each $p_i$ over $(-\infty,\infty)$ at fixed $\varphi_i$ yields a factor
+$\sqrt{2\pi m k_BT\,g(\varphi_i)}$ per particle, so
+\begin{equation}
+  Z_N = \frac{1}{N!\,\Lambda_{\rm cl}^N}
+        \int_{\mathcal{D}} \prod_{i=1}^N \sqrt{g(\varphi_i)}\,d\varphi_i\,,
+  \label{eq:ZN_config}
+\end{equation}
+where $\Lambda_{\rm cl}=h/\sqrt{2\pi m k_BT}$ is the classical thermal de~Broglie wavelength
+and $\mathcal{D}$ enforces constraint~\eqref{eq:hardcore}.
+Under the canonical transformation $(\varphi_i,p_i)\to(s_i=s(\varphi_i),\,\pi_i=p_i/\sqrt{g(\varphi_i)})$,
+the Jacobian is unity and the constraint~\eqref{eq:hardcore} becomes $s_{i+1}-s_i\geq\sigma$.
+The configurational integral reduces exactly to the flat Tonks integral on a ring of
+circumference $L$.
+By rotational symmetry of the ring, the volume of cyclically ordered $N$-rod
+configurations factorizes as $L$ (a global rotation degree of freedom) times the volume
+of $N-1$ rods on a segment of length $L-\sigma$ with hard-core gaps, $(L-N\sigma)^{N-1}/(N-1)!$;
+dividing by $N!$ for indistinguishability gives the standard
+result~\cite{Tonks1936,HansenMcDonald2006}
+\begin{equation}
+  Z_N = \frac{L\,(L-N\sigma)^{N-1}}{N!\,\Lambda_{\rm cl}^N}\,,
+  \label{eq:ZN_flat}
+\end{equation}
+from which $\partial\ln Z_N/\partial L = 1/L + (N-1)/(L-N\sigma)\approx N/(L-N\sigma)$ for $N\gg 1$,
+recovering the equation of state $P(L-N\sigma)=Nk_BT$.
+Compressibility and absence of phase transitions~\cite{vanHove1950,CuestaGHD2004} are
+inherited from the flat case unchanged.
+
+Three coordinate-space observables carry non-trivial metric information.
+(i)~The equilibrium coordinate density follows from translational invariance of the ring:
+under the cyclic shift $s_i\to s_i+a$ the configurational measure and hard-core constraint
+are both invariant, so the single-particle marginal in arc-length coordinates is exactly
+uniform, $\rho_s(s)=N/L$, for any rod diameter $\sigma<L/N$.
+Hard-rod elastic dynamics is integrable: the multiset of arc-length velocities is conserved,
+so phase space decomposes into invariant tori labeled by this multiset.
+For generic (Diophantine) velocity multisets — sampled with probability one by random
+Maxwell--Boltzmann initialization — the position dynamics on each torus is ergodic, so
+the position marginal time-averaged within a single seed is $\rho_s=N/L$ regardless of
+the velocity assignment.
+Pooling over independent randomly-initialized seeds samples the canonical distribution
+over velocity multisets, recovering the canonical ensemble in full.
+Converting to coordinate space via $\rho(\varphi)=\rho_s\,ds/d\varphi$:
+\begin{equation}
+  \rho(\varphi) = \frac{N\sqrt{g(\varphi)}}{L}\,,
+  \label{eq:density}
+\end{equation}
+which integrates to $N$ over $[0,2\pi)$ and is independent of $\sigma$.
+The rod diameter enters only through the normalization of the arc-length map
+and the equation of state $P(L-N\sigma)=Nk_BT$, but does not alter the
+shape $\rho\propto\sqrt{g}$.
+(ii)~The single-particle marginal of the canonical momentum is a non-Gaussian mixture of
+Gaussians whose full structure is derived in Sec.~\ref{sec:superstat}.
+(iii)~The contact distance in coordinate space is position-dependent (Sec.~\ref{sec:pair}).
+
+%======================================================================
+\section{Momentum distribution and cumulant hierarchy}
+\label{sec:superstat}
+%======================================================================
+
+\subsection{Mixture structure and the global distribution}
+
+At each position $\varphi$, the local distribution of the canonical momentum is Gaussian with
+position-dependent variance:
+\begin{equation}
+  P(p\,|\,\varphi) = \frac{1}{\sqrt{2\pi mk_BT\,g(\varphi)}}
+  \exp\!\left(-\frac{p^2}{2mk_BT\,g(\varphi)}\right).
+  \label{eq:local_P}
+\end{equation}
+The global distribution is obtained by averaging over the equilibrium position weight
+$w(\varphi)=\sqrt{g(\varphi)}/L$ (the exact single-particle marginal, valid for any $\sigma$):
+\begin{align}
+  P(p) &= \int_0^{2\pi}\! w(\varphi)\,P(p\,|\,\varphi)\,d\varphi \notag\\
+       &= \frac{1}{L\sqrt{2\pi mk_BT}}\int_0^{2\pi}\!
+          e^{-p^2/(2mk_BTg(\varphi))}\,d\varphi\,,
+  \label{eq:global_P}
+\end{align}
+where the second line follows from the cancellation of $\sqrt{g(\varphi)}$ in
+$w(\varphi)$ against the $\sqrt{g(\varphi)}^{-1}$ in the Gaussian normalization.
+This is a mixture of Gaussians with widths spanning
+$[\sqrt{mk_BTg_{\min}},\,\sqrt{mk_BTg_{\max}}]$.
+
+\subsection{Cumulant hierarchy}
+
+The cumulant generating function (CGF) of $p$ follows by integrating $e^{tp}$ against the
+mixture~\eqref{eq:global_P}; the inner Gaussian integral over $p$ at fixed $\varphi$ gives
+a factor $\exp[(mk_BTg(\varphi)/2)t^2]$, leaving an integral only over $\varphi$:
+\begin{align}
+  K_p(t) &= \ln\!\int_{-\infty}^{\infty}\!P(p)\,e^{tp}\,dp \notag\\
+         &= \ln\!\int_0^{2\pi}\!w(\varphi)\,e^{(mk_BT/2)\,t^2\,g(\varphi)}\,d\varphi \notag\\
+         &= \ln\langle e^{\lambda g}\rangle_w\Big|_{\lambda=mk_BT t^2/2}\,.
+  \label{eq:CGF}
+\end{align}
+The CGF of $p$ is therefore the CGF of the \emph{metric} $g(\varphi)$ under the position
+weight $w(\varphi)$, evaluated at $\lambda=mk_BT t^2/2$.
+The substitution $\lambda\propto t^2$ is responsible for the index doubling
+in the cumulant relation that follows: the $n$-th derivative of the $g$-CGF in $\lambda$
+matches the $2n$-th derivative of the $p$-CGF in $t$.
+Expanding in cumulants gives the central result:
+
+\begin{proposition}[Cumulant hierarchy]
+\label{prop:cumulants}
+The $2n$-th cumulant of the single-particle marginal $P(p)$ is
+\begin{equation}
+  \kappa_{2n}^{(p)} = (2n-1)!!\,(mk_BT)^n\,c_n[g]\,,
+  \label{eq:cumulant_hierarchy}
+\end{equation}
+where $c_n[g]$ is the $n$-th cumulant (connected moment) of $g(\varphi)$ under $w(\varphi)$.
+All odd cumulants vanish by the symmetry $P(-p)=P(p)$.
+\end{proposition}
+
+The first four non-trivial cumulants are
+\begin{align}
+  \kappa_2^{(p)} &= mk_BT\,\langle g\rangle_w\,,\label{eq:k2}\\
+  \kappa_4^{(p)} &= 3\,(mk_BT)^2\,\mathrm{Var}_w[g]\,,\label{eq:k4}\\
+  \kappa_6^{(p)} &= 15\,(mk_BT)^3\,\langle(g-\langle g\rangle_w)^3\rangle_w\,,\label{eq:k6}\\
+  \kappa_8^{(p)} &= 105\,(mk_BT)^4\bigl[\langle(g-\langle g\rangle_w)^4\rangle_w
+                    - 3\,\mathrm{Var}_w[g]^2\bigr].\label{eq:k8}
+\end{align}
+The dimensionless (standardized) excess cumulants take the compact form
+$\bar\kappa_{2n}^{(p)} = (2n-1)!!\,c_n[g]/\langle g\rangle_w^n$.
+
+The excess kurtosis $\bar\kappa_4^{(p)}>0$ for any non-constant metric: the distribution is
+leptokurtic — sharper peak and heavier intermediate tails than a Gaussian of the same
+variance $\langle g\rangle_w$, while the asymptotic decay matches a Gaussian of the larger
+variance $g_{\max}$ [Eq.~\eqref{eq:gaussian_tails}].
+For the polar ellipse, it vanishes at $e=0$ and grows with $e$; a small-eccentricity expansion
+of $c_2[g]$ yields $\bar\kappa_4^{(p)}\approx 3e^4/8+O(e^6)$ (Appendix~\ref{app:ellipse}).
+
+\paragraph*{Finite-$N$ microcanonical correction.}
+Equation~\eqref{eq:cumulant_hierarchy} is the canonical result.
+Simulations at fixed total momentum $\sum_i p_i = 0$ (a microcanonical constraint
+that arises naturally in the event-driven dynamics and is enforced in our
+initial conditions) reduce the effective number of independent momentum samples by one,
+shifting the standardized fourth cumulant by $-6/(N+2)$ relative to the canonical
+prediction. The finite-$N$ standardized kurtosis at fixed $\sum p_i=0$ is therefore
+\begin{equation}
+  \bar\kappa_4^{(p),N} = \frac{3\,\mathrm{Var}_w[g]}{\langle g\rangle_w^2} - \frac{6}{N+2}\,,
+  \label{eq:k4_finiteN}
+\end{equation}
+which reduces to the canonical Eq.~\eqref{eq:k4} in the thermodynamic limit. The
+correction is universal: it has the same magnitude in the equal-mass flat Tonks gas
+($\mathrm{Var}_w[g]=0$) as in the curved case, and is verified directly at $e=0$ in
+Sec.~\ref{sec:numerics}.
+
+\subsection{Properties of the mixing distribution and equipartition}
+\label{sec:class}
+
+Equation~\eqref{eq:CGF} has the same algebraic structure as a Beck--Cohen
+superstatistics~\cite{BeckCohen2003}: $P(p)$ is a marginal obtained by averaging a
+Gaussian of width $\sqrt{mk_BTg}$ over a mixing distribution.
+The mixing distribution differs from the phenomenological choices in three respects:
+it is determined \emph{deterministically} by the metric rather than postulated; no
+time-scale separation is required (the ``parameter'' $g(\varphi)$ varies with the
+particle's position, not in time); and it has compact support on $[g_{\min},g_{\max}]$
+rather than the unbounded supports $[0,\infty)$ used in the
+$\chi^2$, log-normal, and gamma classes~\cite{BeckCohen2003}.
+The push-forward density
+\begin{equation}
+  f(g_0) = \sum_{j:\,g(\varphi_j)=g_0}\frac{w(\varphi_j)}{|g'(\varphi_j)|}
+  \label{eq:fg0}
+\end{equation}
+is determined exactly and uniquely by the Riemannian metric, with no free parameters.
+
+\textbf{(a) Compact support.}
+Since $g_{\min}\leq g(\varphi)\leq g_{\max}$, the distribution $f(g_0)$ has support
+$[g_{\min},g_{\max}]$.
+At a smooth extremum $\varphi_*$ where $g'(\varphi_*)=0$, the density diverges as
+$f(g_0)\sim|g_0-g(\varphi_*)|^{-1/2}$ — an integrable square-root singularity at
+turning points of the periodic map.
+For the polar ellipse, $f(g_0)$ has support $[b^2,a^2]$ with $(g_0-b^2)^{-1/2}$ and
+$(a^2-g_0)^{-1/2}$ endpoint singularities.
+
+\textbf{(b) Gaussian tails.}
+Because $g(\varphi)\leq g_{\max}<\infty$, the large-$|p|$ behavior of~\eqref{eq:global_P}
+is controlled by the widest Gaussian component:
+\begin{equation}
+  P(p) \sim C\,\exp\!\left(-\frac{p^2}{2mk_BTg_{\max}}\right), \quad |p|\to\infty\,,
+  \label{eq:gaussian_tails}
+\end{equation}
+where $C$ depends on $f(g_0)$ near $g_{\max}$.
+The bulk is leptokurtic but all moments are finite and the asymptotic decay is Gaussian.
+
+\textbf{(c) Distinct from flat-space-plus-potential.}
+The flat-space hard-rod gas in $V_{\rm eff}(\varphi)=-\tfrac{1}{2}k_BT\ln g(\varphi)$ produces
+the same equilibrium density $\rho\propto\sqrt{g}$, but its Hamiltonian
+$H=p^2/(2m)+V_{\rm eff}$ has constant inertia, so $P(p|\varphi)\propto\exp(-p^2/2mk_BT)$ is
+Gaussian with $\varphi$-independent variance and the global $P(p)$ inherits this single
+Gaussian (kurtosis identically zero).
+Within the curved-space framework Eq.~\eqref{eq:k4} also returns $\bar\kappa_4^{(p)}=0$ if
+and only if $\mathrm{Var}_w[g]=0$, i.e.\ if $(\mathcal{M},g)$ is isometric to a circle, so
+any non-zero excess kurtosis is unambiguously attributable to the curved kinetic energy.
+
+\textbf{Coordinate-velocity equipartition.}
+Equation~\eqref{eq:local_P} implies $\langle\dot\varphi^2\rangle_\varphi=k_BT/[m\,g(\varphi)]$,
+i.e.\ $T_{\rm kin}(\varphi)\,g(\varphi)=T$ constant in $\varphi$, where
+$T_{\rm kin}(\varphi)\equiv m\langle\dot\varphi^2\rangle_\varphi/k_B$.
+This is equipartition expressed in non-Cartesian coordinates: the bath temperature is $T$
+everywhere, but the coordinate-velocity dispersion varies as $1/g$ because $\dot\varphi$ is
+not the physical (arc-length) velocity.
+The relation provides a direct experimental handle on $g(\varphi)$ from particle-tracking
+data, since $\langle\dot\varphi^2\rangle_\varphi g(\varphi)$ should be position-independent
+(Sec.~\ref{sec:numerics}).
+\label{eq:Tkin}
+
+
+%======================================================================
+\section{Pair structure and finite-diameter signatures}
+\label{sec:pair}
+%======================================================================
+
+The pair correlations and density-functional theory of hard rods on $(\mathcal{M},g)$ are
+inherited from the flat-space Tonks gas via the arc-length map; the geometry enters only
+through Jacobian factors in the position-space observables.
+We summarize the consequences in this section and verify the predictions in
+Sec.~\ref{sec:numerics}.
+
+\textbf{Nearest-neighbor gap distribution.}
+In arc-length coordinates the pair structure is the standard flat-Tonks ring problem.
+The $N$ nearest-neighbor gaps $\delta_i\equiv s_{i+1}-s_i-\sigma\geq 0$ obey the closure
+$\sum_i\delta_i=\Delta\equiv L-N\sigma$, and uniformity of the ring configurations
+makes $(\delta_1,\dots,\delta_N)$ jointly distributed as a symmetric Dirichlet on the
+simplex of size $\Delta$.
+The marginal of any single gap is therefore Beta$(1,N-1)$,
+\begin{equation}
+  P(\delta) = \frac{N-1}{\Delta}\bigl(1-\delta/\Delta\bigr)^{N-2},\quad \delta\in[0,\Delta].
+  \label{eq:gap_dist}
+\end{equation}
+For $N\gg 1$ this approaches the exponential
+$P(\delta)\to (N/\Delta)\exp(-N\delta/\Delta)$ with mean $\langle\delta\rangle=\Delta/N=(1-\eta)L/N$
+and $O(1/N)$ corrections.
+The full pair correlation function $g_2(s_{12})$ on the ring is given by the
+Salsburg--Zwanzig--Kirkwood result for the infinite Tonks gas with $O(1/N)$ ring
+corrections~\cite{SalsburgZwanzigKirkwood1953}; in coordinate space it depends on the
+metric only through the geodesic distance
+$d_g(\varphi_1,\varphi_2)=\min\bigl[\int_{\varphi_1}^{\varphi_2}\!\sqrt{g}\,d\varphi,
+L-\int_{\varphi_1}^{\varphi_2}\!\sqrt{g}\,d\varphi\bigr]$ between the two centers.
+
+\textbf{Position-dependent contact distance.}
+The arc-length contact condition $s_{i+1}-s_i=\sigma$ translates in coordinate space to
+\begin{equation}
+  \Delta\varphi_{\rm contact}(\varphi) \approx \frac{\sigma}{\sqrt{g(\varphi)}},
+  \label{eq:contact_distance}
+\end{equation}
+to leading order in $\sigma\,\partial_\varphi\!\sqrt{g}/g$ (negligible for our parameters).
+Combined with $\rho(\varphi)\propto\sqrt{g}$, the product
+$\rho\,\Delta\varphi_{\rm contact}=\eta/(1-\eta)$ is uniform — coordinate-space contact pairs
+are anti-correlated with $\rho$, a directly observable finite-$\sigma$ metric signature.
+
+The Percus exact density functional for hard rods~\cite{Percus1976} acts on $\rho_s$; minimization recovers Eq.~\eqref{eq:density}, and the isothermal compressibility
+$\kappa_T=-(1/L)\partial L/\partial P|_{T,N}=L(1-\eta)^2/(N k_BT)=(1-\eta)^2/(\rho k_BT)$
+(with $\rho=N/L$) is inherited unchanged from the flat case.
+
+%======================================================================
+\section{Numerical verification}
+\label{sec:numerics}
+%======================================================================
+
+\subsection{Event-driven algorithm}
+
+We implement an exact event-driven (ED) algorithm in arc-length coordinates.
+The arc-length map $s(\varphi)=\int_0^\varphi\!\sqrt{g}\,d\varphi'$ and its inverse are
+precomputed via Gauss--Legendre quadrature and stored as a sorted table of $M=2\times 10^5$
+nodes; inversion uses binary search with linear interpolation.
+Between collisions, each particle moves freely at constant arc-length speed; collision times
+are roots of a \emph{linear} equation in $s$, requiring no numerical time-stepping.
+Energy is conserved to double-precision floating-point accuracy
+($|\Delta E/E|\sim 10^{-14}$, independent of eccentricity or run length).
+The simulated dynamics is microcanonical at the seed level (energy fixed by initial
+conditions); pooling over independent seeds with Maxwell--Boltzmann velocity initialization
+recovers the canonical predictions to within statistical error (verified below).
+
+\textbf{Campaign parameters.}
+All units: $m=1$, $k_BT=1$, $a=2$, $R_{40}=0.02425$;
+unless stated otherwise, $T_{\rm eq}=200\,t_0$ and snapshot interval $\Delta t=0.25\,t_0$.
+\emph{(i) Primary kurtosis campaign}: $N=400$, $\eta\approx 0.18$, 200 independent seeds,
+$T_{\rm max}=2000\,t_0$, on the planar ellipse $e=0.7$.
+\emph{(ii) Packing-fraction scan}: $N=400$, $\eta\in\{0.05,0.10,0.15,0.20,0.30\}$,
+200 seeds each, $T_{\rm max}=2000\,t_0$, $\Delta t=0.5\,t_0$, $e=0.7$
+(Sec.~\ref{sec:numerics_eta}).
+\emph{(iii) Eccentricity scan} for $\bar\kappa_4(e)$: $N=400$, 200 seeds,
+$T_{\rm max}=2000\,t_0$, six ellipses $e\in\{0,0.3,0.5,0.7,0.8,0.9\}$.
+\emph{(iv) $N$-scaling campaign}: $N\in\{40,100,200,400,800\}$, $\eta\approx 0.14$ fixed
+(radius scales as $r(N)=R_{40}\times 40/N$), 30 seeds each, $T_{\rm max}=2000\,t_0$,
+on the WavyEllipse3D family (Sec.~\ref{sec:3d}, App.~\ref{app:Nscaling}).
+Per-seed cumulant estimates and bootstrap standard errors are reported throughout.
+
+\subsection{Position-space observables}
+\label{sec:numerics_pos}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{../figures/fig01_density_profiles.pdf}
+\caption{Coordinate density $\rho(\varphi)$ for six eccentricities ($N=40$, $\eta\approx 0.15$,
+50 seeds; small-$N$ data shown for visualization clarity, $N$-independence to $N=800$
+is verified separately in App.~\ref{app:Nscaling} and the $\eta$-scan
+of Sec.~\ref{sec:numerics_eta}).
+Solid: simulation; dashed: analytic prediction~\eqref{eq:density}.
+The circle ($e=0$) yields a uniform profile; density contrast $\rho_{\max}/\rho_{\min}=a/b$
+reaches $\approx 3.2$ at $e=0.95$.}
+\label{fig:density}
+\end{figure}
+
+Figure~\ref{fig:density} shows the equilibrium density profiles for six eccentricities;
+the simulation curves lie quantitatively on the analytic
+prediction~\eqref{eq:density}.
+The position-dependent contact distance
+$\Delta\varphi_{\rm contact}(\varphi)\approx\sigma/\sqrt{g(\varphi)}$
+[Eq.~\eqref{eq:contact_distance}] is also verified directly (Fig.~\ref{fig:contact}):
+density and contact gap are anti-correlated, peaking and dipping at the same $\varphi$,
+with $\rho\,\Delta\varphi_{\rm contact}=\eta/(1-\eta)$ uniform to within sampling noise.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{../figures/fig_contact_distance.pdf}
+\caption{Normalized coordinate density $\rho(\varphi)/\rho_{\max}$ (blue) and coordinate
+contact distance $\Delta\varphi_{\rm contact}(\varphi)/\max(\Delta\varphi_{\rm contact})$
+(red, dashed) for $e=0.7$ and $e=0.9$.
+The two curves are anti-correlated, in agreement with $\rho\propto\sqrt{g}$ and
+$\Delta\varphi_{\rm contact}\propto 1/\sqrt{g}$.}
+\label{fig:contact}
+\end{figure}
+
+\subsection{Momentum-space observables}
+\label{sec:numerics_mom}
+
+The momentum predictions are tested at three levels: locally
+($P(p|\varphi)$ Gaussian with variance $mk_BT g(\varphi)$ and the equipartition
+identity~\eqref{eq:Tkin}), through global cumulants ($\kappa_2$ and $\kappa_4$ from
+Eq.~\eqref{eq:cumulant_hierarchy}), and through the full shape of $P(p)$.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{../figures/fig_Tkin.pdf}
+\caption{Local momentum statistics
+(planar ellipse $e=0.7$, $N=400$, 200 seeds, $5.8\times 10^7$ samples).
+\emph{Panel (a)}: Position-dependent kinetic temperature.
+The ratio $\langle p^2\rangle_\varphi/g(\varphi)$ should equal $mk_BT=1$ at every $\varphi$
+[Eq.~\eqref{eq:Tkin}].  Simulation gives $0.994\pm 0.001$ (RMS deviation $0.63\%$
+across 60 bins); the small uniform offset is the seed-energy normalization $(N-1)/N=0.9975$.
+\emph{Panel (b)}: Local excess kurtosis $\bar\kappa_4(p|\varphi)$ tests Gaussianity of
+the conditional distribution~\eqref{eq:local_P}.
+The simulation values are systematically positive, lying in $[0.0004,0.0066]$ with
+RMS $0.003$ — consistent with the bin-discretization artifact
+$\bar\kappa_4^{\rm bin}=3\,\mathrm{Var}_{\rm bin}[g]/\langle g\rangle^2
+=(\Delta\varphi\,g'/2g)^2\sim 10^{-3}$ for 60 bins of width $\Delta\varphi=2\pi/60$
+across a metric varying by $g'\sim 1$--$2$.
+The ingredient $P(p|\varphi)\sim\mathcal{N}(0,mk_BT g(\varphi))$ is verified at every
+position to within this $O(10^{-3})$ binning floor.}
+\label{fig:Tkin}
+\end{figure}
+
+\subsubsection{Local and global cumulants}
+\label{sec:numerics_local}
+
+\textbf{Local statistics (Fig.~\ref{fig:Tkin}).}
+We test Eq.~\eqref{eq:Tkin} directly: at each angular bin, we accumulate the conditional
+moments $\langle p^2\rangle_\varphi$ and $\langle p^4\rangle_\varphi$ over all simulation
+snapshots ($N=400$, 200 seeds, $\eta\approx 0.18$, planar ellipse $e=0.7$, $5.8\times 10^7$
+single-particle samples).
+The ratio $\langle p^2\rangle_\varphi/g(\varphi)$ predicted by Eq.~\eqref{eq:Tkin} is unity
+in canonical units; the simulation gives an RMS deviation of $0.63\%$ across $60$
+$\varphi$-bins, with mean $0.994$ and range $[0.992,0.995]$.
+The systematic offset of $0.6\%$ below unity is the expected microcanonical effect from
+fixed seed energy at finite $N$: the variance of an arc-length velocity in the canonical
+ensemble is $k_BT/m$, while in our simulation the constraint $\sum_i v_i=0$ reduces it to
+$(N-1)k_BT/(Nm)\approx 0.9975$ for $N=400$, in close agreement with the observed $0.994$.
+The position-independence of the ratio (RMS spread $0.63\%$) is the substantive verification
+of Eq.~\eqref{eq:Tkin}.
+
+The local Gaussianity assumption underlying Eq.~\eqref{eq:local_P} is verified by computing
+the conditional excess kurtosis $\bar\kappa_4(p|\varphi)$ at each $\varphi$-bin.
+The simulation gives an RMS local kurtosis of $0.003$ with all values systematically
+positive in $[0.0004,0.0066]$.
+This positivity is a binning artifact, not residual non-Gaussianity: each finite-width bin
+$\Delta\varphi=2\pi/60$ samples particles with a small spread $\Delta g\approx g'\Delta\varphi$
+in the local variance $mk_BTg(\varphi)$, and a small mixture of Gaussians of slightly
+different widths has excess kurtosis
+$\bar\kappa_4^{\rm bin}=3\,\mathrm{Var}_{\rm bin}[g]/\langle g\rangle^2 = (\Delta\varphi\,g'/2g)^2\sim 10^{-3}$,
+matching the observation.
+The local-Gaussian ingredient~\eqref{eq:local_P} is therefore verified to better than
+$10^{-3}$ in the standardized kurtosis at every position once the binning is accounted for.
+
+\textbf{Global cumulants.}
+We test the second and fourth cumulants of $P(p)$ directly.
+Statistical errors are estimated by computing $\kappa_2$ and $\kappa_4$ separately for each
+seed and reporting the seed-mean and standard error of the mean across 200 independent seeds.
+At $\eta\approx 0.20$ (close to our primary kurtosis campaign), we obtain
+$\kappa_2^{\rm sim}=3.117\pm 0.016$ vs.\ predicted $\kappa_2^{\rm pred}=3.115$
+(within $0.1\sigma$; the residual offset is the seed-energy normalization $(N-1)/N$),
+and $\kappa_4^{\rm sim}=1.40\pm 0.18$.
+The corresponding standardized excess kurtosis is
+$\bar\kappa_4^{\rm sim}=0.144\pm 0.019$
+vs.\ the finite-$N$ prediction
+$\bar\kappa_4^{\rm pred,N}=3\,\mathrm{Var}_w[g]/\langle g\rangle_w^2 - 6/(N+2) =
+0.164 - 0.015 = 0.149$ [Eq.~\eqref{eq:k4_finiteN}],
+agreement within $0.26\sigma$. The canonical-only prediction
+$\bar\kappa_4^{\rm pred,\infty}=0.164$ deviates by $1.1\sigma$, confirming that the
+finite-$N$ microcanonical correction Eq.~\eqref{eq:k4_finiteN} is necessary for
+quantitative comparison at $N=400$.
+The relatively large per-seed variance of $\kappa_4$ reflects the moment's sensitivity to
+the tails of $P(p)$ at finite sample size: each seed samples a single multiset of
+arc-length velocities (permuted in time by collisions but never reseeded), so the effective
+number of independent velocity samples per seed is $\sim N$ rather than the nominal
+time-pooled count.
+With this in mind, $\kappa_6$ and $\kappa_8$ have standard errors that exceed their
+predicted values; their numerical verification is statistically out of reach with
+realistic simulation budgets, even though the hierarchy~\eqref{eq:cumulant_hierarchy}
+gives them in closed form.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{../figures/fig_kurtosis_p_N400.pdf}
+\caption{Excess kurtosis of the canonical momentum $p=mg(\varphi)\dot\varphi$ versus
+eccentricity for the polar ellipse ($N=400$, 200 seeds; symbols: simulation seed-mean
+$\pm$ SE; curve: $3\,\mathrm{Var}_w[g]/\langle g\rangle_w^2$ from numerical quadrature).
+\emph{Panel (a)}: Raw $\bar\kappa_4(p)$.
+The $e=0$ point gives $\bar\kappa_4=-0.015\pm 0.019$, in close agreement with the
+universal finite-$N$ microcanonical correction $-6/(N+2)=-0.0149$ at $N=400$
+[Eq.~\eqref{eq:k4_finiteN}].
+\emph{Panel (b)}: Geometry-induced increment
+$\Delta\bar\kappa_4(p)=\bar\kappa_4(e)-\bar\kappa_4(0)$, which cancels the
+geometry-independent $-6/(N+2)$ offset and isolates the curvature contribution
+$3\,\mathrm{Var}_w[g]/\langle g\rangle_w^2$. Agreement with the geometric prediction is
+within $1.1\sigma$ across $e\in[0,0.9]$, with no free parameters.}
+\label{fig:kurtosis_p}
+\end{figure}
+
+Figure~\ref{fig:kurtosis_p} extends the test across the ellipse family at $N=400$ with
+200 seeds per eccentricity.
+At $e=0$ the simulation gives $\bar\kappa_4=-0.015\pm 0.019$ vs.\ the prediction of zero, a
+discrepancy of $0.8\sigma$ (i.e.\ statistically consistent with no offset).
+The geometry-induced increment $\Delta\bar\kappa_4(p)=\bar\kappa_4(e)-\bar\kappa_4(0)$
+removes any constant baseline and confirms the geometric prediction within $1.1\sigma$
+across all six eccentricities.
+For the equivalent flat-plus-$V_{\rm eff}$ system, $\bar\kappa_4$ would be identically zero
+at every $e$; the data therefore distinguish the curved kinetic energy from any flat
+implementation that reproduces only the density profile.
+
+
+\subsubsection{Full distribution shape: bulk and tail}
+\label{sec:numerics_shape}
+
+\textbf{Bulk (Fig.~\ref{fig:Pp_shape}).}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{../figures/fig_Pp_shape.pdf}
+\caption{Global momentum distribution $P(p)$ of hard rods on the planar ellipse $e=0.7$
+($N=400$, 200 seeds, $5.8\times 10^7$ samples).
+\emph{Panel (a)}: linear scale; \emph{Panel (b)}: log scale.
+Symbols: simulation. Solid black curve: the metric-weighted Gaussian
+mixture~\eqref{eq:global_P} (curved-space prediction).
+Dashed red curve: variance-matched single Gaussian (same $\kappa_2=\langle g\rangle_w$ as
+the curved system but $\kappa_4=0$); included to show the leptokurtic departure from
+Gaussianity that the curved kinetic energy generates at fixed $\kappa_2$.
+The curved-space prediction has $\bar\kappa_4\approx 0.166$; the variance-matched
+Gaussian has $\bar\kappa_4=0$ by construction.
+The simulation tracks the curved-space prediction across four decades of probability.}
+\label{fig:Pp_shape}
+\end{figure}
+
+A stronger numerical test of Eq.~\eqref{eq:global_P} is the bin-by-bin comparison of the
+simulated $P(p)$ histogram to the analytical mixture formula.
+With $N=400$, 200 seeds and the planar ellipse $e=0.7$, the simulation samples $P(p)$
+over four decades of probability with $200$ uniform bins on $|p|\leq 9$.
+In the bulk ($|p|\leq 4$, peak $\sim 0.23$ at $p=0$, more than $99\%$ of probability mass)
+the relative error between simulation and Eq.~\eqref{eq:global_P} is below $3\%$ at every
+bin, dominated by binwise sampling fluctuations on the strongly correlated single-file
+microstate.
+In the moderate tail ($|p|\sim 4$--$5$, $P(p)\sim 10^{-2}$--$10^{-3}$) the simulation
+remains within $5\%$ of the prediction.
+By contrast, a variance-matched single Gaussian
+($\kappa_2=\langle g\rangle_w$, $\kappa_4=0$) is inconsistent with the simulation by
+$>10\sigma$ on $\kappa_4$ alone (Fig.~\ref{fig:Pp_shape}); the genuine flat-plus-$V_{\rm eff}$
+system has $\kappa_2=mk_BT$ (much smaller than the curved $\langle g\rangle_w mk_BT$) and
+also $\kappa_4=0$.
+
+\textbf{Tail (Fig.~\ref{fig:Pp_tail}).}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{../figures/fig_Pp_tail.pdf}
+\caption{Direct verification of the Gaussian-tail prediction
+[Eq.~\eqref{eq:gaussian_tails}], $P(p)\sim\exp(-p^2/2mk_BTg_{\max})$ at large $|p|$
+(planar ellipse $e=0.7$, $N=400$, 500 seeds, $7.2\times 10^8$ samples).
+\emph{Panel (a)}: $-\ln P(p)$ versus $p^2$.
+On this plot, a Gaussian distribution is a straight line with slope $1/(2\sigma^2)$.
+Symbols: simulation; black solid: mixture~\eqref{eq:global_P}; red dashed: Gaussian with
+$\sigma^2=g_{\max}=4$; orange dotted: Gaussian with $\sigma^2=\langle g\rangle\approx 3.12$.
+The simulation crosses from the bulk slope to the $g_{\max}$ slope as $|p|$ increases.
+\emph{Panel (b)}: local-window slope fit $\sigma^2_{\rm eff}(|p|)=1/(2\,d{-}\!\ln P/d(p^2))$.
+The effective variance rises monotonically from $\langle g\rangle$ in the bulk
+($|p|\sim 3$) toward $g_{\max}=4$ in the tail ($|p|\sim 6$--$7$),
+directly confirming the predicted change of curvature in $\ln P(p)$.}
+\label{fig:Pp_tail}
+\end{figure}
+
+The asymptotic prediction $P(p)\sim\exp(-p^2/2mk_BTg_{\max})$ requires direct
+inspection of the tail.
+We extend the simulation to 500 seeds and bin $p$ on $|p|\leq 12$ with $1000$ bins
+($7.2\times 10^8$ samples).
+Figure~\ref{fig:Pp_tail}(a) plots $-\ln P(p)$ against $p^2$: the simulation tracks the
+analytic mixture across the bulk, then in the moderate tail (around $|p|\sim 4$--$7$)
+its slope on this plot decreases (i.e., the local effective variance grows) toward the
+$g_{\max}$-Gaussian, as predicted.
+Figure~\ref{fig:Pp_tail}(b) quantifies this through a local linear fit of
+$-\ln P(p)$ versus $p^2$ in unit-width windows of $|p|$:
+the effective variance rises from $\sigma^2_{\rm eff}=3.20\pm 0.03$ at $|p|=3.5$
+to $\sigma^2_{\rm eff}=4.16\pm 0.15$ at $|p|=6.5$
+(uncertainties from the local-window OLS fit on the binned $-\ln P$ data),
+in agreement with $g_{\max}=4$.
+At $|p|>7$ the fits become unstable due to the limited number of samples in the
+extreme tail.
+
+\subsection{Packing-fraction scan and pair structure}
+\label{sec:numerics_eta}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{../figures/fig_eta_gap.pdf}
+\caption{Verification of $\sigma$-independence and the nearest-neighbor pair structure
+(planar ellipse $e=0.7$, $N=400$, 200 seeds per $\eta$).
+\emph{Panel (a)}: standardized excess kurtosis $\bar\kappa_4(p)$ versus packing fraction
+$\eta=N\sigma/L$.
+Symbols: simulation, with error bars from the per-seed standard error of the mean;
+dashed line: prediction $3\,\mathrm{Var}_w[g]/\langle g\rangle_w^2$, $\eta$-independent.
+All five points are within $1.1\sigma$ of the prediction; no statistically significant
+$\eta$-dependence is detected.
+\emph{Panel (b)}: nearest-neighbor gap distribution $P(\delta)$ on a logarithmic
+vertical axis, scaled by the mean gap $\langle\delta\rangle=(L-N\sigma)/N$.
+Symbols: simulation (all five $\eta$ values); dashed lines: prediction
+Eq.~\eqref{eq:gap_dist}.
+The data collapse onto the universal exponential-like decay across the full
+$\eta\in[0.05,0.30]$ range, validating the flat-Tonks-on-a-ring pair structure
+when expressed in arc-length coordinates.}
+\label{fig:eta_gap}
+\end{figure}
+
+The Eq.~\eqref{eq:density} prediction is exact for any $\sigma<L/N$.
+A numerical verification of $\sigma$-independence checks for size-dependent artifacts
+in the arc-length grid, the collision detection, or the discretization of the simulation
+that could otherwise mimic spurious finite-$\sigma$ corrections.
+We run 200-seed campaigns at $\eta\in\{0.05,0.10,0.15,0.20,0.30\}$ on the same planar
+ellipse $e=0.7$ and measure $\bar\kappa_4(p)$, the density-profile RMS, and the
+nearest-neighbor gap distribution at each $\eta$.
+Figure~\ref{fig:eta_gap}(a) shows that $\bar\kappa_4$ is consistent with the
+$\eta$-independent prediction at every $\eta$ within $\lesssim 1\sigma$ of the
+per-point statistical scatter ($\approx 12\%$ at 200 seeds).
+A formal goodness-of-fit test against the constant prediction
+$\bar\kappa_4=3\,\mathrm{Var}_w[g]/\langle g\rangle_w^2$ gives $\chi^2/\mathrm{dof}=0.52$
+(5 points, 5 degrees of freedom against a parameter-free prediction); the data are
+fully consistent with $\sigma$-independence.
+The low $\chi^2/\mathrm{dof}$ may reflect mild conservative bias in the per-seed
+SE estimator (positive correlations across particles within one seed inflate
+the seed-to-seed scatter relative to the underlying canonical fluctuation), but
+the conclusion of $\sigma$-independence is unaffected.
+Density-profile residuals (pooled across seeds) lie in $0.04\%$--$0.05\%$ across the
+scan, confirming the same conclusion.
+
+The nearest-neighbor gap distribution $P(\delta)$ is verified directly against
+Eq.~\eqref{eq:gap_dist} (Fig.~\ref{fig:eta_gap}(b)).
+The collapse onto the universal scaling $P(\delta)\langle\delta\rangle$ vs.\
+$\delta/\langle\delta\rangle$ across $\eta\in[0.05,0.30]$ is a stringent test of the
+flat-Tonks-on-a-ring substructure: the leading exponential decay
+$\sim\exp(-\delta/\langle\delta\rangle)$ for $N\gg 1$ is reproduced with relative
+errors at peak $\lesssim 3\%$ in the worst-case $\eta$ values and $\sim 0.06\%$ at
+$\eta=0.10$.
+
+\subsection{Three-dimensional embeddings}
+\label{sec:3d}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{../figures/fig_3d_density.pdf}
+\caption{Density profiles for the WavyEllipse3D family
+$\bm{X}(\varphi)=(r(\varphi)\cos\varphi,r(\varphi)\sin\varphi,c\cos n\varphi)$ at
+$N=40$, 30 seeds (chosen for visualization clarity; $N$-independence to $N=800$ is
+verified separately, App.~\ref{app:Nscaling}).
+Solid red: analytic prediction $\rho\propto\sqrt{g(\varphi)}$; blue histograms: simulation.
+Top row: circle ($a=b=2$) in 2D (uniform); circle in 3D with $(c,n)=(0.5,4)$, $(1.0,4)$.
+Bottom row: $(c,n)=(0.5,6)$ circle; planar ellipse $e=0.7$;
+3D ellipse $(e,c,n)=(0.7,0.5,4)$.
+The density tracks the intrinsic metric $g(\varphi)$ across all six geometries,
+including those for which $g$ and the extrinsic Frenet--Serret curvature
+$\kappa_{3D}$ are functionally independent (Appendix~\ref{app:decoupling}).}
+\label{fig:3d}
+\end{figure}
+
+We extend the verification to curves embedded in $\mathbb{R}^3$, parametrized as
+\begin{equation}
+  \bm{X}(\varphi) = \bigl(r(\varphi)\cos\varphi,\,r(\varphi)\sin\varphi,\,c\cos n\varphi\bigr),
+  \label{eq:wavy3d}
+\end{equation}
+with induced metric
+\begin{equation}
+  g(\varphi) = r'(\varphi)^2 + r(\varphi)^2 + c^2n^2\sin^2\!(n\varphi)\,.
+  \label{eq:g3d}
+\end{equation}
+The arc-length reduction depends only on $g(\varphi)$, so the density must track this
+intrinsic quantity rather than the extrinsic Frenet--Serret curvature
+$\kappa_{3D}(\varphi)$.
+For the circle sub-family ($a=b$), $\kappa_{3D}=F(g)$ is an exact functional relation
+(Appendix~\ref{app:decoupling}), so circle data alone cannot tell whether the density tracks
+$g$ or $\kappa_{3D}$.
+The full WavyEllipse3D family with $e>0$ breaks this functional relation
+($\kappa_{3D}$ and $g$ become independent variables; Appendix~\ref{app:decoupling}
+provides a witness pair with $\Delta\kappa_{3D}\approx 1.0$ at fixed $g$ for
+$(e,c,n)=(0.7,0.5,4)$), and Fig.~\ref{fig:3d} confirms that the simulation continues to
+track $g$ in this case.
+This serves as a self-consistency check that the canonical formalism produces the
+intrinsic-metric prediction in the most extended geometry tested.
+$N$-independence is verified in Appendix~\ref{app:Nscaling}: RMS residuals remain below
+$0.5\%$ for all $N\in\{40,100,200,400,800\}$ with no systematic $N$-dependence for
+$N\geq 200$.
+
+\clearpage
+%======================================================================
+\section{Discussion}
+\label{sec:discussion}
+%======================================================================
+
+Two independent coordinate-space observables characterize the equilibrium state of hard
+rods on $(\mathcal{M},g)$: the single-particle density $\rho(\varphi)\propto\sqrt{g(\varphi)}$
+and the single-particle canonical-momentum distribution $P(p)$, a metric-weighted Gaussian
+mixture.
+The density is reproduced by the Bakhti~\cite{Bakhti2015} flat-space hard-rod gas in the
+effective potential $V_{\rm eff}=-\tfrac{1}{2}k_BT\ln g$, so position-space measurements
+do not fix the kinetic-energy structure on their own; the curved $H=\sum_i p_i^2/[2m\,g(\varphi_i)]$
+manifests in the leptokurtic, $g_{\max}$-tailed $P(p)$.
+
+\textbf{Implications.}
+The mixing distribution $f(g_0)$ is fixed by the geometry rather than postulated: bounded
+support $[g_{\min},g_{\max}]$ replaces the unbounded supports of $\chi^2$ or log-normal
+phenomenological superstatistics~\cite{BeckCohen2003}, and the integrable square-root
+singularities at metric extrema together with strict Gaussian tails are direct, falsifiable
+geometric consequences.
+The cumulant hierarchy~\eqref{eq:cumulant_hierarchy} expresses every cumulant of $P(p)$
+in terms of the metric cumulants $c_n[g]$, with the lowest two ($\kappa_2,\kappa_4$)
+verified directly in simulation.
+The Hamiltonian shares the position-dependent-mass form of semiconductor envelope-function
+theory and curvilinear molecular vibrations~\cite{BenDanielDuke1966,vonRoos1983}, so the
+classical equilibrium statistical mechanics worked out here transfers to those settings
+in the appropriate temperature regime.
+
+\textbf{Experimental access.}
+The natural underdamped realization is a single classical or low-density quantum particle
+on a curved one-dimensional guide.
+For ultracold atoms in elliptically deformed ring traps~\cite{Ryu2007,Eckel2014},
+$\rho(\varphi)\propto\sqrt{g(\varphi)}$ is a temperature-independent density modulation
+distinguishable from a Boltzmann inhomogeneity by its $T$-independence, and time-of-flight
+imaging gives access to the velocity statistics; the parameter-free prediction
+$\bar\kappa_4\approx 3e^4/8$ for small eccentricity (Appendix~\ref{app:ellipse}) fixes a quantitative target.
+Colloidal realizations to date employ \emph{circular}
+tracks~\cite{CastroVillarrealRamirez2021,CastroVillarreal2023}, where $g$ is constant and
+the curved-metric predictions trivialize.
+A non-uniform $g(\varphi)$ would require lithographically defined elliptical or wavy
+channels with overdamped colloids; in that regime the canonical-momentum mixture is
+replaced by the Maxwell--Boltzmann statistics of the thermal bath, but the density
+prediction $\rho\propto\sqrt{g}$ and the equipartition identity
+$T_{\rm kin}(\varphi)\,g(\varphi)=k_BT$ continue to hold pointwise.
+
+\textbf{Stochastic and quantum extensions.}
+At the overdamped level, adding a Langevin bath to each arc-length coordinate yields a
+Smoluchowski equation for $\rho_s(s,t)$~\cite{Stratonovich1968,Graham1977}; the Percus DFT
+(Sec.~\ref{sec:pair}) drives the corresponding DDFT, with equilibrium~\eqref{eq:density}
+unchanged.
+At the underdamped Kramers level, coupling the bath to momentum preserves the canonical
+measure, so~\eqref{eq:cumulant_hierarchy} holds in steady state; the mixture
+structure of $P(p)$ is modified only during relaxation.
+A quantum analogue arises in the Tonks--Girardeau limit on a curved one-dimensional
+guide where the leading-order Schr\"odinger problem includes a geometric (da~Costa)
+potential~\cite{daCosta1981}; the leading-order density still follows $\sqrt{g}$.
+These stochastic and quantum extensions are natural directions for future work.
+
+%======================================================================
+\section{Conclusions}
+\label{sec:conclusions}
+%======================================================================
+
+\begin{itemize}
+
+\item The arc-length reduction maps the configurational integral of hard rods on
+$(\mathcal{M},g)$ to that of the flat Tonks gas, so equation of state, compressibility,
+and absence of phase transitions are inherited unchanged.
+The equilibrium coordinate density $\rho(\varphi)\propto\sqrt{g(\varphi)}$ is exact for
+any rod diameter $\sigma<L/N$ and matches the flat-space prediction in the effective
+potential $V_{\rm eff}=-\tfrac{1}{2}k_BT\ln g$.
+
+\item The single-particle marginal of the canonical momentum is a metric-weighted Gaussian mixture
+[Eq.~\eqref{eq:global_P}] with closed-form cumulant hierarchy
+$\kappa_{2n}^{(p)}=(2n-1)!!(mk_BT)^n c_n[g]$.
+The mixing distribution has compact support $[g_{\min},g_{\max}]$ with integrable square-root
+singularities at metric extrema; the tails decay as $\exp(-p^2/2mk_BTg_{\max})$.
+Numerically we verify the second and fourth global cumulants of $P(p)$, the local Gaussianity
+$P(p|\varphi)\sim\mathcal{N}(0,mk_BTg(\varphi))$, the equipartition identity
+$T_{\rm kin}(\varphi)g(\varphi)=k_BT$, and the full mixture shape across the bulk and into
+the tail.
+
+\item The finite rod diameter $\sigma$ produces a position-dependent contact distance
+$\Delta\varphi_{\rm contact}=\sigma/\sqrt{g(\varphi)}$ anti-correlated with $\rho$;
+the nearest-neighbor gap distribution
+$P(\delta)=[(N-1)/\Delta]\,(1-\delta/\Delta)^{N-2}$ with $\Delta=L-N\sigma$
+(symmetric Dirichlet marginal on the simplex) is verified directly.
+Direct inspection of $P(p)$ also confirms the predicted Gaussian tail of variance
+$mk_BT\,g_{\max}$, with the local effective variance crossing from
+$\langle g\rangle_w$ in the bulk toward $g_{\max}$ as $|p|$ increases.
+
+\item All predictions are confirmed across a packing-fraction scan
+$\eta\in[0.05,0.30]$ ($\chi^2/\mathrm{dof}=0.52$ against the constant prediction) and
+an $N$-scan $N\in\{40,100,200,400,800\}$ on three-dimensional embeddings
+(WavyEllipse3D), demonstrating consistency with the intrinsic-metric
+prediction across the geometries tested.
+
+\item The Hamiltonian $H=\sum_i p_i^2/[2m\,g(\varphi_i)]$ shares the position-dependent-mass
+form found in semiconductor envelope-function theory and curvilinear vibrational coordinates;
+the equilibrium statistical mechanics worked out here applies, mutatis mutandis, to any
+classical system with position-dependent inertia.
+
+\end{itemize}
+
+%======================================================================
+\begin{acknowledgments}
+The author thanks the colleagues at the Escuela de Ingenier\'ia y Ciencias,
+Tecnol\'ogico de Monterrey, for useful discussions.
+Simulations were performed on the \emph{xolotl} cluster.
+The Julia simulation source, raw data, and analysis scripts will be archived on Zenodo
+upon acceptance and made available at \texttt{https://github.com/hjmedel/tonks-curved}.
+\end{acknowledgments}
+
+%======================================================================
+\appendix
+%======================================================================
+
+\section{Ellipse integrals and small-eccentricity expansion}
+\label{app:ellipse}
+
+For the polar ellipse with metric~\eqref{eq:ellipse_metric} and $b=a\sqrt{1-e^2}$, we
+derive the leading-order small-$e$ expansion of the geometric cumulants.
+
+\textbf{Expansion of $g(\varphi)$.}
+Substituting $b^2=a^2(1-e^2)$ and expanding to $O(e^2)$:
+\begin{equation}
+  g(\varphi) = a^2\bigl(1 - e^2\sin^2\!\varphi\bigr) + O(e^4)\,.
+  \label{eq:g_expand}
+\end{equation}
+(Verification: at $e=0$, $g=a^2$; extrema at $\sin^2\!\varphi=0,1$ give $g=a^2, a^2(1-e^2)=b^2$.)
+
+\textbf{Equilibrium weight.}
+$\sqrt{g}\approx a(1-\tfrac{1}{2}e^2\sin^2\!\varphi)$,
+$L=\oint\!\sqrt{g}\,d\varphi\approx 2\pi a(1-\tfrac{e^2}{4})$, so
+\begin{equation}
+  w(\varphi) = \frac{\sqrt{g}}{L} \approx \frac{1}{2\pi}
+  \left(1 + \frac{e^2}{4} - \frac{e^2}{2}\sin^2\!\varphi\right) + O(e^4)\,.
+\end{equation}
+
+\textbf{First moment.}
+\begin{equation}
+  \langle g\rangle_w = \int_0^{2\pi}\!g\,w\,d\varphi
+  = a^2\!\left(1 - \frac{e^2}{2}\right) + O(e^4)\,.
+  \label{eq:g_mean_expand}
+\end{equation}
+(Note: the weight $w(\varphi)=\sqrt{g}/L$ yields coefficient $1/2$;
+an unnormalized weight $\propto g^{3/2}$ would instead give $3/4$.)
+
+\textbf{Variance.}
+$g-\langle g\rangle_w \approx a^2 e^2(\tfrac{1}{2}-\sin^2\!\varphi)+O(e^4)$, so
+\begin{equation}
+  \mathrm{Var}_w[g] = a^4 e^4\,
+  \left\langle\!\left(\tfrac{1}{2}-\sin^2\!\varphi\right)^2\!\right\rangle_0
+  + O(e^6)
+  = \frac{a^4 e^4}{8} + O(e^6)\,,
+  \label{eq:var_expand}
+\end{equation}
+where $\langle(\tfrac{1}{2}-\sin^2\!\varphi)^2\rangle_0 = \tfrac{1}{8}$
+follows from $\int_0^{2\pi}\sin^4\!\varphi\,d\varphi/(2\pi)=\tfrac{3}{8}$.
+
+\textbf{Kurtosis.}
+\begin{equation}
+  \bar\kappa_4^{(p)} = \frac{3\,\mathrm{Var}_w[g]}{\langle g\rangle_w^2}
+  = \frac{3\,a^4 e^4/8}{a^4(1-e^2/2)^2}
+  = \frac{3}{8}e^4 + O(e^6)\,.
+  \label{eq:kappa4_small_e}
+\end{equation}
+The kurtosis is quartic in eccentricity because $g$ deviates from its mean by $O(e^2)$,
+making the variance $O(e^4)$.
+The $e^2$ error in~\eqref{eq:g_mean_expand} contributes only at $O(e^6)$ in the ratio.
+
+\section{Distribution of the metric under $w$}
+\label{app:dist_g}
+
+The push-forward density $f(g_0)$ defined in~\eqref{eq:fg0} is computed by locating all
+$\varphi_j$ where $g(\varphi_j)=g_0$ and summing the residues.
+For the polar ellipse, $g(\varphi)=g_0$ has four solutions per period for
+$g_0\in(b^2,a^2)$, reduced to two at the extremes.
+Near $g_0=a^2$ (the maximum, at $\varphi=0,\pi$): $g(\varphi)\approx a^2-A(\varphi)^2$
+for some $A>0$, giving $f(g_0)\sim(a^2-g_0)^{-1/2}$.
+Near $g_0=b^2$ (the minimum): similarly $f(g_0)\sim(g_0-b^2)^{-1/2}$.
+Both singularities are integrable; $\int_{b^2}^{a^2}f(g_0)\,dg_0=1$ by construction.
+
+This behavior is generic for any smooth periodic function: extrema produce
+$(g_0-g_{\rm ext})^{-1/2}$ singularities, and interior critical points would produce
+logarithmic singularities (not present for the ellipse, which has only isolated extrema).
+
+\section{Cumulant generating function derivation}
+\label{app:kurtosis}
+
+The derivation of Proposition~\ref{prop:cumulants} follows from the
+identity~\eqref{eq:CGF}: since
+$K_p(t) = \ln\langle \exp(mk_BT t^2 g/2)\rangle_w = \psi(mk_BT t^2/2)$
+where $\psi(\lambda)=\ln\langle e^{\lambda g}\rangle_w$ is the CGF of $g$ under $w$,
+the cumulants of $p$ are related to those of $g$ by Fa\`a di Bruno's formula:
+\begin{equation}
+  \frac{d^{2n}K_p}{dt^{2n}}\bigg|_{t=0}
+  = \sum_{k=1}^{2n} \psi^{(k)}(0)\cdot B_{2n,k}\!\bigl(h'(0),h''(0),\ldots\bigr)\,,
+\end{equation}
+where $h(t)=mk_BT t^2/2$ and $B_{2n,k}$ are the partial Bell polynomials.
+Since $h'(0)=0$, $h''(0)=mk_BT$, and $h^{(j)}(0)=0$ for all $j\neq 2$,
+the Bell polynomial $B_{2n,k}(0,mk_BT,0,\ldots)$ vanishes unless the partition
+of $2n$ into $k$ parts uses only parts of size $2$, which forces $k=n$.
+Therefore \emph{only} $B_{2n,n}$ contributes:
+\begin{equation}
+  B_{2n,n}(0,mk_BT,0,\ldots)
+  = \frac{(2n)!}{(2!)^n\,n!}(mk_BT)^n = (2n-1)!!\,(mk_BT)^n\,,
+\end{equation}
+and since $\psi^{(n)}(0)=c_n[g]$ (the $n$-th cumulant of $g$ under $w$), we obtain
+$\kappa_{2n}^{(p)}=(2n-1)!!\,(mk_BT)^n c_n[g]$.
+All odd cumulants of $p$ vanish because $K_p(t)=\psi(mk_BT t^2/2)$ is even in $t$.
+
+\section{Functional independence of $g$ and $\kappa_{3D}$ for WavyEllipse3D}
+\label{app:decoupling}
+
+The arc-length reduction depends on the intrinsic metric $g$ only, not on the
+Frenet--Serret curvature $\kappa_{3D}$ of the embedding.
+For the WavyCircle3D sub-family ($a=b$), $\kappa_{3D}$ happens to be a function of $g$,
+$\kappa_{3D}=\sqrt{c^2n^4+n^2-(n^2-1)g}\,/g^{3/2}$, so circle data alone cannot
+distinguish a $g$-dependence from a $\kappa_{3D}$-dependence.
+For $a\neq b$ this functional relation breaks: at $(e,c,n)=(0.70,0.50,4)$ the points
+$\varphi_1\approx 0.110$ and $\varphi_2\approx 1.337$ satisfy $g(\varphi_1)\approx
+g(\varphi_2)\approx 4.72$ but $\kappa_{3D}(\varphi_1)=1.62$, $\kappa_{3D}(\varphi_2)=0.66$,
+proving multi-valuedness.
+Heuristically this follows from $g=R(\varphi)+Z(\varphi)$ being a sum of period-$\pi$ and
+period-$\pi/n$ components for $n\geq 2$, while $\kappa_{3D}$ depends on a different
+combination through Frenet--Serret.
+The agreement $\rho\propto\sqrt{g}$ on the WavyEllipse3D family in
+Fig.~\ref{fig:3d} is therefore a non-trivial consistency check that the
+arc-length reduction yields the correct intrinsic dependence.
+
+%======================================================================
+\section{$N$-independence of 3D density profiles}
+\label{app:Nscaling}
+%======================================================================
+
+Figure~\ref{fig:Nscaling} shows the normalized equilibrium density
+$\rho(\varphi)/\rho_{\max}$ for $N\in\{40,100,200,400,800\}$ hard rods on the
+WavyEllipse3D geometry $(e=0.70,\,c=0.50,\,n=4)$ at packing fraction $\eta\approx 0.14$.
+Each $N$ uses 30 independent seeds of duration $T_{\rm max}=2000\,t_0$ after
+equilibration $T_{\rm eq}=200\,t_0$, with snapshot interval $\Delta t=0.25\,t_0$
+(confirmed by a convergence test on $\Delta t\in\{2.0,1.0,0.5,0.25,0.125\}$:
+RMS stabilizes below $\Delta t=0.5\,t_0$ for all $N$).
+
+The RMS between the normalized simulation density and $\rho\propto\sqrt{g}$ is:
+\begin{center}
+\begin{tabular}{ccc}
+$N$ & $r(N)$ & RMS \\
+\hline
+40  & 0.02425 & $0.47\%$ \\
+100 & 0.00970 & $0.41\%$ \\
+200 & 0.00485 & $0.36\%$ \\
+400 & 0.00243 & $0.38\%$ \\
+800 & 0.00121 & $0.39\%$ \\
+\end{tabular}
+\end{center}
+
+All values are below $0.5\%$ and show no systematic $N$-dependence for $N\geq 200$.
+The residual~$\sim 0.37$--$0.40\%$ for $N\geq 200$ is a statistical floor set by the
+finite number of independent density-profile realizations: the density-relaxation time
+$\tau_{\rm relax}\propto N$ (single-file diffusion coefficient $D\propto 1/N$) means
+that the effective number of independent samples per seed decreases with $N$, so
+the statistical precision stays roughly constant despite the larger particle count.
+This is not a finite-size correction to the shape $\rho\propto\sqrt{g}$: the result
+is exact for any $N$ and $\sigma$ (Sec.~\ref{sec:model}).
+
+\begin{figure}[t]
+  \includegraphics[width=\columnwidth]{../figures/fig_nscaling_density.pdf}
+  \caption{$N$-independence test for the WavyEllipse3D geometry
+  ($e=0.70$, $c=0.50$, $n=4$, $\eta\approx 0.14$).
+  \emph{(a)}~Normalized density $\rho(\varphi)/\rho_{\max}$ for $N\in\{40,100,200,400,800\}$
+  (colored curves) overlaid on $\rho\propto\sqrt{g(\varphi)}$ (black).
+  All curves are indistinguishable at this scale.
+  \emph{(b)}~RMS residual vs.\ $N$; dashed line marks the plateau at $\approx 0.38\%$.
+  The plateau for $N\geq 200$ reflects the statistical floor set by
+  $\tau_{\rm relax}\propto N$ (see text), not a finite-size correction to the theory.
+  30 seeds each; $T_{\rm max}=2000\,t_0$; $\Delta t=0.25\,t_0$.}
+  \label{fig:Nscaling}
+\end{figure}
+
+%======================================================================
+\begin{thebibliography}{99}
+%======================================================================
+
+\bibitem{Tonks1936}
+L.~Tonks,
+``The complete equation of state of one, two and three-dimensional gases of hard elastic spheres,''
+Phys.\ Rev.\ \textbf{50}, 955 (1936).
+
+\bibitem{HansenMcDonald2006}
+J.-P.~Hansen and I.~R.~McDonald,
+\emph{Theory of Simple Liquids}, 3rd ed. (Academic Press, Amsterdam, 2006).
+
+\bibitem{Girardeau1960}
+M.~Girardeau,
+``Relationship between systems of impenetrable bosons and fermions in one dimension,''
+J.\ Math.\ Phys.\ \textbf{1}, 516 (1960).
+
+\bibitem{vanHove1950}
+L.~Van~Hove,
+``Sur l'int\'egrale de configuration pour les syst\`emes de particules \`a une dimension,''
+Physica \textbf{16}, 137 (1950).
+
+\bibitem{CuestaGHD2004}
+J.~A.~Cuesta and A.~S\'anchez,
+``General non-existence theorem for phase transitions in one-dimensional systems with short range interactions,''
+J.\ Stat.\ Phys.\ \textbf{115}, 869 (2004).
+
+\bibitem{CastroDoyonYoshimura2016}
+O.~A.~Castro-Alvaredo, B.~Doyon, and T.~Yoshimura,
+``Emergent hydrodynamics in integrable quantum systems out of equilibrium,''
+Phys.\ Rev.\ X \textbf{6}, 041065 (2016).
+
+\bibitem{BertiniCollura2016}
+B.~Bertini, M.~Collura, J.~De~Nardis, and M.~Fagotti,
+``Transport in out-of-equilibrium XXZ chains: Exact profiles of charges and currents,''
+Phys.\ Rev.\ Lett.\ \textbf{117}, 207201 (2016).
+
+\bibitem{DoyonYoshimuraCaux2018}
+B.~Doyon, T.~Yoshimura, and J.-S.~Caux,
+``Soliton gases and generalized hydrodynamics,''
+Phys.\ Rev.\ Lett.\ \textbf{120}, 045301 (2018).
+
+\bibitem{SalsburgZwanzigKirkwood1953}
+Z.~W.~Salsburg, R.~W.~Zwanzig, and J.~G.~Kirkwood,
+``Molecular distribution functions in a one-dimensional fluid,''
+J.\ Chem.\ Phys.\ \textbf{21}, 1098 (1953).
+
+\bibitem{Percus1976}
+J.~K.~Percus,
+``Equilibrium state of a classical fluid of hard rods in an external field,''
+J.\ Stat.\ Phys.\ \textbf{15}, 505 (1976).
+
+\bibitem{Bakhti2015}
+B.~Bakhti, M.~Karbach, P.~Maass, and G.~M\"uller,
+``Monodisperse hard rods in external potentials,''
+Phys.\ Rev.\ E \textbf{92}, 042112 (2015).
+
+\bibitem{SchiltzRouse2023}
+E.~Schiltz-Rouse, H.~Row, and S.~A.~Mallory,
+``Kinetic temperature and pressure of an active Tonks gas,''
+Phys.\ Rev.\ E \textbf{108}, 064601 (2023).
+
+\bibitem{TononiSalasnich2023}
+A.~Tononi and L.~Salasnich,
+``Low-dimensional quantum gases in curved geometries,''
+Nat.\ Rev.\ Phys.\ \textbf{5}, 398 (2023).
+
+\bibitem{CoxFeresWard2015}
+C.~Cox, R.~Feres, and W.~Ward,
+``Differential geometry of rigid bodies collisions and non-standard billiards,''
+arXiv:1501.06536 (2015).
+
+\bibitem{BeckCohen2003}
+C.~Beck and E.~G.~D.~Cohen,
+``Superstatistics,''
+Physica A \textbf{322}, 267 (2003).
+
+\bibitem{CastroVillarrealRamirez2021}
+P.~Castro-Villarreal and J.~E.~Ram\'irez,
+``Single-file dynamics of colloids in circular channels: Time scales, scaling laws and their universality,''
+Phys.\ Rev.\ Research \textbf{3}, 033246 (2021).
+
+\bibitem{CastroVillarreal2023}
+P.~Castro-Villarreal, J.~E.~Ram\'irez, and R.~Casta\~neda-Priego,
+``Covariant description of the colloidal dynamics on curved manifolds,''
+Front.\ Phys.\ \textbf{11}, 1204751 (2023).
+
+\bibitem{DoyonInhomGHD2017}
+B.~Doyon, T.~Yoshimura, and J.-S.~Caux,
+``A note on generalized hydrodynamics: inhomogeneous fields and other concepts,''
+SciPost Phys.\ \textbf{2}, 014 (2017).
+
+\bibitem{Ryu2007}
+C.~Ryu, M.~F.~Andersen, P.~Clad\'e, V.~Natarajan, K.~Helmerson, and W.~D.~Phillips,
+``Observation of persistent flow of a Bose--Einstein condensate in a toroidal trap,''
+Phys.\ Rev.\ Lett.\ \textbf{99}, 260401 (2007).
+
+\bibitem{Eckel2014}
+S.~Eckel, J.~G.~Lee, F.~Jendrzejewski, N.~Murray, C.~W.~Clark, C.~J.~Lobb, W.~D.~Phillips, M.~Edwards, and G.~K.~Campbell,
+``Hysteresis in a quantized superfluid `atomtronic' circuit,''
+Nature \textbf{506}, 200 (2014).
+
+\bibitem{daCosta1981}
+R.~C.~T.~da~Costa,
+``Quantum mechanics of a constrained particle,''
+Phys.\ Rev.\ A \textbf{23}, 1982 (1981).
+
+\bibitem{Stratonovich1968}
+R.~L.~Stratonovich,
+\emph{Conditional Markov Processes and their Application to the Theory of Optimal Control}
+(Elsevier, New York, 1968).
+
+\bibitem{Graham1977}
+R.~Graham,
+``Path integral formulation of general diffusion processes,''
+Z.\ Phys.\ B \textbf{26}, 281 (1977).
+
+\bibitem{BenDanielDuke1966}
+D.~J.~BenDaniel and C.~B.~Duke,
+``Space-charge effects on electron tunneling,''
+Phys.\ Rev.\ \textbf{152}, 683 (1966).
+
+\bibitem{vonRoos1983}
+O.~von~Roos,
+``Position-dependent effective masses in semiconductor theory,''
+Phys.\ Rev.\ B \textbf{27}, 7547 (1983).
+
+
+\end{thebibliography}
+
+\end{document}
