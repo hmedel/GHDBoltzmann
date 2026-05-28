@@ -253,21 +253,25 @@
   \textbf{curved road}:
 
   \begin{block}{Covariant LWR equation}
-    \vspace{4pt}
-    \[
-      \partial_t \rho + \partial_s\bigl[\rho\,v(\rho;\kappa,\tau)\bigr] = 0
-    \]
+    \vspace{2pt}
+    In angular coordinates $\vp$:\quad
+    $\partial_t(\rho\,h) + \partial_\vp(\rho\,v) = 0$
+
+    \smallskip
+    In arc-length $s$:\quad
+    $\partial_t \rho + \partial_s[\rho\,v(\rho;\kappa,\tau)] = 0$
     \vspace{2pt}
   \end{block}
 
-  \medskip
-  The flux depends on geometry via the
-  \textbf{fundamental diagram}:
+  \smallskip
+  The flux depends on geometry via a
+  \textbf{fundamental diagram}.  We \emph{model}:
   \[
     v(\rho;\kappa,\tau) = v_{\max}\,
     g(\kappa,\tau)\left(1 - \frac{\rho}{\rho_{\max}}\right)
   \]
-  with the \alert{geometric correction}:
+  with the \alert{geometric correction}
+  (phenomenological closure):
   \[
     g(\kappa,\tau) = \exp\!\bigl(-\beta_\kappa|\kappa|
     - \beta_\tau|\tau|\bigr)
@@ -467,12 +471,13 @@
   \bigskip
   \begin{itemize}
     \setlength\itemsep{5pt}
-    \item Numerical $V_{\rm shock}$ matches Rankine--Hugoniot
-          to \alert{machine precision} ($< 10^{-15}$)
+    \item For constant $\kappa,\tau$ the Riemann problem
+          has an exact solution; the scheme
+          recovers it to $< 10^{-15}$
     \item Curvature alone: $\mathbf{2.0\%}$ slowdown
     \item Adding torsion: additional $\mathbf{0.07\%}$
-    \item $g = e^{-\beta_\kappa|\kappa|-\beta_\tau|\tau|}$
-          is \textbf{exact} for constant geometry
+    \item These validate the scheme; the \alert{interesting}
+          case is variable geometry
   \end{itemize}
 
   \column{0.42\textwidth}
@@ -550,16 +555,18 @@ This is the \alert{geometric refraction} predicted by the effective potential $\
   \includegraphics[width=\linewidth]%
     {../Paper02/figures/fig5_pde_vs_md.pdf}
   \vspace{2pt}
-  {\footnotesize \textbf{Lines}: covariant Burgers PDE.
-  \textbf{Symbols}: molecular dynamics,
+  {\footnotesize \textbf{Lines}: covariant Burgers PDE
+  (mesoscopic level).
+  \textbf{Symbols}: event-driven MD,
   500 hard rods on an ellipse.
   \alert{24 initial conditions},
   no free parameters.}
 
   \vspace{2pt}
-  {\footnotesize Elastic hard rods
-  \alert{do not} form Burgers shocks ---
-  shocks require the macroscopic closure.}
+  {\footnotesize The Christoffel term $\Gamma u^2$
+  is validated microscopically.
+  Traffic LWR is the macroscopic
+  phenomenological closure of this hierarchy.}
 \end{columns}
 \end{frame}
 
@@ -571,9 +578,11 @@ This is the \alert{geometric refraction} predicted by the effective potential $\
   \textbf{Key theoretical property:}
 
   \medskip
-  In arc-length coordinates $s$, the covariant equation
-  reduces to \textbf{flat-space LWR} with a
-  position-dependent fundamental diagram.
+  In arc-length $s$ the metric is $1$ by construction,
+  so the equation reduces to \textbf{flat-space LWR}
+  with position-dependent fundamental diagram.
+  The Christoffel term $\Gamma u^2$ is absorbed
+  into the coordinate transformation.
 
   \medskip
   All exact solutions of flat Burgers
